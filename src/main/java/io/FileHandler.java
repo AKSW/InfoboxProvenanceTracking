@@ -9,7 +9,7 @@ import java.util.Stack;
 public class FileHandler {
 
   private File dumpDirectory = null;
-  private final Stack<File> dumpDirectoryContents;
+  private Stack<File> dumpDirectoryContents = null;
   private String fileEntry;
 
   /**
@@ -19,13 +19,20 @@ public class FileHandler {
    */
   public FileHandler(String pathToFolder) {
 
+	  
+	 
     dumpDirectory = new File(pathToFolder);
-
+    
+    
+    
     dumpDirectoryContents = new Stack<File>();
 
     for (File singleDumpFile : dumpDirectory.listFiles()) {
+    	
       dumpDirectoryContents.push(singleDumpFile);
     }
+    
+    
   }
 
   public String getFileEntry() {

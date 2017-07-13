@@ -1,7 +1,4 @@
-/**
- * Copyright (c) 2017 DBP17
- * All rights reserved
- */
+
 package dump;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;

@@ -158,6 +158,7 @@ public class ProvenanceWriter {
       true), StandardCharsets.UTF_8)) {
     	//System.out.println(wholeDifferernces.size());
       for (String line : wholeDifferernces) {
+    	  
         fw.write(line);
        
       }

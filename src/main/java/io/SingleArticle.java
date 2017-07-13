@@ -53,7 +53,7 @@ public class SingleArticle {
     //  Log.error(e, "Url is malformed!");
       logger.log(Level.SEVERE, "Url is malformed!", e);
     }
-
+    File dump2 = new File("ArticleDUmps");
     tempDir.mkdir();
     File dump = new File("ArticleDumps/" + name + ".xml");
     try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
@@ -66,7 +66,8 @@ public class SingleArticle {
      // Log.error(e, "Cannot read or write data!");
       logger.log(Level.SEVERE, "Cannot read or write data!", e);
     }
-    return dump.getAbsolutePath();
+	
+    return dump.getAbsoluteFile().getParent();
   }
 
   /**

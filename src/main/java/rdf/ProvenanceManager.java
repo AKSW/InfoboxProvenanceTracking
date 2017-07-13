@@ -68,7 +68,7 @@ public class ProvenanceManager implements Runnable {
                            String language,
                            boolean variant,
                            READVARIANT readVariant) {
-
+	 
     this.language = language;
     this.parser = parser;
     this.parser.setParser(path, equivalenceClass, maxThreads);
@@ -400,7 +400,7 @@ public class ProvenanceManager implements Runnable {
 
       // stores differences in writer
       writer.write(filteredDifferences, parser.getPage().getRevision().get(0));
-
+     
       differences.clear();
       filteredDifferences.clear();
       rdfDiffer.clear();
