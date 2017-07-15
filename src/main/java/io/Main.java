@@ -23,8 +23,8 @@ public class Main {
 	 * @param args parameter
 	 */
 	public static void main(String[] args) {
-
 		
+
 		CLParser clparser = new CLParser();
         JCommander.newBuilder()
         .addObject(clparser)

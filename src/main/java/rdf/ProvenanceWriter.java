@@ -226,6 +226,7 @@ public class ProvenanceWriter {
    * @param path filePath
    */
   public static void newRun(String path) {
+	  
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(
       "threadfile//" + path + ".tsv", false))) {
       String creationDate = new SimpleDateFormat(
