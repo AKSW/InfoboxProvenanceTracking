@@ -19,22 +19,16 @@ public class FileHandler {
    */
   public FileHandler(String pathToFolder) {
 
-	  
-	 
     dumpDirectory = new File(pathToFolder);
-    
-    
-    
     dumpDirectoryContents = new Stack<File>();
 
     for (File singleDumpFile : dumpDirectory.listFiles()) {
     	
       dumpDirectoryContents.push(singleDumpFile);
     }
-    
-    
   }
 
+  
   public String getFileEntry() {
     return fileEntry;
   }

@@ -1,5 +1,6 @@
 package rdf;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -7,11 +8,9 @@ import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 
-//import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
-//import org.slf4j.event.Level;
+
 
 import dump.DumpParser;
 import io.READVARIANT;
@@ -34,13 +33,13 @@ public class ProvenanceManager implements Runnable {
 
   private DumpParser parser = null;
   private TripleExtractor tripleExtractor = null;
-  private RDFDiffer rdfDiffer = null;
   //private LogWriter logWriter = null;
   private ProvenanceWriter writer = null;
   private READVARIANT readVariant = null;
   private String threadName = null;
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
-
+  private boolean borderSet = false;
+  
   // ArrayList for differences between two Models
   ArrayList<Statement[]> differences = null;
 
@@ -67,6 +66,7 @@ public class ProvenanceManager implements Runnable {
                            int maxThreads,
                            String language,
                            boolean variant,
+                           boolean borderSet,
                            READVARIANT readVariant) {
 	 
     this.language = language;
@@ -75,12 +75,12 @@ public class ProvenanceManager implements Runnable {
     this.variant = variant;
     this.readVariant = readVariant;
     this.threadName = threadName;
-    this.differences = new ArrayList<Statement[]>();
+    this.borderSet = borderSet;
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
 
     this.tripleExtractor = new TripleExtractor();
-    this.rdfDiffer = new RDFDiffer();
+    
    // this.logWriter = new LogWriter(threadName);
     this.writer = new ProvenanceWriter(threadName, false);
   }
@@ -92,53 +92,54 @@ public class ProvenanceManager implements Runnable {
     // variant default: get complete provenance
 
     if (this.variant) {
-      // switch betwenn the different readvariants
-      switch (readVariant) {
-        case ReadDefault:
-          ProvenanceWriter.newRun(threadName);
-        //  LogWriter.newRun(threadName);
-          wholeProvenanceDefault();
-          break;
-        case ReadTimeFiltered:
-      // ProvenanceWriter.newRun(threadName);
-      //    LogWriter.newRun(threadName);
-          wholeProvenanceTimeFiltered();
-          break;
-        case ReadTimeFrameRerun:
-          wholeProvenanceTimeFrameRerun();
-          break;
-        case ReadRerun:
-          wholeProvenanceRerun();
-          break;
-        default:
-      }
+    	
+    	// variant lastchange: get just the last change of each triple
+    	// switch betwenn the different readvariants
+        switch (readVariant) {
+          case ReadDefault:
+            //ProvenanceWriter.newRun(threadName);
+           // LogWriter.newRun(threadName);
+            lastChangeProvenanceDefault();
+            break;
+          case ReadTimeFiltered:
+          //  ProvenanceWriter.newRun(threadName);
+         //   LogWriter.newRun(threadName);
+            lastChangeProvenanceTimeFiltered();
+            break;
+          case ReadTimeFilteredRerun:
+            lastChangeProvenanceTimeFrameRerun();
+            break;
+          case ReadRerun:
+            lastChangeProvenanceRerun();
+            break;
+          default:
 
-
-      // variant lastchange: get just the last change of each triple
+        }
+      
     }
     else {
-      // switch betwenn the different readvariants
-      switch (readVariant) {
-        case ReadDefault:
-          //ProvenanceWriter.newRun(threadName);
-         // LogWriter.newRun(threadName);
-          lastChangeProvenanceDefault();
-          break;
-        case ReadTimeFiltered:
-        //  ProvenanceWriter.newRun(threadName);
-       //   LogWriter.newRun(threadName);
-          lastChangeProvenanceTimeFiltered();
-          break;
-        case ReadTimeFrameRerun:
-          lastChangeProvenanceTimeFrameRerun();
-          break;
-        case ReadRerun:
-          lastChangeProvenanceRerun();
-          break;
-        default:
-
-      }
-
+    	
+    	 // switch betwenn the different readvariants
+        switch (readVariant) {
+          case ReadDefault:
+            ProvenanceWriter.newRun(threadName);
+          //  LogWriter.newRun(threadName);
+            wholeProvenanceDefault();
+            break;
+          case ReadTimeFiltered:
+        // ProvenanceWriter.newRun(threadName);
+        //    LogWriter.newRun(threadName);
+            wholeProvenanceTimeFiltered();
+            break;
+          case ReadTimeFilteredRerun:
+            wholeProvenanceTimeFrameRerun();
+            break;
+          case ReadRerun:
+            wholeProvenanceRerun();
+            break;
+          default:
+        }
+    	
     }
 
   }//end run
@@ -191,7 +192,7 @@ public class ProvenanceManager implements Runnable {
   public void wholeProvenanceTimeFrameRerun() {
 
     try {
-      while (parser.readPageTimeFrameRerun()) {
+      while (parser.readTimeFilteredRerun()) {
 
         if (parser.getPage() != null) {
 
@@ -269,7 +270,7 @@ public class ProvenanceManager implements Runnable {
   public void lastChangeProvenanceTimeFrameRerun() {
 
     try {
-      while (parser.readPageTimeFrameRerun()) {
+      while (parser.readTimeFilteredRerun()) {
 
         if (parser.getPage() != null) {
 
@@ -311,34 +312,34 @@ public class ProvenanceManager implements Runnable {
    */
   public void wholeProvenance() {
 
-    for (int pos = 1; pos < parser.getPage().getRevision().size() - 1; pos++) {
-      // creates newer Model
-      Model newestModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(0).getId(), language);
-      // creates Model to compare with
-      Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(pos + 1).getId(), language);
-      // gets differences of those two Models
-      differences = rdfDiffer.getDifference(newestModel, compareModel);
-
-      // stores differences in writer
-      writer.write(differences, parser.getPage().getRevision().get(pos));
-      differences.clear();
-      rdfDiffer.clear();
-    }
-
-    // Model for last revision
-    Model lastModel = tripleExtractor.generateModel(parser.getPage().getRevision().
-        get(parser.getPage().getRevision().size() - 1).getId(), language);
-    differences = rdfDiffer.assignLastRevison(lastModel);
-    writer.write(differences, parser.getPage().getRevision().get(parser.getPage()
-        .getRevision().size() - 1));
-
-    differences.clear();
-    rdfDiffer.clear();
+//    for (int pos = 1; pos < parser.getPage().getRevision().size() - 1; pos++) {
+//      // creates newer Model
+//      Model newestModel = tripleExtractor.generateModel(parser.getPage().
+//              getRevision().get(0).getId(), language);
+//      // creates Model to compare with
+//      Model compareModel = tripleExtractor.generateModel(parser.getPage().
+//              getRevision().get(pos + 1).getId(), language);
+//      // gets differences of those two Models
+//     // differences = rdfDiffer.getDifference(newestModel, compareModel);
+//
+//      // stores differences in writer
+//      writer.write(differences, parser.getPage().getRevision().get(pos));
+//      differences.clear();
+//      rdfDiffer.clear();
+//    }
+//
+//    // Model for last revision
+//    Model lastModel = tripleExtractor.generateModel(parser.getPage().getRevision().
+//        get(parser.getPage().getRevision().size() - 1).getId(), language);
+//    differences = rdfDiffer.assignLastRevison(lastModel);
+//    writer.write(differences, parser.getPage().getRevision().get(parser.getPage()
+//        .getRevision().size() - 1));
+//
+//    differences.clear();
+//    rdfDiffer.clear();
 
     // writer writes differences in file
-    writer.save();
+    writer.write();
     System.out.println("Finished article: " + parser.getPage().getTitle());
 
     // after page is completed, LogWriter write its ID in a logfile
@@ -360,65 +361,46 @@ public class ProvenanceManager implements Runnable {
    */
   public void lastChangeProvenance() {
 
-    // creates newest Model
-    Model newestModel = tripleExtractor.generateModel(parser.getPage().
-            getRevision().get(0).getId(),
-        this.language);
-
-
-    if (parser.getPage().getRevision().size() == 1) {
-      differences = rdfDiffer.assignLastRevison(newestModel);
+	  
+	Model newestModel = tripleExtractor.generateModel(parser.getPage().
+	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
+	      this.language);
+	  
+	
+	  
+	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
+		
+		Model compareModel = tripleExtractor.generateModel(parser.getPage().
+              getRevision().get(i).getId(), this.language);
+		  
+		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
+		rdfDiffer.determineDifferences();
+		
+		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
+		
+//		if (stmt[0] == null) {	
+//		writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1),parser.getPage().getRevision().get(i));
+//		}else {
+			
+			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
+		}
+//		}
+		newestModel = rdfDiffer.getReducedModel();
+		if(newestModel.isEmpty()) {
+			 break;
+		 }
+	  }
+	  if(borderSet) {
+		 
+		  writer.writeModel(newestModel);
+		  
+	  }else { 
+		  
+		  writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
+		  System.out.println("Finished article: " + parser.getPage().getTitle());
+	  }
+	 
     }
-
-    // iterates through all following revisions
-    for (int pos = 1; pos < parser.getPage().getRevision().size() + 1; pos++) {
-      Model compareModel = ModelFactory.createDefaultModel();
-
-      if (pos < this.parser.getPage().getRevision().size()) {
-        // create Model to compare with
-        compareModel = tripleExtractor.generateModel(this.parser.getPage().
-                getRevision().get(pos).getId(), this.language);
-
-        // gets differences of those two Models
-        differences = rdfDiffer.getDifference(newestModel, compareModel);
-      } else {
-        differences = rdfDiffer.assignLastRevison(newestModel);
-      }
-
-      differences = filter(differences);
-
-      // copies all differences
-      filteredDifferences.addAll(differences);
-
-      filteredDifferences = filterStatements(differences, alreadyFoundDifferences,
-              filteredDifferences);
-
-      // adds all new found differences
-      for (Statement[] statement : filteredDifferences) {
-        alreadyFoundDifferences.add(statement[0]);
-      }
-
-      // stores differences in writer
-      writer.write(filteredDifferences, parser.getPage().getRevision().get(0));
-     
-      differences.clear();
-      filteredDifferences.clear();
-      rdfDiffer.clear();
-
-    }
-    if (parser.getPage().getRevision().size() == 1) {
-      writer.write(differences, parser.getPage().getRevision().get(0));
-      differences.clear();
-    }
-
-    rdfDiffer.clear();
-    // writer writes differences in file
-    writer.save();
-    System.out.println("Finished article: " + parser.getPage().getTitle());
-
-    // after page is completed, LogWriter write its ID in a logfile
-   // logWriter.write(parser.getPage().getId());
-  }
 
 
   /**

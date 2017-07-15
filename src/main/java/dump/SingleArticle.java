@@ -1,4 +1,4 @@
-package io;
+package dump;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,7 +9,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import org.apache.commons.io.FileUtils;
-//import org.apache.jena.atlas.logging.Log;
 
 import rdf.ProvenanceManager;
 
@@ -37,7 +36,7 @@ public class SingleArticle {
    * @param language of the article you want to download
    * @return path to the downloaded dump file
    */
-  public static String getPathForDump(String name, String language) {
+  public static String getPathForArticle(String name, String language) {
 
     if (language.isEmpty()) {
       language += "en";
@@ -53,7 +52,7 @@ public class SingleArticle {
     //  Log.error(e, "Url is malformed!");
       logger.log(Level.SEVERE, "Url is malformed!", e);
     }
-    File dump2 = new File("ArticleDUmps");
+
     tempDir.mkdir();
     File dump = new File("ArticleDumps/" + name + ".xml");
     try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {

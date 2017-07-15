@@ -32,21 +32,5 @@ public class Bz2Reader extends BufferedReader {
           new BufferedInputStream(
             new FileInputStream(path))), "UTF-8")));
   }
-
-  //Debugging
-  
-//    public static void main(String[] args) {
-//    
-//    	
-//    try {
-//   
-//    Bz2Reader bz2reader = new Bz2Reader("src/test/resources/Bz2Test.bz2"); String line = "";
-//   
-//    while ((line = bz2reader.readLine()) != null) { System.out.println(line); }
-//   
-//    bz2reader.close();
-//   
-//    } catch (IOException | CompressorException e) {	}
-//	}
    
 }

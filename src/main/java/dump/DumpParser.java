@@ -28,32 +28,8 @@ public class DumpParser {
   public static final String CAN_T_READ_MORE_PAGES = "Can't read more pages";
 
 
+  
   /**
-   * default constructor
-   */
-  public DumpParser() {
-    this.mapper = new XmlMapper();
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-  }
-
-
-  /**
-   * Case: TimeFrame
-   *
-   * @param extractionTimeFrame timeframe with from and until
-   */
-  public DumpParser(Date[] extractionTimeFrame) {
-    this.mapper = new XmlMapper();
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-    this.extractionTimeFrame = extractionTimeFrame;
-  }
-
-
-
-  /**
-   * Case: rerun
    *
    * @param extractionTimeFrame timeframe with from and until
    * @param finishedArticles ArrayList with integers as page id
@@ -139,31 +115,32 @@ public class DumpParser {
      // Log.error(e, CAN_T_READ_MORE_PAGES);
       return false;
     }
-
+    
+    
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
-
+  
     // filter revisions default
-    for (int i = 0; i < page.getRevision().size() - 1; i++) {
-
-      i = standardFilter(i);
-
+    for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
+    	
+    	 standardFilter(i);  
+    	 
     }
+   
+   
+   // eventually remove the last revision
+   // (which doesn't get filtered by standardFilter())
+   if(page.getRevision().get(0).getText() == null) {
+	   page.getRevision().remove(0);
+   }
 
-    // eventually remove the last revision
-    // (which doesn't get filtered by standardFilter())
-    if (page.getRevision().get(page.getRevision().size() - 1).getText() == null) {
-      page.getRevision().remove(page.getRevision().size() - 1);
-    }
-
+   
     // if no revisions are left, page is irrelevant
     if (page.getRevision().isEmpty()) {
       page = null;
     }
     filteredParser.next();
     return true;
-	/*  
-    return filteredParser.hasNext();*/
   }
 
 
@@ -191,14 +168,14 @@ public class DumpParser {
     Collections.sort(page.getRevision(), Collections.reverseOrder());
 
     // filter revisions default
-    for (int i = 0; i < page.getRevision().size() - 1; i++) {
-
-      i = standardFilter(i);
-
+    for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
+   	 
+    	standardFilter(i); 
+   	 
     }
 
     // filter revisions time
-    for (int i = 0; i < page.getRevision().size() - 1; i++) {
+    for (int i = page.getRevision().size()-1; i >= 0; i-- ) {
 
       i = dateFilter(i, extractionTimeFrame);
 
@@ -231,7 +208,7 @@ public class DumpParser {
    * @throws IOException IOException
    * @throws XMLStreamException XMLStreamException
    */
-  public boolean readPageTimeFrameRerun() throws
+  public boolean readTimeFilteredRerun() throws
           IOException, XMLStreamException {
 
     try {
@@ -248,14 +225,14 @@ public class DumpParser {
       Collections.sort(page.getRevision(), Collections.reverseOrder());
 
       // filter revisions default
-      for (int i = 0; i < page.getRevision().size() - 1; i++) {
-
-        i = standardFilter(i);
-
+      for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
+     	 
+    	  standardFilter(i);  
+      
       }
-
+      
       // filter revisions time
-      for (int i = 0; i < page.getRevision().size() - 1; i++) {
+      for (int i = page.getRevision().size()-1; i >= 0; i-- ) {
 
         i = dateFilter(i, extractionTimeFrame);
 
@@ -304,18 +281,20 @@ public class DumpParser {
       // reverse order of revisions, so the oldest one ist in index 0
       Collections.sort(page.getRevision(), Collections.reverseOrder());
 
-      for (int i = 0; i < page.getRevision().size() - 1; i++) {
-
-        i = standardFilter(i);
-
+      for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
+     	
+    	  standardFilter(i);  
+     	 
       }
 
       // eventually remove the last revision
       // (which doesn't get filtered by standardFilter())
-      if (page.getRevision().get(page.getRevision().size() - 1).getText() == null) {
-        page.getRevision().remove(page.getRevision().size() - 1);
+      if (page.getRevision().get(0).getText() == null) {
+        page.getRevision().remove(0);
       }
 
+      
+      
       // if no revisions are left, page is irrelevant
       if (page.getRevision().isEmpty()) {
         page = null;
@@ -328,11 +307,11 @@ public class DumpParser {
     return true;
   }
 
+  
   /**
    * set the parser and therefore the path to the current input file
    * @param path contains the path to the next dumpfile
    */
-
   public void setParser(String path, int tmp, int tmp2) {
 	    try {
 	      this.parser = XMLInputFactory.newInstance()
@@ -353,18 +332,18 @@ public class DumpParser {
    * @param i index/position of the current revision in the page
    * @return updated index
    */
-  private int standardFilter(int i) {
-    if (page.getRevision().get(i).getText() == null) {
-      // (1)
-      page.getRevision().remove(i);
-      i--;
-    } else if (page.getRevision().get(i).getText()
-            .equalsIgnoreCase(page.getRevision().get(i + 1).getText())) {
-      // (2)
-      page.getRevision().remove(i);
-      i--;
-    }
-    return i;
+  private void standardFilter(int i) {
+	// (1)
+	if (page.getRevision().get(i).getText() == null) {
+		   
+		   page.getRevision().remove(i);
+	// (2)
+  	}else if (page.getRevision().get(i).getText()
+   	            .equalsIgnoreCase(page.getRevision().get(i-1).getText())) {
+  			page.getRevision().remove(i);
+  	}
+	  
+	
   }// end standardFilter
 
   /**
@@ -377,37 +356,21 @@ public class DumpParser {
   private int dateFilter(int i, Date[] extractionTimeFrame) {
 
     // If there is a time restriction revisions out of it will be removed
-    if (extractionTimeFrame[0] != null || extractionTimeFrame[1] != null) {
-      if (page.getRevision().get(i).getTimestamp().before
-              (extractionTimeFrame[0])) {
-        page.getRevision().remove(i);
-        i--;
-      } else if (page.getRevision().get(i).getTimestamp().after
+      
+	  if (page.getRevision().get(i).getTimestamp().after
               (extractionTimeFrame[1])) {
         page.getRevision().remove(i);
         i--;
+	  	  
+      } else if (page.getRevision().get(i).getTimestamp().before
+              (extractionTimeFrame[0])) {
+        page.getRevision().remove(i);
+        i--;
       }
-    }
-
+    
     return i;
   }// end dateFilter
   
-  
-  /*	public static void main(String[] args) throws IOException, XMLStreamException {
-
-	DumpParser parser = new DumpParser();
-	parser.setParser("src/test/resources/Bz2Test.bz2", 0, 1);
-	
-	
-	while(parser.readPageDefault())
-	{
-	 if(parser.getPage()!=null) {
-		
-	 System.out.println(parser.getPage());
-	 }
-	}
-  		
-  	}*/
-  
    
-}
+   
+}// end class

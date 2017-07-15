@@ -15,9 +15,11 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import org.apache.jena.rdf.model.Model;
 //import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.Statement;
 //import org.slf4j.event.Level;
+import org.apache.jena.rdf.model.StmtIterator;
 
 import dump.Revision;
 
@@ -80,34 +82,75 @@ public class ProvenanceWriter {
    * @param revisionOfChange revision object with revision number, author,
    * timestamp
    */
-  public void write(ArrayList<Statement[]> newTripleOldTriple,
+  
+  public void writeDifferences(Statement[] stmt,
+		   Revision revisionOfChange1, Revision revisionOfChange2) {
+			    	
+		   String line = "";
+		   line += "<" + stmt[1].getSubject() + "> ";
+		   line += "<" + stmt[1].getPredicate() + "> ";
+		   line += getObjectAsNTriples(stmt[1]) + "\t";
+		   line += "# triple added during Extraction-Framework between number " + revisionOfChange2.getId() + " and " + revisionOfChange1.toString() + "\n" ;
+		   wholeDifferernces.add(line);
+		   write();
+		  }
+  
+  public void writeDifferences(Statement[] stmt,
     Revision revisionOfChange) {
-	  
-    for (Statement[] stmt : newTripleOldTriple) {
-
+	 
       String line = "";
-
+      
       if (stmt[0] == null) {
-        line += "# triple does not exist.\t";
+    	return;
+
       }
       else {
         line += "<" + stmt[0].getSubject() + "> ";
         line += "<" + stmt[0].getPredicate() + "> ";
         line += getObjectAsNTriples(stmt[0]) + "\t";
-      }
-
-      if (stmt[1] == null) {
-        line += "# triple does not exist.\t";
-      }
-      else {
         line += "<" + stmt[1].getSubject() + "> ";
         line += "<" + stmt[1].getPredicate() + "> ";
         line += getObjectAsNTriples(stmt[1]) + "\t";
+        line += revisionOfChange.toString() + "\n";
       }
-
-      line += revisionOfChange.toString() + "\n";
+ 
       wholeDifferernces.add(line);
-    }
+    write();
+  }
+  
+  public void writeModel (Model model, Revision revisionOfChange){
+	  
+	  if(model.isEmpty())return;
+	  StmtIterator stmts = model.listStatements();
+	  
+	  while ( stmts.hasNext() ) {
+		  String line = "";
+		  Statement triple = stmts.nextStatement();
+		  line += "<" + triple.getSubject() + "> ";
+	      line += "<" + triple.getPredicate() + "> ";
+	      line += getObjectAsNTriples(triple) + "\t";
+	      line += revisionOfChange.toString() + "\n";
+	      wholeDifferernces.add(line);
+
+	  }
+	  write();
+  }
+  
+  public void writeModel (Model model){
+	  
+	  if(model.isEmpty())return;
+	  StmtIterator stmts = model.listStatements();
+	  
+	  while ( stmts.hasNext() ) {
+		  String line = "";
+		  Statement triple = stmts.nextStatement();
+		  line += "<" + triple.getSubject() + "> ";
+	      line += "<" + triple.getPredicate() + "> ";
+	      line += getObjectAsNTriples(triple) + "\n";
+	      wholeDifferernces.add(line);
+	     //System.out.println(line );
+	  }
+	  write();
   }
 
   /**
@@ -153,12 +196,12 @@ public class ProvenanceWriter {
   /**
    * writes the ArrayList in a file
    */
-  public void save() {
+  public void write() {
     try (Writer fw = new OutputStreamWriter(new FileOutputStream(outputFile,
       true), StandardCharsets.UTF_8)) {
     	//System.out.println(wholeDifferernces.size());
       for (String line : wholeDifferernces) {
-    	  
+    	  //System.out.println(line);
         fw.write(line);
        
       }

@@ -2,33 +2,44 @@ package rdf;
 
 import java.util.ArrayList;
 
-
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-
-
-//import org.apache.jena.atlas.logging.Log;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * Class to find the differences between two RDF graphs and to map the triples
  * that have changed
  *
- * @author nicole
  */
 public class RDFDiffer {
-	private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
+	
   /*
    * contains the old and the new Triple in a Statment Array
+   * 
    */
-  ArrayList<Statement[]> difference = new ArrayList<Statement[]>();
-  ArrayList<Statement[]> lastRevison = new ArrayList<Statement[]>();
+  Model newModel = ModelFactory.createDefaultModel();
+  Model oldModel = ModelFactory.createDefaultModel();
+  //Model differences = null;
+	
+  ArrayList<Statement[]> newTripleOldTriple = null;
 
+  public RDFDiffer(Model newModel, Model oldModel) {
+	  
+	  this.newModel = newModel;
+	  this.oldModel = oldModel;
+	  this.newTripleOldTriple = new ArrayList<Statement[]>();
+	
+  }
+  
+  public Model getReducedModel() {
+	  return newModel;
+  }
+  
+  public ArrayList<Statement[]> getNewTripleOldTriple(){
+	  return newTripleOldTriple;
+  }
+  
   /**
    * Method gets two models, finds their differences and maps the triples that
    * have changed
@@ -37,115 +48,93 @@ public class RDFDiffer {
    * @param oldModel contains the older rdf-version of the article
    * @return ArrayList with the old Triples and the corresponding new Triples
    */
-  public ArrayList<Statement[]> getDifference( Model newModel, Model oldModel ) {
+  public void determineDifferences(  ) {
+	 
 	  
-	  
-    Model differenceOldModel = ModelFactory.createDefaultModel();
     Model differenceNewModel = ModelFactory.createDefaultModel();
-
+    
     /*
      * creating the Iterators to iterate through the Models
      */
     StmtIterator iterNewModel;
     StmtIterator iterOldModel;
-
-    Statement empty = null;
-
+    
     /*
      * Creates the models, which only contain differences
      */
     if ( !oldModel.isIsomorphicWith( newModel ) ) {
-      differenceOldModel = oldModel.difference( newModel );
-      differenceNewModel = newModel.difference( oldModel );
-    }
-
-    iterNewModel = differenceNewModel.listStatements();
-
-
-    /*
-     * Iterates through a statement list to find the corresponding triples in
-     * the other model
-     */
-    while ( iterNewModel.hasNext() ) {
-      
    
+    	differenceNewModel = newModel.difference( oldModel );
     	
-      Statement triple = iterNewModel.nextStatement();
-      Resource subject = triple.getSubject();
-      Property predicate = triple.getPredicate();
-      Statement[] statementArray = new Statement[2];
-
-      /*
-       * trys to find a matching Triple in the older Model
-       */
-      try {
-        Statement matchedTriple = differenceOldModel.getProperty( subject,
-          predicate );
-        differenceOldModel.remove( matchedTriple );
-
-        statementArray[0] = triple;
-        statementArray[1] = matchedTriple;
-      }
-      /*
-       * if none is found assign an empty Statement
-       */
-      catch ( NullPointerException npe ) {
-        statementArray[0] = triple;
-        statementArray[1] = empty;
-        //Log.error(npe, "");
-        logger.log(Level.INFO, "npe");
-      }
-
-      difference.add( statementArray );
+      
+    }else {
+    	
+    	return;
     }
 
-    iterOldModel = differenceOldModel.listStatements();
-
-    /*
-     * adds the triple to the ArrayList which are deletet from the newer Model
-     */
-    while ( iterOldModel.hasNext() ) {
-      Statement triple = iterOldModel.nextStatement();
-
-      Statement[] statementArray = new Statement[2];
-      statementArray[0] = empty;
-      statementArray[1] = triple;
-
-      difference.add( statementArray );
-    }
-    return difference;
-  }
-
-  /**
-   * assigns empty Statements to the Statemens from the last Revision
-   *
-   * @param model RDF Graph from the last Revision
-   * @return ArrayList where each Statement from the Model ist assignt to an
-   * empty Statement
-   */
-  public ArrayList<Statement[]> assignLastRevison( Model model ) {
-    StmtIterator iter = model.listStatements();
-    Statement empty = null;
+        
+    iterNewModel = differenceNewModel.listStatements();
     
-    /*
-     * iterates though the Model and assigns an empty Statement 
-     * to every Statement in the Model
-     */
-    while ( iter.hasNext() ) {
-      Statement triple = iter.nextStatement();
-
-      Statement[] statementArray = new Statement[2];
-      statementArray[0] = triple;
-      statementArray[1] = empty;
-
-      lastRevison.add( statementArray );
-    }
-
-    return lastRevison;
+    while ( iterNewModel.hasNext() ) {
+	
+   	 Statement  stmt = iterNewModel.nextStatement();
+   	
+   	 iterOldModel = oldModel.listStatements(  );
+   	 
+   	 int countAll = 0;
+   	 int countMissmatches = 0;
+   	 
+   	 while ( iterOldModel.hasNext() ) {
+   		 countAll++;
+   		 Statement stmt2 = iterOldModel.nextStatement();
+   		 if(stmt.getPredicate().toString().equalsIgnoreCase(stmt2.getPredicate().toString())){
+   			 
+   		 Statement[] entry = new Statement[2];
+   		 entry[0] = stmt;
+   		 entry[1] = stmt2; 
+   		 newTripleOldTriple.add(entry);
+   		 }else {
+   			 countMissmatches++;
+   		 } 
+   	 }
+   	 if(countAll == countMissmatches) {
+   		 Statement[] entry = new Statement[2];
+			 entry[0] = null;
+			 entry[1] = stmt;
+			 newTripleOldTriple.add(entry); 
+		     
+   	 }
+   	 
+   	 newModel.remove(stmt);
+   }
+    
+//  iterNewModel = differenceNewModel.listStatements();
+//
+//  while ( iterNewModel.hasNext() ) {
+//  		 
+//  	 Statement  stmt = iterNewModel.nextStatement();
+//  	
+//  	
+//  	 
+//  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
+//  	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
+//  	 
+//  	 while ( iterOldModel.hasNext() ) {
+//  		
+//  		 Statement stmt2 = iterOldModel.nextStatement();
+//  		
+//  			 
+//  		 Statement[] entry = new Statement[2];
+//  		 entry[0] = stmt;
+//  		 entry[1] = stmt2; 
+//  		 newTripleOldTriple.add(entry);
+//  		 
+//  	 
+//  	 newModel.remove(stmt);
+//  }
+//  }
+    
+    return;
   }
-  
-  public void clear(){
-	  difference.clear();
-	  lastRevison.clear();
-  }
+ 
 }

@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -15,11 +14,13 @@ import org.apache.jena.atlas.logging.Log;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+import dump.SingleArticle;
+
 public class CLParser {
 	
 	 private String newDate =new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 	
-	 @Parameter(names={"-singleArticle", "-a"} , description = "Name of the Article", required = false)
+	 @Parameter(names={"-name", "-a"} , description = "Name of the Article", required = false)
 	 private String singleArticle = null;
 	 @Parameter(names={"-later", "-l"} , description = "Earliest Timestamp(Date in yyyy-MM-dd) to extract", required = false)
 	 private String later = newDate;
@@ -27,7 +28,6 @@ public class CLParser {
 	 private String earlier = "2001-01-02";
 	 @Parameter(names={"-rerun", "-r"} , description = "Rerun program after a crash", required = false)
 	 private boolean rerun = false;
-	 
 	 @Parameter(names="-path" , description = "Path to the dump containing directory", required = false)
 	 private String path = null;
 	 @Parameter(names={"-language", "-lang"}, description = "Dump Language", required = false)
@@ -37,7 +37,8 @@ public class CLParser {
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
-	 private Date[] extractionTimeFrame = null;
+	 private TimeFrame timeFrame = null;
+	 
 	 private TreeSet<Integer> finishedArticles = null;
 	 
 	 public String getPath(){
@@ -56,16 +57,16 @@ public class CLParser {
 		 return readvariant;
 	 }
 	 
-	 public Date[] getExtractionTimeFrame(){
-		 return extractionTimeFrame;
-	 }
-	 
 	 public TreeSet<Integer> getFinishedArticles(){
 		 return finishedArticles;
 	 }
 	 
 	 public boolean getVariant(){
 		 return lastChange;
+	 }
+	 
+	 public TimeFrame getTimeFrame() {
+		 return timeFrame;
 	 }
 	 
 	 public void validate(){
@@ -83,72 +84,18 @@ public class CLParser {
 			 }
 			 
 			 if(singleArticle != null)
-			 path = SingleArticle.getPathForDump(singleArticle, language);
+			 path = SingleArticle.getPathForArticle(singleArticle, language);
 			 
 				 
 		 }catch(ParameterException e){
-			 
+			 System.out.println(e);
 		 }
 		 
 		
-	     Date extractLater = null;
-		 Date extractEarlier = null;
-		 Date currentDate = null;
-		 Date foundation = null;
-		 
-		 try {
-			
-				extractLater = new SimpleDateFormat("yyyy-MM-dd")
-						.parse(later);
-				extractEarlier = new SimpleDateFormat("yyyy-MM-dd")
-						.parse(earlier);
-				currentDate = new  SimpleDateFormat("yyyy-MM-dd")
-						.parse(newDate);
-				foundation = new SimpleDateFormat("yyyy-MM-dd").
-						parse("2001-01-02");
-				
-				if(extractEarlier.after(extractLater )){
-					throw new DateTimeException ("Earlier timestamp has to be earlier when later timestamp!");
-				}
-				
-				if(extractEarlier.before(foundation) ){
-					extractEarlier = foundation;
-					System.out.println("Set earlier timestamp to Wikipedia foundation date 2001-01-02!");
-				}
-				
-				if(extractLater.after(new  SimpleDateFormat("yyyy-MM-dd").parse(newDate)) ){
-					extractLater = currentDate;
-					System.out.println("Set later timestamp to current date!");
-				}
-				
-				
-				if(extractLater.before(foundation)){
-					throw new DateTimeException ("Later timestamp has to be later when Wikipedia foundation date 2001-01-02!");
-				}
-				
-				
-				if(extractEarlier.after(currentDate)){
-					throw new DateTimeException ("Earlier timestamp has to be earlier when current Date!");
-				}
-				
-				
-				
-				if( !(extractEarlier.equals(foundation)&&
-					extractLater.equals(currentDate) )	){
-				
-					extractionTimeFrame = new Date[] { extractEarlier,extractLater };
-				}
-				
-			
-				
-				
-		 } catch (java.text.ParseException | DateTimeException  e) {
-				System.out.println(e);
-				
-		 }
+	     this.timeFrame = new TimeFrame(earlier, later);
 		 
 		 
-		 if(extractionTimeFrame != null){
+		 if(timeFrame.getTimeFrame() != null){
 			 
 			 readvariant = READVARIANT.ReadTimeFiltered;
 			
@@ -157,42 +104,41 @@ public class CLParser {
 			 readvariant = READVARIANT.ReadRerun;
 			 readLogs("log");
 			 
-		 } else if (rerun && extractionTimeFrame != null){
+		 } else if (rerun && timeFrame.getTimeFrame() != null){
 			 
-			 readvariant = READVARIANT.ReadTimeFrameRerun;
+			 readvariant = READVARIANT.ReadTimeFilteredRerun;
 			 readLogs("log");
 		 }
-		    			
-		
+		 
 	 }
 	 
 	 
 	 /**
-		 * method to extract the article ids out of log files in /log/
-		 *
-		 * @param pathToLogs path to the logs created by an earlier run
-		 */
-		public void readLogs(String pathToLogs) {
-			File logDirectory = new File(pathToLogs);
-			finishedArticles = new TreeSet<>();
-			String temporaryArticleID;
-			for (File logFile : logDirectory.listFiles()) {
-				System.out.println(logFile.toString());
-				try (BufferedReader br = new BufferedReader(
-						new FileReader(logFile))) {
-					br.readLine();
-					while ((temporaryArticleID = br.readLine()) != null) {
-						System.out.println(temporaryArticleID);
-						finishedArticles.add(Integer.parseInt(temporaryArticleID));
-					}
-				} catch (FileNotFoundException e) {
-					Log.error(e, "File not found!");
-					continue;
-				} catch (IOException e) {
-					Log.error(e, "COULD_NOT_READ_OR_WRITE_CONTEXT");
+	 * method to extract the article ids out of log files in /log/
+	 *
+	 * @param pathToLogs path to the logs created by an earlier run
+	 */
+	public void readLogs(String pathToLogs) {
+		File logDirectory = new File(pathToLogs);
+		finishedArticles = new TreeSet<>();
+		String temporaryArticleID;
+		for (File logFile : logDirectory.listFiles()) {
+			System.out.println(logFile.toString());
+			try (BufferedReader br = new BufferedReader(
+					new FileReader(logFile))) {
+				br.readLine();
+				while ((temporaryArticleID = br.readLine()) != null) {
+					System.out.println(temporaryArticleID);
+					finishedArticles.add(Integer.parseInt(temporaryArticleID));
 				}
+			} catch (FileNotFoundException e) {
+				Log.error(e, "File not found!");
+				continue;
+			} catch (IOException e) {
+				Log.error(e, "COULD_NOT_READ_OR_WRITE_CONTEXT");
 			}
-		}// end readLog
+		}
+	}// end readLog
 	 
 	 
 	 

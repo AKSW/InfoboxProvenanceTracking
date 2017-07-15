@@ -18,7 +18,8 @@ public class Revision implements Comparable<Revision> {
   private String author;
   private Date timestamp;
   private String text;
-
+  
+  
   /**
    * @return the id of this revision
    */

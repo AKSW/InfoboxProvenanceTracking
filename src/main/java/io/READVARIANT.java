@@ -5,7 +5,7 @@ package io;
  * */
 
 public enum READVARIANT {
-	ReadDefault, ReadTimeFiltered, ReadTimeFrameRerun, ReadRerun
+	ReadDefault, ReadTimeFiltered, ReadTimeFilteredRerun, ReadRerun
 	
 	
 }

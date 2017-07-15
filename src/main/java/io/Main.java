@@ -20,7 +20,7 @@ public class Main {
 	/**
 	 * Main method for the project
 	 *
-	 * @param args parameters as specified in the entwurfsbeschreibung
+	 * @param args parameter
 	 */
 	public static void main(String[] args) {
 
@@ -44,12 +44,14 @@ public class Main {
     			for (int i = clparser.getThreads() - 1; i>=0; i-- ){
     				Runnable worker = new ProvenanceManager("Thread_" + i       							,
     														path			            					, 
-    														new DumpParser(clparser.getExtractionTimeFrame(),
-    																	   clparser.getFinishedArticles()  ), 
+    														new DumpParser(clparser.getTimeFrame()
+    																               .getTimeFrame(),
+    																	   clparser.getFinishedArticles())  , 
     														i	  	 	   									,
     														clparser.getThreads()							,
     														clparser.getLanguage()							, 
     														clparser.getVariant()  							,
+    														clparser.getTimeFrame().getBorder()				,
     														clparser.getReadvarian()						);
     				executor.execute(worker);
     			
@@ -67,11 +69,6 @@ public class Main {
     			
     			
     		}
-    		
-    	
-        
-		
-		
 		
 	}// end main
 
