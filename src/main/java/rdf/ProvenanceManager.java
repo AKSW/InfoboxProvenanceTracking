@@ -378,13 +378,13 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
-//		if (stmt[0] == null) {	
-//		writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1),parser.getPage().getRevision().get(i));
-//		}else {
+		if (stmt[0] == null) {	
+		writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1),parser.getPage().getRevision().get(i));
+		}else {
 			
 			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
 		}
-//		}
+		}
 		newestModel = rdfDiffer.getReducedModel();
 		if(newestModel.isEmpty()) {
 			 break;

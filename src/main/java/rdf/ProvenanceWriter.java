@@ -90,7 +90,7 @@ public class ProvenanceWriter {
 		   line += "<" + stmt[1].getSubject() + "> ";
 		   line += "<" + stmt[1].getPredicate() + "> ";
 		   line += getObjectAsNTriples(stmt[1]) + "\t";
-		   line += "# triple added during Extraction-Framework between number " + revisionOfChange2.getId() + " and " + revisionOfChange1.toString() + "\n" ;
+		   line += "# triple added between number " + revisionOfChange2.getId() + " and " + revisionOfChange1.getId() + "\n" ;
 		   wholeDifferernces.add(line);
 		   write();
 		  }
@@ -100,11 +100,7 @@ public class ProvenanceWriter {
 	 
       String line = "";
       
-      if (stmt[0] == null) {
-    	return;
-
-      }
-      else {
+     
         line += "<" + stmt[0].getSubject() + "> ";
         line += "<" + stmt[0].getPredicate() + "> ";
         line += getObjectAsNTriples(stmt[0]) + "\t";
@@ -112,7 +108,7 @@ public class ProvenanceWriter {
         line += "<" + stmt[1].getPredicate() + "> ";
         line += getObjectAsNTriples(stmt[1]) + "\t";
         line += revisionOfChange.toString() + "\n";
-      }
+      
  
       wholeDifferernces.add(line);
     write();
