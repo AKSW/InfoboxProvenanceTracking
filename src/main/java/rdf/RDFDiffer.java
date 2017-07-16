@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 
@@ -75,64 +77,71 @@ public class RDFDiffer {
         
     iterNewModel = differenceNewModel.listStatements();
     
-    while ( iterNewModel.hasNext() ) {
-	
-   	 Statement  stmt = iterNewModel.nextStatement();
-   	
-   	 iterOldModel = oldModel.listStatements(  );
-   	 
-   	 int countAll = 0;
-   	 int countMissmatches = 0;
-   	 
-   	 while ( iterOldModel.hasNext() ) {
-   		 countAll++;
-   		 Statement stmt2 = iterOldModel.nextStatement();
-   		 if(stmt.getPredicate().toString().equalsIgnoreCase(stmt2.getPredicate().toString())){
-   			 
-   		 Statement[] entry = new Statement[2];
-   		 entry[0] = stmt;
-   		 entry[1] = stmt2; 
-   		 newTripleOldTriple.add(entry);
-   		 }else {
-   			 countMissmatches++;
-   		 } 
-   	 }
-   	 if(countAll == countMissmatches) {
-   		 Statement[] entry = new Statement[2];
-			 entry[0] = null;
-			 entry[1] = stmt;
-			 newTripleOldTriple.add(entry); 
-		     
-   	 }
-   	 
-   	 newModel.remove(stmt);
-   }
+//    while ( iterNewModel.hasNext() ) {
+//	
+//   	 Statement  stmt = iterNewModel.nextStatement();
+//   	
+//   	 iterOldModel = oldModel.listStatements(  );
+//   	 
+//   	 int countAll = 0;
+//   	 int countMissmatches = 0;
+//   	 
+//   	 while ( iterOldModel.hasNext() ) {
+//   		 countAll++;
+//   		 Statement stmt2 = iterOldModel.nextStatement();
+//   		 if(stmt.getPredicate().toString().equalsIgnoreCase(stmt2.getPredicate().toString())){
+//   			 
+//   		 Statement[] entry = new Statement[2];
+//   		 entry[0] = stmt;
+//   		 entry[1] = stmt2; 
+//   		 newTripleOldTriple.add(entry);
+//   		 }else {
+//   			 countMissmatches++;
+//   		 } 
+//   	 }
+//   	 if(countAll == countMissmatches) {
+//   		 Statement[] entry = new Statement[2];
+//			 entry[0] = null;
+//			 entry[1] = stmt;
+//			 newTripleOldTriple.add(entry); 
+//		     
+//   	 }
+//   	 
+//   	 newModel.remove(stmt);
+//   }
     
-//  iterNewModel = differenceNewModel.listStatements();
-//
-//  while ( iterNewModel.hasNext() ) {
-//  		 
-//  	 Statement  stmt = iterNewModel.nextStatement();
-//  	
-//  	
-//  	 
-//  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
-//  	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
-//  	 
-//  	 while ( iterOldModel.hasNext() ) {
-//  		
-//  		 Statement stmt2 = iterOldModel.nextStatement();
-//  		
-//  			 
-//  		 Statement[] entry = new Statement[2];
-//  		 entry[0] = stmt;
-//  		 entry[1] = stmt2; 
-//  		 newTripleOldTriple.add(entry);
-//  		 
-//  	 
-//  	 newModel.remove(stmt);
-//  }
-//  }
+
+  while ( iterNewModel.hasNext() ) {
+  		 
+  	 Statement  stmt = iterNewModel.nextStatement();
+  	
+  	
+  	 
+  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
+  	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
+  	 int countMatches = 0;
+  	 while ( iterOldModel.hasNext() ) {
+  		
+  		 countMatches++;
+  		 Statement stmt2 = iterOldModel.nextStatement();
+  		
+  		 Statement[] entry = new Statement[2];
+  		 entry[0] = stmt;
+  		 entry[1] = stmt2; 
+  		 newTripleOldTriple.add(entry);
+  		 
+  	 
+  	 
+  	 }
+	 if(countMatches == 0) {
+	 Statement[] entry = new Statement[2];
+	 entry[0] = null;
+	 entry[1] = stmt;
+	 newTripleOldTriple.add(entry); 
+	 }
+  	 
+  	newModel.remove(stmt);
+  	}
     
     return;
   }
