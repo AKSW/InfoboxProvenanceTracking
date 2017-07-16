@@ -20,14 +20,14 @@ public class RDFDiffer {
    * contains the old and the new Triple in a Statment Array
    * 
    */
-  Model newModel = ModelFactory.createDefaultModel();
-  Model oldModel = ModelFactory.createDefaultModel();
-  //Model differences = null;
+  Model newModel = null;
+  Model oldModel = null;
 	
   ArrayList<Statement[]> newTripleOldTriple = null;
 
   public RDFDiffer(Model newModel, Model oldModel) {
-	  
+
+
 	  this.newModel = newModel;
 	  this.oldModel = oldModel;
 	  this.newTripleOldTriple = new ArrayList<Statement[]>();
@@ -76,42 +76,9 @@ public class RDFDiffer {
 
         
     iterNewModel = differenceNewModel.listStatements();
-    
-//    while ( iterNewModel.hasNext() ) {
-//	
-//   	 Statement  stmt = iterNewModel.nextStatement();
-//   	
-//   	 iterOldModel = oldModel.listStatements(  );
-//   	 
-//   	 int countAll = 0;
-//   	 int countMissmatches = 0;
-//   	 
-//   	 while ( iterOldModel.hasNext() ) {
-//   		 countAll++;
-//   		 Statement stmt2 = iterOldModel.nextStatement();
-//   		 if(stmt.getPredicate().toString().equalsIgnoreCase(stmt2.getPredicate().toString())){
-//   			 
-//   		 Statement[] entry = new Statement[2];
-//   		 entry[0] = stmt;
-//   		 entry[1] = stmt2; 
-//   		 newTripleOldTriple.add(entry);
-//   		 }else {
-//   			 countMissmatches++;
-//   		 } 
-//   	 }
-//   	 if(countAll == countMissmatches) {
-//   		 Statement[] entry = new Statement[2];
-//			 entry[0] = null;
-//			 entry[1] = stmt;
-//			 newTripleOldTriple.add(entry); 
-//		     
-//   	 }
-//   	 
-//   	 newModel.remove(stmt);
-//   }
-    
+        
 
-  while ( iterNewModel.hasNext() ) {
+    while ( iterNewModel.hasNext() ) {
   		 
   	 Statement  stmt = iterNewModel.nextStatement();
   	
@@ -130,8 +97,6 @@ public class RDFDiffer {
   		 entry[1] = stmt2; 
   		 newTripleOldTriple.add(entry);
   		 
-  	 
-  	 
   	 }
 	 if(countMatches == 0) {
 	 Statement[] entry = new Statement[2];
