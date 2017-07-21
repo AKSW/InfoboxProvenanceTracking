@@ -116,10 +116,9 @@ public class DumpParser {
       return false;
     }
     
-    
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
-  
+
     // filter revisions default
     for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
     	
@@ -127,10 +126,9 @@ public class DumpParser {
     	 
     }
    
-   
-   // eventually remove the last revision
+   // eventually remove the first revision
    // (which doesn't get filtered by standardFilter())
-   if(page.getRevision().get(0).getText() == null) {
+   if(page.getRevision().get(0).getBoxes().isEmpty()) {
 	   page.getRevision().remove(0);
    }
 
@@ -182,11 +180,10 @@ public class DumpParser {
     }
 
 
-    // eventually remove the last revision
+    // eventually remove the first revision
     // (which doesn't get filtered by standardFilter())
-    if (!page.getRevision().isEmpty()
-            && page.getRevision().get(page.getRevision().size()- 1).getText() == null) {
-      page.getRevision().remove(page.getRevision().size() - 1);
+    if(page.getRevision().get(0).getBoxes().isEmpty()) {
+ 	   page.getRevision().remove(0);
     }
 
     // if no revisions are left, page is irrelevant
@@ -238,10 +235,10 @@ public class DumpParser {
 
       }
 
-      // eventually remove the last revision
+      // eventually remove the first revision
       // (which doesn't get filtered by standardFilter())
-      if (page.getRevision().get(page.getRevision().size() - 1).getText() == null) {
-        page.getRevision().remove(page.getRevision().size() - 1);
+      if(page.getRevision().get(0).getBoxes().isEmpty()) {
+   	   page.getRevision().remove(0);
       }
 
       // if no revisions are left, page is irrelevant
@@ -287,10 +284,10 @@ public class DumpParser {
      	 
       }
 
-      // eventually remove the last revision
+      // eventually remove the first revision
       // (which doesn't get filtered by standardFilter())
-      if (page.getRevision().get(0).getText() == null) {
-        page.getRevision().remove(0);
+      if(page.getRevision().get(0).getBoxes().isEmpty()) {
+   	   page.getRevision().remove(0);
       }
 
       
@@ -333,17 +330,31 @@ public class DumpParser {
    * @return updated index
    */
   private void standardFilter(int i) {
-	// (1)
-	if (page.getRevision().get(i).getText() == null) {
-		   
-		   page.getRevision().remove(i);
-	// (2)
-  	}else if (page.getRevision().get(i).getText()
-   	            .equalsIgnoreCase(page.getRevision().get(i-1).getText())) {
-  			page.getRevision().remove(i);
-  	}
 	  
-	
+	 // (1)
+	if(page.getRevision().get(i).getBoxes().isEmpty()) {
+		  
+		page.getRevision().remove(i);
+	// (2)		
+	}else if(page.getRevision().get(i).getBoxes().size() ==  
+				 page.getRevision().get(i-1).getBoxes().size())
+		
+	{
+		int tmp = 0;
+		for(int j = 0; j<page.getRevision().get(i).getBoxes().size(); j++) {
+				
+			if(page.getRevision().get(i).getBoxes().get(j)
+			   .equalsIgnoreCase(page.getRevision().get(i-1).getBoxes().get(j)  )  )
+			tmp ++;
+				
+		}
+			
+		if(tmp == page.getRevision().get(i).getBoxes().size()) {
+				
+			page.getRevision().remove(i);
+		}
+	}
+	  	
   }// end standardFilter
 
   /**
@@ -360,12 +371,12 @@ public class DumpParser {
 	  if (page.getRevision().get(i).getTimestamp().after
               (extractionTimeFrame[1])) {
         page.getRevision().remove(i);
-        i--;
+       
 	  	  
       } else if (page.getRevision().get(i).getTimestamp().before
               (extractionTimeFrame[0])) {
         page.getRevision().remove(i);
-        i--;
+       
       }
     
     return i;

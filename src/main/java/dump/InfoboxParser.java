@@ -4,6 +4,7 @@ package dump;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,8 +18,10 @@ public class InfoboxParser {
   /**
    * the infobox text
    */
-  private String text;
+  
 
+  ArrayList<String> boxes = null;
+  ArrayList<String> multiLineBoxes = null;
   /**
    * constructor creates a new InfoboxParser object and keeps only the infobox
    * text
@@ -26,17 +29,54 @@ public class InfoboxParser {
    * @param input the complete revision text
    */
   public InfoboxParser(String input) {
-
+	  this.boxes = new ArrayList<>();
+	  this.multiLineBoxes = new ArrayList<>();
+	  
     if (input != null) {
       // escape backslash and dollar sign in input
       input = input.replace("\\", "\\\\");
       input = input.replace("$", "\\$");
+      
+      
+      findSingleLineBoxes(input);
 
-      text = removeSingleLineBraces(input);
-
-      findInfobox(text);
+      input = removeSingleLineBraces(input);
+      findMultiLineBoxes(input);
     }
   }
+  
+  private void findSingleLineBoxes(String input) {
+	  String tmp = "";  
+	  
+	    try (InputStream searchPatternStream = getClass().getResourceAsStream(
+	      "/singleLineBoxes" + ".txt");
+	      Scanner in = new Scanner(searchPatternStream, "UTF-8")) {
+
+	      while(in.hasNextLine()) {
+	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ in.nextLine() + ".*?}}");
+	    	  Matcher matcher = pattern.matcher(input);
+	    	  if (matcher.find()) {
+	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
+	    		  boxes.add(input.substring(matcher.start(), matcher.end()));
+	    		 
+	    	    }
+	    	   
+	    	  
+	      }
+	   
+	    	
+	    }
+	    catch (IOException e) {
+	   /*   Log.error(e, "The file which specifies additional boxes"
+	        + "other than the Infobox could not be read!");*/
+	    	System.out.println("Fehler InfoboxParser");
+	    }
+
+	    
+	  
+  }
+  
+  
 
   /**
    * First step: Replacing all single lined expressions of the form "{{####}}"
@@ -67,22 +107,27 @@ public class InfoboxParser {
    *
    * @param input the whole text of the revision
    */
-  private void findInfobox(String input) {
+  private void findMultiLineBoxes(String input) {
 
-    StringBuilder regex = new StringBuilder();
+	String tmp = "";  
+	  
     try (InputStream searchPatternStream = getClass().getResourceAsStream(
-      "/boxes" + ".txt");
+      "/multiLineboxes" + ".txt");
       Scanner in = new Scanner(searchPatternStream, "UTF-8")) {
 
-      if (in.hasNextLine()) {
-        regex.append("(?s)(\\{\\{").append(in.nextLine()).
-          append(".*?}})");
-      }
-
-      while (in.hasNextLine()) {
-        regex.append("|(\\{\\{").append(in.nextLine()).
-          append(".*?}})");
-      }
+    	while(in.hasNextLine()) {
+	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ in.nextLine() + ".*?}}");
+	    	  Matcher matcher = pattern.matcher(input);
+	    	  if (matcher.find()) {
+	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
+	    		  boxes.add(input.substring(matcher.start(), matcher.end()));
+	    		 
+	    	    }
+	    	   
+	    	  
+	      }
+     
+    	
     }
     catch (IOException e) {
    /*   Log.error(e, "The file which specifies additional boxes"
@@ -90,22 +135,22 @@ public class InfoboxParser {
     	System.out.println("Fehler InfoboxParser");
     }
 
-    Pattern pattern = Pattern.compile(regex.toString());
-    Matcher matcher = pattern.matcher(text);
-
-    if (matcher.find()) {
-      text = text.substring(matcher.start(), matcher.end());
-    }
-    else {
-      text = null;
-    }
+   
+  }
+  
+  
+  
+  
+ 
+  
+ 
+  public ArrayList<String> getBoxes() {
+	  
+		  
+	   return boxes;
+	   
+	  
   }
 
-  /**
-   * @return the content of the infobox or "", if the text contains no infobox
-   */
-  @Override
-  public String toString() {
-    return text;
-  }
+  
 }

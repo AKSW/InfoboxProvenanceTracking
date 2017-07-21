@@ -369,7 +369,7 @@ public class ProvenanceManager implements Runnable {
 	
 	  
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
-		
+		//System.out.println(parser.getPage().getRevision().get(i).getId() +"---" +i);
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
               getRevision().get(i).getId(), this.language);
 		  
@@ -379,7 +379,7 @@ public class ProvenanceManager implements Runnable {
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
 		if (stmt[0] == null) {	
-		writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1),parser.getPage().getRevision().get(i));
+		writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
 		}else {
 			
 			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));

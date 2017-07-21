@@ -83,15 +83,14 @@ public class ProvenanceWriter {
    * timestamp
    */
   
-  public void writeDifferences(Statement[] stmt,
-		   Revision revisionOfChange1, Revision revisionOfChange2) {
+  public void writeAdding(Statement[] stmt, Revision revisionOfChange) {
 			    	
 		   String line = "";
-		   line += "<" + stmt[1].getSubject() + "> ";
+		   line += "<" + stmt[1].getSubject()   + "> ";
 		   line += "<" + stmt[1].getPredicate() + "> ";
 		   line += getObjectAsNTriples(stmt[1]) + "\t";
-		   line += "# triple added between number" + "\t";
-		   line += revisionOfChange2.getId() + " and " + revisionOfChange1.getId() + "\n" ;
+		   line += "# triple added"				+ "\t";
+		   line += revisionOfChange.toString()  + "\n";
 		   wholeDifferernces.add(line);
 		   write();
 		  }
@@ -102,13 +101,13 @@ public class ProvenanceWriter {
       String line = "";
       
      
-        line += "<" + stmt[0].getSubject() + "> ";
-        line += "<" + stmt[0].getPredicate() + "> ";
-        line += getObjectAsNTriples(stmt[0]) + "\t";
-        line += "<" + stmt[1].getSubject() + "> ";
-        line += "<" + stmt[1].getPredicate() + "> ";
-        line += getObjectAsNTriples(stmt[1]) + "\t";
-        line += revisionOfChange.toString() + "\n";
+        line += "<" + stmt[0].getSubject() 		+ "> ";
+        line += "<" + stmt[0].getPredicate() 	+ "> ";
+        line += getObjectAsNTriples(stmt[0]) 	+ "\t";
+        line += "<" + stmt[1].getSubject() 		+ "> ";
+        line += "<" + stmt[1].getPredicate() 	+ "> ";
+        line += getObjectAsNTriples(stmt[1]) 	+ "\t";
+        line += revisionOfChange.toString() 	+ "\n";
       
  
       wholeDifferernces.add(line);
@@ -126,7 +125,7 @@ public class ProvenanceWriter {
 		  line += "<" + triple.getSubject() + "> ";
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
-	      line += "# triple does not exist.\t";
+	      line += "# triple does not exist\t";
 	      line += revisionOfChange.toString() + "\n";
 	      wholeDifferernces.add(line);
 
@@ -145,7 +144,7 @@ public class ProvenanceWriter {
 		  line += "<" + triple.getSubject() + "> ";
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
-	      line += "# triple does not exist.\t";
+	      line += "# triple does not exist\t";
 	      wholeDifferernces.add(line);
 	     //System.out.println(line );
 	  }

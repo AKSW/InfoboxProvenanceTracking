@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,8 +17,9 @@ public class Revision implements Comparable<Revision> {
   private int id;
   private String author;
   private Date timestamp;
-  private String text;
+  private String infobox;
   
+  ArrayList<String> boxes = null;
   
   /**
    * @return the id of this revision
@@ -27,6 +28,12 @@ public class Revision implements Comparable<Revision> {
     return id;
   }
 
+  public ArrayList<String> getBoxes(){
+	  
+	  return boxes;
+	  
+  }
+  
   /**
    * @return the author of this revision
    */
@@ -44,9 +51,11 @@ public class Revision implements Comparable<Revision> {
   /**
    * @return the text of this revision
    */
-  public String getText() {
-    return text;
+  public String getInfobox() {
+    return infobox;
   }
+  
+  
 
   /**
    * @param id the id of this new revision
@@ -91,8 +100,22 @@ public class Revision implements Comparable<Revision> {
     throws ParseException {
 
     this(id, contributor.getUsername(), timestamp);
-    this.text = new InfoboxParser(text.getText()).toString();
-  }
+    
+    InfoboxParser infoboxParser = new InfoboxParser(text.getText());
+    
+    
+    
+    this.boxes = new ArrayList<>();
+  
+    	if(!infoboxParser.getBoxes().isEmpty()) {
+    			
+    		for(int i = 0; i<infoboxParser.getBoxes().size(); i++) {
+    		 
+    				boxes.add( infoboxParser.getBoxes().get(i));
+    		}	
+    	}
+    	
+  }// end constructor
 
   /**
    * @return a string representation of this object with tab separation

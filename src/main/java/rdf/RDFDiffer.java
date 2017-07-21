@@ -99,6 +99,7 @@ public class RDFDiffer {
   		 
   	 }
 	 if(countMatches == 0) {
+		
 	 Statement[] entry = new Statement[2];
 	 entry[0] = null;
 	 entry[1] = stmt;
