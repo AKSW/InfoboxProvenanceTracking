@@ -22,7 +22,7 @@ public class TripleExtractor {
 	
 	Model tmp = ModelFactory.createDefaultModel();
     Model newModel = ModelFactory.createDefaultModel();
-   
+
     
     tmp.read("http://mappings.dbpedia.org/server/extraction/" +
             language + "/extract" + "?title=&revid=" + revisionsNumber +
@@ -30,10 +30,12 @@ public class TripleExtractor {
     
     StmtIterator stmts = tmp.listStatements();
 	 
+    
+    
     while ( stmts.hasNext() ) {
   	  Statement triple = stmts.nextStatement();
   	  String tripleStr = triple .getPredicate().toString();
-  	  if(tripleStr.contains(".dbpedia.org/property")&&
+  	  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
   			!tripleStr.contains("wikiPageUsesTemplate")  )
   	  {
   		 
