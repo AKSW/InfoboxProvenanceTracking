@@ -24,6 +24,7 @@ public class RDFDiffer {
   Model oldModel = null;
 	
   ArrayList<Statement[]> newTripleOldTriple = null;
+  ArrayList<Statement[]> addedTriple = null;
 
   public RDFDiffer(Model newModel, Model oldModel) {
 
@@ -34,7 +35,17 @@ public class RDFDiffer {
 	
   }
   
-  public Model getReducedModel() {
+  public RDFDiffer(Model newModel, Model oldModel ,ArrayList<Statement[]> addedTriple) {
+
+
+	  this.newModel = newModel;
+	  this.oldModel = oldModel;
+	  this.addedTriple = addedTriple;
+	
+  }
+  
+  
+  public Model getNewModel() {
 	  return newModel;
   }
   
@@ -50,7 +61,7 @@ public class RDFDiffer {
    * @param oldModel contains the older rdf-version of the article
    * @return ArrayList with the old Triples and the corresponding new Triples
    */
-  public void determineDifferences(  ) {
+  public void determineLeftDifferences(  ) {
 	 
 	  
     Model differenceNewModel = ModelFactory.createDefaultModel();
@@ -58,29 +69,29 @@ public class RDFDiffer {
     /*
      * creating the Iterators to iterate through the Models
      */
-    StmtIterator iterNewModel;
+    StmtIterator iterLeftDifference;
     StmtIterator iterOldModel;
+    
     
     /*
      * Creates the models, which only contain differences
      */
     if ( !oldModel.isIsomorphicWith( newModel ) ) {
    
-    	differenceNewModel = newModel.difference( oldModel );
+    	iterLeftDifference = newModel.difference( oldModel ).listStatements();
     	
-      
     }else {
     	
     	return;
     }
 
         
-    iterNewModel = differenceNewModel.listStatements();
+    iterLeftDifference = differenceNewModel.listStatements();
         
 
-    while ( iterNewModel.hasNext() ) {
+    while ( iterLeftDifference.hasNext() ) {
   		 
-  	 Statement  stmt = iterNewModel.nextStatement();
+  	 Statement  stmt = iterLeftDifference.nextStatement();
   	
   	
   	 
@@ -101,8 +112,8 @@ public class RDFDiffer {
 	 if(countMatches == 0) {
 		
 	 Statement[] entry = new Statement[2];
-	 entry[0] = null;
-	 entry[1] = stmt;
+	 entry[0] = stmt;
+	 entry[1] = null;
 	 newTripleOldTriple.add(entry); 
 	 }
   	 
@@ -111,5 +122,93 @@ public class RDFDiffer {
     
     return;
   }
+  
+  public void determineLeftRightDifferences(  ) {
+		 
+	 
+	  
+	    StmtIterator iterLeftDifference;
+	    StmtIterator iterRightDifference;
+	    
+	    /*
+	     * Creates the models, which only contain differences
+	     */
+	    if ( !oldModel.isIsomorphicWith( newModel ) ) {
+	   
+	    	iterLeftDifference = newModel.difference( oldModel ).listStatements();
+	    	iterRightDifference = oldModel.difference( newModel ).listStatements();
+	      
+	    }else {
+	    	
+	    	return;
+	    }
+
+	          
+
+	    while ( iterLeftDifference.hasNext() ) {
+	  		 
+	  	 Statement  stmt = iterLeftDifference.nextStatement();
+	  	
+	  	
+	  	 
+	  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
+	  	 StmtIterator iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
+	  	 int countMatches = 0;
+	  	 while ( iterOldModel.hasNext() ) {
+	  		
+	  		 countMatches++;
+	  		 Statement stmt2 = iterOldModel.nextStatement();
+	  		
+	  		 newModel.remove(stmt);
+	  		 newModel.add(stmt2);
+	  		 
+	  		 Statement[] entry = new Statement[2];
+	  		 entry[0] = stmt;
+	  		 entry[1] = stmt2; 
+	  		 
+	  		 newTripleOldTriple.add(entry);
+	  		 
+	  	 }
+		 if(countMatches == 0) {
+		
+			 newModel.remove(stmt);
+		 
+			 Statement[] entry = new Statement[2];
+			 entry[0] = stmt;
+			 entry[1] = null;
+			 
+			 newTripleOldTriple.add(entry); 
+		 }
+	  	 
+		 
+	  	}
+	    
+	    while(iterRightDifference.hasNext()) {
+	  	
+	     Statement stmt = iterRightDifference.nextStatement();
+			 
+		 Property match = newModel.createProperty( stmt.getPredicate().toString() );
+		 StmtIterator iterNewModel = newModel.listStatements(null, match, (RDFNode)null );
+		 
+		 int countMatches = 0;
+		 while ( iterNewModel.hasNext() ) {
+		  		 
+		  	countMatches++;
+		  	iterNewModel.nextStatement();
+		  		 
+		 }
+		 if(countMatches == 0) {
+			 newModel.add(stmt);
+			 Statement[] entry = new Statement[2];
+			 entry[0] = null;
+			 entry[1] = stmt;
+			 
+			 newTripleOldTriple.add(entry); 
+		 }
+			 
+		 }
+	    
+	    return;
+	  }
  
 }

@@ -39,7 +39,6 @@ public class ProvenanceManager implements Runnable {
   private String threadName = null;
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
   private boolean borderSet = false;
-  
   // ArrayList for differences between two Models
   ArrayList<Statement[]> differences = null;
 
@@ -311,39 +310,52 @@ public class ProvenanceManager implements Runnable {
    * two consecutive revisions and writes them in a file;
    */
   public void wholeProvenance() {
-
-//    for (int pos = 1; pos < parser.getPage().getRevision().size() - 1; pos++) {
-//      // creates newer Model
-//      Model newestModel = tripleExtractor.generateModel(parser.getPage().
-//              getRevision().get(0).getId(), language);
-//      // creates Model to compare with
-//      Model compareModel = tripleExtractor.generateModel(parser.getPage().
-//              getRevision().get(pos + 1).getId(), language);
-//      // gets differences of those two Models
-//     // differences = rdfDiffer.getDifference(newestModel, compareModel);
-//
-//      // stores differences in writer
-//      writer.write(differences, parser.getPage().getRevision().get(pos));
-//      differences.clear();
-//      rdfDiffer.clear();
-//    }
-//
-//    // Model for last revision
-//    Model lastModel = tripleExtractor.generateModel(parser.getPage().getRevision().
-//        get(parser.getPage().getRevision().size() - 1).getId(), language);
-//    differences = rdfDiffer.assignLastRevison(lastModel);
-//    writer.write(differences, parser.getPage().getRevision().get(parser.getPage()
-//        .getRevision().size() - 1));
-//
-//    differences.clear();
-//    rdfDiffer.clear();
-
-    // writer writes differences in file
-    writer.write();
-    System.out.println("Finished article: " + parser.getPage().getTitle());
-
-    // after page is completed, LogWriter write its ID in a logfile
-   // logWriter.write(parser.getPage().getId());
+	  
+	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
+	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
+	      this.language);
+	  
+	
+	  
+	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
+		
+		Model compareModel = tripleExtractor.generateModel(parser.getPage().
+              getRevision().get(i).getId(), this.language);
+		  
+		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
+	    
+		
+		rdfDiffer.determineLeftRightDifferences();
+		
+		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
+		
+		if (stmt[1] == null) {	
+		writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
+		}else if (stmt[0] == null){
+			
+			writer.writeDeleting(stmt, parser.getPage().getRevision().get(i+1));
+			
+			
+		}else {
+			
+			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
+		}
+		}
+		newestModel = rdfDiffer.getNewModel();
+		
+		if(newestModel.isEmpty()) {
+			 break;
+		 }
+	  }
+	  if(borderSet) {
+		 
+		  writer.writeModel(newestModel);
+		  
+	  }else { 
+		  
+		  writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
+		  System.out.println("Finished article: " + parser.getPage().getTitle());
+	  }
   }
 
 
@@ -374,7 +386,7 @@ public class ProvenanceManager implements Runnable {
               getRevision().get(i).getId(), this.language);
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
-		rdfDiffer.determineDifferences();
+		rdfDiffer.determineLeftDifferences();
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
@@ -385,7 +397,7 @@ public class ProvenanceManager implements Runnable {
 			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
 		}
 		}
-		newestModel = rdfDiffer.getReducedModel();
+		newestModel = rdfDiffer.getNewModel();
 		if(newestModel.isEmpty()) {
 			 break;
 		 }
@@ -403,56 +415,5 @@ public class ProvenanceManager implements Runnable {
     }
 
 
-  /**
-   * filters given differences
-   * if the Statement of the newer Model is null, the difference is removed,
-   * because only the differences of already existing Statements in the newer
-   * Model are relevant
-   * @param differences differences of two Models
-   *                    [0] newer Model
-   *                    [1] older Model
-   * @return filtered differences
-   */
-  public ArrayList<Statement[]> filter(ArrayList<Statement[]> differences) {
-    ArrayList<Statement[]> temp = new ArrayList<Statement[]>();
-    temp.addAll(differences);
-    for (Statement[] statement : differences) {
-      if (statement[0] == null) {
-        temp.remove(statement);
-      }
-    }
-    return temp;
-  }
-
-
-  /**
-   * filters differences for already found differences
-   * removes all the Statements of alreadyFoundDifferences off filteredDifferences
-   * which is the same as differences (need a duplicate so there will not be a
-   * NullPointerException)
-   * @param differences at the moment found differences
-   * @param alreadyFoundDifferences differences found before
-   * @param filteredDifferences differences
-   * @return filtered differences
-   */
-  public ArrayList<Statement[]> filterStatements(
-          ArrayList<Statement[]> differences,
-          ArrayList<Statement> alreadyFoundDifferences,
-          ArrayList<Statement[]> filteredDifferences) {
-
-    // iterates through all Statements stored in differences
-    for (int statement = 0; statement < differences.size(); statement++) {
-      // iterates through all Statements with are already found
-      for (Statement alreadyCheckedStatement : alreadyFoundDifferences) {
-        // if a Statement, which was previous found as a difference is
-        // already in the alreadyCheckedStatement ArrayList, then it's
-        // removed
-        if (differences.get(statement)[0].equals(alreadyCheckedStatement)) {
-          filteredDifferences.remove(differences.get(statement));
-          break;
-        }
-      }
-    }
-    return filteredDifferences;
-  }
+ 
 }

@@ -86,14 +86,26 @@ public class ProvenanceWriter {
   public void writeAdding(Statement[] stmt, Revision revisionOfChange) {
 			    	
 		   String line = "";
-		   line += "<" + stmt[1].getSubject()   + "> ";
-		   line += "<" + stmt[1].getPredicate() + "> ";
-		   line += getObjectAsNTriples(stmt[1]) + "\t";
+		   line += "<" + stmt[0].getSubject()   + "> ";
+		   line += "<" + stmt[0].getPredicate() + "> ";
+		   line += getObjectAsNTriples(stmt[0]) + "\t";
 		   line += "# triple added"				+ "\t";
 		   line += revisionOfChange.toString()  + "\n";
 		   wholeDifferernces.add(line);
 		   write();
 		  }
+  
+  public void writeDeleting(Statement[] stmt, Revision revisionOfChange) {
+  	
+	   String line = "";
+	   line += "<" + stmt[1].getSubject()   + "> ";
+	   line += "<" + stmt[1].getPredicate() + "> ";
+	   line += getObjectAsNTriples(stmt[1]) + "\t";
+	   line += "# triple delete"			+ "\t";
+	   line += revisionOfChange.toString()  + "\n";
+	   wholeDifferernces.add(line);
+	   write();
+  }
   
   public void writeDifferences(Statement[] stmt,
     Revision revisionOfChange) {
@@ -146,7 +158,9 @@ public class ProvenanceWriter {
 	      line += getObjectAsNTriples(triple) + "\t";
 	      line += "# triple does not exist\t";
 	      wholeDifferernces.add(line);
-	     //System.out.println(line );
+	      
+	     
+	     
 	  }
 	  write();
   }
