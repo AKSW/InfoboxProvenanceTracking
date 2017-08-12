@@ -10,7 +10,6 @@ public class TimeFrame {
 	
 
 	private Date[] timeFrame = null;
-	private boolean borderSet = false;
 	
 	public TimeFrame(String earlier, String later) {
 		
@@ -51,9 +50,6 @@ public class TimeFrame {
 			throw new DateTimeException ("Earlier timestamp has to be earlier when current Date!");
 		}
 		
-		if(!extractEarlier.equals(foundation)) {
-			borderSet = true;
-		}
 		
 		if( !(extractEarlier.equals(foundation)&&
 			extractLater.equals(currentDate) )	){
@@ -71,8 +67,6 @@ public class TimeFrame {
 		return timeFrame;
 	}
 	
-	public boolean getBorder() {
-		return borderSet;
-	}
+	
 	
 }

@@ -51,7 +51,6 @@ public class Main {
     														clparser.getThreads()							,
     														clparser.getLanguage()							, 
     														clparser.getVariant()  							,
-    														clparser.getTimeFrame().getBorder()				,
     														clparser.getReadvarian()						);
     				executor.execute(worker);
     			

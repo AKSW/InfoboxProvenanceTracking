@@ -38,14 +38,9 @@ public class ProvenanceManager implements Runnable {
   private READVARIANT readVariant = null;
   private String threadName = null;
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
-  private boolean borderSet = false;
   // ArrayList for differences between two Models
   ArrayList<Statement[]> differences = null;
-
-
   ArrayList<Statement[]> filteredDifferences = new ArrayList<Statement[]>();
-
-
   // ArrayList for already found differences for the newest Model
   ArrayList<Statement> alreadyFoundDifferences = new ArrayList<Statement>();
 
@@ -65,7 +60,6 @@ public class ProvenanceManager implements Runnable {
                            int maxThreads,
                            String language,
                            boolean variant,
-                           boolean borderSet,
                            READVARIANT readVariant) {
 	 
     this.language = language;
@@ -74,7 +68,6 @@ public class ProvenanceManager implements Runnable {
     this.variant = variant;
     this.readVariant = readVariant;
     this.threadName = threadName;
-    this.borderSet = borderSet;
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
 
@@ -329,33 +322,28 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
-		if (stmt[1] == null) {	
-		writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
-		}else if (stmt[0] == null){
+			if (stmt[1] == null) {	
 			
-			writer.writeDeleting(stmt, parser.getPage().getRevision().get(i+1));
+				writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
+		
+			}else if (stmt[0] == null){
+			
+				writer.writeDeleting(stmt, parser.getPage().getRevision().get(i+1));
 			
 			
-		}else {
+			}else {
 			
-			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
-		}
+				writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
+			}
 		}
 		newestModel = rdfDiffer.getNewModel();
 		
-		if(newestModel.isEmpty()) {
-			 break;
-		 }
-	  }
-	  if(borderSet) {
-		 
-		  writer.writeModel(newestModel);
-		  
-	  }else { 
-		  
-		  writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
-		  System.out.println("Finished article: " + parser.getPage().getTitle());
-	  }
+		
+	}
+	   
+	writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
+	System.out.println("Finished article: " + parser.getPage().getTitle());
+	  
   }
 
 
@@ -390,29 +378,26 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
-		if (stmt[0] == null) {	
-		writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
-		}else {
+			if (stmt[0] == null) {
+				
+				writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
+				
+			}else {
 			
-			writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
+				writer.writeDifferences(stmt, parser.getPage().getRevision().get(i+1));
+			}
 		}
-		}
+		
 		newestModel = rdfDiffer.getNewModel();
 		if(newestModel.isEmpty()) {
 			 break;
 		 }
-	  }
-	  if(borderSet) {
-		 
-		  writer.writeModel(newestModel);
-		  
-	  }else { 
-		  
-		  writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
-		  System.out.println("Finished article: " + parser.getPage().getTitle());
-	  }
-	 
-    }
+	 }
+	  
+	 writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
+	 System.out.println("Finished article: " + parser.getPage().getTitle());
+	   
+   }
 
 
  
