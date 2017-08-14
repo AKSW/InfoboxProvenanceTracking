@@ -62,7 +62,7 @@ public class CLParser extends JCommander {
 			
 			if(e.getMessage().contains("Was passed main")) {
 				
-			  System.out.println("Wrong parameter name!");
+			  System.out.println("Wrong parameter name");
 			}
 			else {
 	
@@ -110,14 +110,14 @@ public class CLParser extends JCommander {
 		 
 		 try{
 			 if(singleArticle == null && path == null) 
-			 throw new ParameterException("Article name or dump path needed!");  	 
+			 throw new ParameterException("Article name or dump path needed");  	 
 			 
 			 if(singleArticle != null && path != null)
-			 throw new ParameterException("Parameter singleArticle doesn't need a path!"); 
+			 throw new ParameterException("Parameter singleArticle doesn't need a path"); 
 			 
 			 if(singleArticle != null && threads != 1) {
 			 threads = 1;
-			 System.out.println("Set maxthread to 1 in case of single Article!");
+			 System.out.println("Set maxthread to 1 in case of single Article");
 			 }
 			 
 			 if(singleArticle != null)

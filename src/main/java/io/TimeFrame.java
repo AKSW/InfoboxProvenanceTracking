@@ -27,27 +27,27 @@ public class TimeFrame {
 				parse("2001-01-02");
 		
 		if(extractEarlier.after(extractLater )){
-			throw new DateTimeException ("Earlier timestamp has to be earlier when later timestamp!");
+			throw new DateTimeException ("Earlier timestamp has to be earlier when later timestamp");
 		}
 		
 		if(extractEarlier.before(foundation) ){
 			extractEarlier = foundation;
-			System.out.println("Set earlier timestamp to Wikipedia foundation date 2001-01-02!");
+			System.out.println("Set earlier timestamp to Wikipedia foundation date 2001-01-02");
 		}
 		
 		if(extractLater.after(new  SimpleDateFormat("yyyy-MM-dd").parse(newDate)) ){
 			extractLater = currentDate;
-			System.out.println("Set later timestamp to current date!");
+			System.out.println("Set later timestamp to current date");
 		}
 		
 		
 		if(extractLater.before(foundation)){
-			throw new DateTimeException ("Later timestamp has to be later when Wikipedia foundation date 2001-01-02!");
+			throw new DateTimeException ("Later timestamp has to be later when Wikipedia foundation date 2001-01-02");
 		}
 		
 		
 		if(extractEarlier.after(currentDate)){
-			throw new DateTimeException ("Earlier timestamp has to be earlier when current Date!");
+			throw new DateTimeException ("Earlier timestamp has to be earlier when current Date");
 		}
 		
 		

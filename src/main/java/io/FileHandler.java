@@ -27,15 +27,15 @@ public class FileHandler {
 	  try{
 		  
 	   if(pathToFolder == null)
-		   throw new NullPointerException("The dump path is null!");
+		   throw new NullPointerException("The dump path is null");
 		  
 	   dumpDirectory = new File(pathToFolder);
 	   
 	   if(threadFile.mkdir())
-		   throw new IOException("Unable to create \"threadfile\"!");
+		   throw new IOException("Unable to create \"threadfile\"");
 	   
 	   if(!dumpDirectory.exists())
-			throw new IOException("Unreadable path \"" + pathToFolder + "\"!");
+			throw new IOException("Unreadable path \"" + pathToFolder + "\"");
 	   
 	  } catch (IOException | NullPointerException e){
 		  
