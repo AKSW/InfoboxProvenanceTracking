@@ -62,7 +62,7 @@ public class CLParser extends JCommander {
 			
 			if(e.getMessage().contains("Was passed main")) {
 				
-			  System.out.println("Wrong parameter name!\n");
+			  System.out.println("Wrong parameter name!");
 			}
 			else {
 	

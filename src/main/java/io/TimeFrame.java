@@ -58,7 +58,8 @@ public class TimeFrame {
 		}
 		
 	} catch (java.text.ParseException | DateTimeException  e) {
-		System.out.println(e);
+		System.out.println(e.getMessage());
+		System.exit(1);
 	}
 	
 	}
