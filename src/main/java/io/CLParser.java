@@ -26,9 +26,9 @@ public class CLParser extends JCommander {
 	 private boolean showHelp = false;
 	 @Parameter(names={"-name", "-a"} , description = "Name of the Article", required = false)
 	 private String singleArticle = null;
-	 @Parameter(names={"-later", "-l"} , description = "Earliest timestamp(Date in yyyy-MM-dd) to extract", required = false)
+	 @Parameter(names={"-later", "-l"} , description = "Last timestamp(Date in yyyy-MM-dd) to extract", required = false)
 	 private String later = newDate;
-	 @Parameter(names={"-earlier", "-e"} , description = "Last timestamp (Date in yyyy-MM-dd) to extract", required = false)
+	 @Parameter(names={"-earlier", "-e"} , description = "Earliest timestamp (Date in yyyy-MM-dd) to extract", required = false)
 	 private String earlier = "2001-01-02";
 	 @Parameter(names={"-rerun", "-r"} , description = "Rerun program after a crash", required = false)
 	 private boolean rerun = false;

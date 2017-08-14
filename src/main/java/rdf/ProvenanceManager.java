@@ -378,7 +378,7 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
-			if (stmt[0] == null) {
+			if (stmt[1] == null) {
 				
 				writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
 				

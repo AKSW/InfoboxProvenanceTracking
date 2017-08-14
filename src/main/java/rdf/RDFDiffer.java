@@ -3,7 +3,6 @@ package rdf;
 import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
@@ -63,9 +62,6 @@ public class RDFDiffer {
    */
   public void determineLeftDifferences(  ) {
 	 
-	  
-    Model differenceNewModel = ModelFactory.createDefaultModel();
-    
     /*
      * creating the Iterators to iterate through the Models
      */
@@ -86,7 +82,6 @@ public class RDFDiffer {
     }
 
         
-    iterLeftDifference = differenceNewModel.listStatements();
         
 
     while ( iterLeftDifference.hasNext() ) {
