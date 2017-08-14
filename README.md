@@ -15,10 +15,10 @@ After compiling, the .jar can be used with the following parameters
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: en  
  -lastchange, -last  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only last change to an existing triple will be saved  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default false  
  -later, -l  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last timestamp(Date in yyyy-MM-dd) to extract  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: 2017-08-14t  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: Current date  
  -name, -a  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name of the Article  
  -path  
@@ -31,5 +31,5 @@ After compiling, the .jar can be used with the following parameters
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: 1  
   
   e.g.:  
-  -name mile -last  
+  -name miele -last  
   -path /src/test/resources/inputde -lang de -earlier 2014-10-09 -later 2016-12-30
