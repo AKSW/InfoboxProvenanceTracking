@@ -317,6 +317,7 @@ public class DumpParser {
 	      // set up the filter
 	      this.filteredParser = XMLInputFactory.newInstance().createFilteredReader(parser, new Filter(tmp, tmp2));
 	    } catch (XMLStreamException | IOException | CompressorException e) {
+	    
 	      //Log.error(e, "Can't read file.");
 	    }
 	  }

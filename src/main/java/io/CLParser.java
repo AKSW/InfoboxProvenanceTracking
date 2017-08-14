@@ -11,20 +11,24 @@ import java.util.TreeSet;
 
 import org.apache.jena.atlas.logging.Log;
 
+
+import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 import dump.SingleArticle;
 
-public class CLParser {
+public class CLParser extends JCommander {
 	
 	 private String newDate =new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-	
+	 
+	 @Parameter(names={"-help", "-h"} , description = "Print help information and exit", required = false)
+	 private boolean showHelp = false;
 	 @Parameter(names={"-name", "-a"} , description = "Name of the Article", required = false)
 	 private String singleArticle = null;
-	 @Parameter(names={"-later", "-l"} , description = "Earliest Timestamp(Date in yyyy-MM-dd) to extract", required = false)
+	 @Parameter(names={"-later", "-l"} , description = "Earliest timestamp(Date in yyyy-MM-dd) to extract", required = false)
 	 private String later = newDate;
-	 @Parameter(names={"-earlier", "-e"} , description = "Last Timestamp Timestamp(Date in yyyy-MM-dd) to extract", required = false)
+	 @Parameter(names={"-earlier", "-e"} , description = "Last timestamp (Date in yyyy-MM-dd) to extract", required = false)
 	 private String earlier = "2001-01-02";
 	 @Parameter(names={"-rerun", "-r"} , description = "Rerun program after a crash", required = false)
 	 private boolean rerun = false;
@@ -36,10 +40,43 @@ public class CLParser {
 	 private int threads = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
+	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
-	 
 	 private TreeSet<Integer> finishedArticles = null;
+	 private JCommander jCommander = null;
+	 
+	 public CLParser(String[] args) {
+		 
+		jCommander = new JCommander(this);
+		try {
+			
+			jCommander.parse(args);
+			
+			if (this.showHelp) {
+                help();
+                System.exit(0);
+            }
+
+		}catch(ParameterException e) {
+			
+			if(e.getMessage().contains("Was passed main")) {
+				
+			  System.out.println("Wrong parameter name!\n");
+			}
+			else {
+	
+			  System.out.println(e.getMessage());
+			}
+			
+			help();
+			System.exit(1);
+		}
+	 }
+	 
+	 public CLParser getCLParser(){
+		 return this;
+	 }
 	 
 	 public String getPath(){
 		 return path;
@@ -88,7 +125,9 @@ public class CLParser {
 			 
 				 
 		 }catch(ParameterException e){
-			 System.out.println(e);
+			 System.out.println(e.getMessage());
+			 help();
+			 System.exit(1);
 		 }
 		 
 		
@@ -112,6 +151,11 @@ public class CLParser {
 		 
 	 }
 	 
+	 public void help() {
+		 
+		 System.out.println();
+		 jCommander.usage();
+	 }
 	 
 	 /**
 	 * method to extract the article ids out of log files in /log/
@@ -139,7 +183,6 @@ public class CLParser {
 			}
 		}
 	}// end readLog
-	 
 	 
 	 
 	 

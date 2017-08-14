@@ -3,9 +3,6 @@ package io;
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
-import java.util.logging.Level;
-
-import org.apache.jena.atlas.logging.Log;
 
 
 /**
@@ -14,6 +11,7 @@ import org.apache.jena.atlas.logging.Log;
 public class FileHandler {
  
   private File dumpDirectory = null;
+  private File threadFile = null;
   private Stack<File> dumpDirectoryContents = null;
   private String fileEntry;
  
@@ -22,18 +20,32 @@ public class FileHandler {
    *
    * @param pathToFolder path to the folder containing the dumps
    */
-  public FileHandler(String pathToFolder) {
-	 
-	  File file = new File("threadfile");
+  public FileHandler(String pathToFolder){
+	  
+	  threadFile = new File("threadfile");
 	  
 	  try{
-	   if(file.mkdir())
-		   throw new IOException();
-	  } catch (IOException e) {
-			Log.error(Level.SEVERE, "Unable to create \"threadfile\"");
-		}
+		  
+	   if(pathToFolder == null)
+		   throw new NullPointerException("The dump path is null!");
+		  
+	   dumpDirectory = new File(pathToFolder);
 	   
-    dumpDirectory = new File(pathToFolder);
+	   if(threadFile.mkdir())
+		   throw new IOException("Unable to create \"threadfile\"!");
+	   
+	   if(!dumpDirectory.exists())
+			throw new IOException("Unreadable path \"" + pathToFolder + "\"!");
+	   
+	  } catch (IOException | NullPointerException e){
+		  
+		System.out.println(e.getMessage());	
+	
+		System.exit(1);
+			
+	  } 
+	 
+	 
     dumpDirectoryContents = new Stack<File>();
 
     for (File singleDumpFile : dumpDirectory.listFiles()) {

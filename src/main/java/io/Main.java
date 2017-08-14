@@ -5,7 +5,6 @@ import rdf.ProvenanceManager;
 
 
 import org.apache.jena.atlas.logging.Log;
-import com.beust.jcommander.JCommander;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +24,8 @@ public class Main {
 	public static void main(String[] args) {
 		
 
-		CLParser clparser = new CLParser();
-        JCommander.newBuilder()
-        .addObject(clparser)
-        .build()
-        .parse(args);
+		CLParser clparser = new CLParser(args);
+
     
         clparser.validate();
         
@@ -39,6 +35,7 @@ public class Main {
     	while (fh.nextFileEntry()) {
     		
     		ExecutorService executor = Executors.newFixedThreadPool(clparser.getThreads());
+    		
     		String path = fh.getFileEntry();
     		
     			for (int i = clparser.getThreads() - 1; i>=0; i-- ){
