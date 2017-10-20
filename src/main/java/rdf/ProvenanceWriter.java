@@ -7,13 +7,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.jena.rdf.model.Model;
 //import org.apache.jena.atlas.logging.Log;
@@ -22,6 +18,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 
 import dump.Revision;
+import parallel.Consumer;;
 
 //import static com.jayway.buildnumber.PropertiesFileReader.getGitSha1;
 
@@ -35,7 +32,7 @@ import dump.Revision;
  * revision number of that change too.
  */
 public class ProvenanceWriter {
-  private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
+  private static Logger logger = Logger.getLogger(Consumer.class.getName());
   private File outputFile = null;
  
 
@@ -123,7 +120,7 @@ public class ProvenanceWriter {
       
  
       wholeDifferernces.add(line);
-    write();
+      write();
   }
   
   public void writeModel (Model model, Revision revisionOfChange){
@@ -237,23 +234,23 @@ public class ProvenanceWriter {
    *
    * @param path filePath
    */
-  public static void newRun(String path) {
-	  
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(
-      "threadfile//" + path + ".tsv", false))) {
-      String creationDate = new SimpleDateFormat(
-        "yyyy-MM-dd'T'kk:mm:ss'Z'")
-        .format(Calendar.getInstance().getTime());
-    //  writer.write(creationDate + " " + getGitSha1() + "\n");
-    }
-    catch (FileNotFoundException e) {
-     // Log.error(e, "File not found!");
-    	logger.log(Level.SEVERE,"File not found!" , e);
-    }
-    catch (IOException e) {
-    	logger.log(Level.SEVERE,"Could not read or write file!" , e);
-    }
-  }
+//  public static void newRun(String path) {
+//	  
+//    try (Writer writer = new OutputStreamWriter(new FileOutputStream(
+//      "threadfile//" + path + ".tsv", false))) {
+//      String creationDate = new SimpleDateFormat(
+//        "yyyy-MM-dd'T'kk:mm:ss'Z'")
+//        .format(Calendar.getInstance().getTime());
+//    //  writer.write(creationDate + " " + getGitSha1() + "\n");
+//    }
+//    catch (FileNotFoundException e) {
+//     // Log.error(e, "File not found!");
+//    	logger.log(Level.SEVERE,"File not found!" , e);
+//    }
+//    catch (IOException e) {
+//    	logger.log(Level.SEVERE,"Could not read or write file!" , e);
+//    }
+//  }
   
  
 

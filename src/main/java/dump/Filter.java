@@ -13,17 +13,13 @@ import javax.xml.stream.XMLStreamReader;
 class Filter implements StreamFilter {
 	
 
-  private int tmp = 0;
-  private int tmp2 = 1;
+  
   
   public Filter(){
 	  
   }
   
-  public Filter(int tmp, int tmp2){
-	  this.tmp = tmp;
-	  this.tmp2 = tmp2;
-  }
+  
 
   public boolean accept(XMLStreamReader reader) {
 	  
@@ -31,12 +27,10 @@ class Filter implements StreamFilter {
     	
       if (reader.getLocalName().equalsIgnoreCase("page") ) {
     	  
-    	 tmp++;
-  
-    	 if(tmp == tmp2){
-    		 tmp = 0; 
+    	
+
     		 return true;
-    	  }
+    	
     	
       }
 

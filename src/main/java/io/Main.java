@@ -1,14 +1,10 @@
 package io;
 
-import dump.DumpParser;
-import rdf.ProvenanceManager;
+
+import parallel.*;
 
 
-import org.apache.jena.atlas.logging.Log;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * The main class 
@@ -20,51 +16,41 @@ public class Main {
 	 * Main method for the project
 	 *
 	 * @param args parameter
+	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) {
 		
-
+	
 		CLParser clparser = new CLParser(args);
-
-    
         clparser.validate();
-        
-       
         FileHandler fh = new FileHandler(clparser.getPath());
-       
+        ArrayBlockingQueue<Long> queue = new  ArrayBlockingQueue<Long> (100);
+        
     	while (fh.nextFileEntry()) {
     		
-    		ExecutorService executor = Executors.newFixedThreadPool(clparser.getThreads());
     		
     		String path = fh.getFileEntry();
     		
-    			for (int i = clparser.getThreads() - 1; i>=0; i-- ){
-    				Runnable worker = new ProvenanceManager("Thread_" + i       							,
-    														path			            					, 
-    														new DumpParser(clparser.getTimeFrame()
-    																               .getTimeFrame(),
-    																	   clparser.getFinishedArticles())  , 
-    														i	  	 	   									,
-    														clparser.getThreads()							,
-    														clparser.getLanguage()							, 
-    														clparser.getVariant()  							,
-    														clparser.getReadvarian()						);
-    				executor.execute(worker);
+    		Producer producer = new Producer(queue, path);
+    		producer.start();
+    		for(int i= 0; i < clparser.getThreads(); i++)
+    		{
     			
-    			}
-    			executor.shutdown();
-    			
-    			
-    			
-    			try {
-    				while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
-    				}
-    			} catch (InterruptedException e) {
-    				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
-    			}
-    			
-    			
+    			new Consumer(queue,
+						 				 "Thread_" + (i +1),
+						 				 clparser.getLanguage(),
+						 				 clparser.getReadvarian(),
+						 				 clparser.getTimeFrame().getTimeFrame(),
+						 				 clparser.getFinishedArticles(),
+						 				 clparser.getVariant(),
+						 				 path).start();;
+    								
     		}
+    		
+    		
+    		
+    		
+    	}
 		
 	}// end main
 

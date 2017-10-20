@@ -10,17 +10,18 @@ import java.nio.channels.ReadableByteChannel;
 
 import org.apache.commons.io.FileUtils;
 
-import rdf.ProvenanceManager;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
+import parallel.Consumer;
 
 /**
  * class for getting the history of one specific article as a xml dump
  */
 public class SingleArticle {
   
-  private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
+  private static Logger logger = Logger.getLogger(Consumer.class.getName());
   private static FileOutputStream fos;
 
   /**

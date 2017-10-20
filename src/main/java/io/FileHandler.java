@@ -67,6 +67,7 @@ public class FileHandler {
 	  if(!dumpDirectoryContents.empty() ){
 		  
 		  fileEntry = dumpDirectoryContents.pop().getPath();
+		  
 		  return true;
 	  }
 	  else {
