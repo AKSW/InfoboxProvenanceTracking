@@ -98,7 +98,7 @@ public class ProvenanceWriter {
 	   line += "<" + stmt[1].getSubject()   + "> ";
 	   line += "<" + stmt[1].getPredicate() + "> ";
 	   line += getObjectAsNTriples(stmt[1]) + "\t";
-	   line += "# triple delete"			+ "\t";
+	   line += "# triple deleted"			+ "\t";
 	   line += revisionOfChange.toString()  + "\n";
 	   wholeDifferernces.add(line);
 	   write();
@@ -134,7 +134,7 @@ public class ProvenanceWriter {
 		  line += "<" + triple.getSubject() + "> ";
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
-	      line += "# triple does not exist\t";
+	      line += "# triple added\t";
 	      line += revisionOfChange.toString() + "\n";
 	      wholeDifferernces.add(line);
 
@@ -153,7 +153,7 @@ public class ProvenanceWriter {
 		  line += "<" + triple.getSubject() + "> ";
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
-	      line += "# triple does not exist\t";
+	      line += "# triple added\t";
 	      wholeDifferernces.add(line);
 	      
 	     
