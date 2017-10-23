@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.TreeSet;
@@ -26,7 +25,6 @@ public class DumpParser {
   private XmlMapper mapper;
   private  XMLStreamReader parser;
   private XMLStreamReader filteredParser;
-  XMLStreamReader localReader;
   private long offset;
   private Page page;
 
@@ -35,8 +33,7 @@ public class DumpParser {
   public static final String CAN_T_READ_MORE_PAGES = "Can't read more pages";
 
 
-  ArrayList<XMLStreamReader> reader;
-  ArrayList<Long> offsets;
+  
   
   //Constructor for parsing Dump
   public DumpParser(String path) {
@@ -54,8 +51,6 @@ public class DumpParser {
 			System.out.println("Parsing Initialisation Error!");
 		}
 	    
-	  this.reader = new ArrayList<XMLStreamReader>();
-	  this.offsets = new ArrayList<Long>();
   }
   
   //Constructors for mapping XML
@@ -152,40 +147,17 @@ public class DumpParser {
 	    	 return false;
 	    }
 	  
-	  
-	 try {
-		localReader = XMLInputFactory.newInstance()
-		             .createXMLStreamReader(getFile(path,offset));
-	  } catch (XMLStreamException | FactoryConfigurationError | IOException | CompressorException e) {
-		
-
-		  System.out.println("Can't create the localReader");
-	  }
-	
 	 
-	  
-	  offsets.add(offset);
-	  reader.add(localReader);
 	  return true;
   }
   
-  public ArrayList<XMLStreamReader>  getReader(){
-	  return this.reader;
-  }
+  
   
   public Long  getOffset(){
 	  return this.offset;
   }
   
-  public ArrayList<Long>  getOffsets(){
-	  return this.offsets;
-  }
-  
-  
-  public XMLStreamReader getLocalReader() {
-	  return this.localReader;
-  }
-  
+ 
   /**
    * CASE: default
    * filters revisions so there are just pages which have infoboxes left and
@@ -475,85 +447,5 @@ public class DumpParser {
     return i;
   }// end dateFilter
   
-  
-//  public static void main(String[] args) {
-//	  
-//	  FileHandler fh = new FileHandler("/home/daniel/git/InfoboxProvenanceTracking/src/test/resources/inputde");
-//	  fh.nextFileEntry();
-//	  String path = fh.getFileEntry();
-//	  
-////	 System.out.println(path);
-////	  
-////	  
-//	  DumpParser parser = new DumpParser(path);
-//	
-//		
-//	
-//	  
-//	  
-//	  //parser.setParser(path, 242749);
-//	  
-////	  try {
-////	  
-////	  while(parser.readPageDefault()) {
-////		  
-////		  if (parser.getPage() != null) {
-////		  
-////		  System.out.println(parser.getPage().getTitle());
-////		  }
-////	  }
-////	  }
-////	  catch (IOException | XMLStreamException e) {
-////		  System.out.println(e);
-////	    }
-//	  
-//	
-//	  while (parser.parseDump(path) ) {
-//	  
-//	  }
-//	  
-//	  System.out.println(parser.getOffsets().size());
-//	  System.out.println(parser.getOffsets().get(0));
-//	  System.out.println(parser.getOffsets().get(1));
-//	  
-//	  DumpParser parser2;
-//	  parser2 = new DumpParser(path, parser.getOffsets().get(0));
-//	  parser2.mapPageDefault();
-//	  
-//	  System.out.println(parser2.getPage().getTitle());
-//	  
-////	  parser2.mapPageDefault();
-////	  parser.setParser(path,0,1);
-////	  BufferedReader br ;
-////	 try {
-////		br = parser.getFile(path);
-////		
-////		br.skip(4471);
-////	  
-////	// 	br.skip(2477);
-////		
-////	//	br.skip(3220);
-////		
-////	//	br.skip(4471-93+1);
-////		
-////	//	br.skip(242749-3103+1);
-////		
-////		int count =0;	  
-////		String tmp;	 
-////	  while ((tmp = br.readLine()) != null) {
-////			System.out.println(tmp);
-////			count++;
-////			if(count>100)break;
-////		}
-////	  
-////	} catch ( IOException | CompressorException e) {
-////		// TODO Auto-generated catch block
-////		e.printStackTrace();
-////	} 
-//		
-//	
-//  
-//  
-//}
-   
+     
 }// end class
