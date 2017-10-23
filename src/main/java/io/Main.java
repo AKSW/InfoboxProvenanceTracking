@@ -24,7 +24,7 @@ public class Main {
 		CLParser clparser = new CLParser(args);
         clparser.validate();
         FileHandler fh = new FileHandler(clparser.getPath());
-        ArrayBlockingQueue<Long> queue = new  ArrayBlockingQueue<Long> (100);
+        ArrayBlockingQueue<Long> queue = new  ArrayBlockingQueue<Long> (500);
         
     	while (fh.nextFileEntry()) {
     		
