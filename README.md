@@ -1,5 +1,5 @@
 # InfoboxProvenanceTracking
-a tool for tracking the changes of values in infoboxes fro Wikipedia
+A tool for tracking the changes of values in infoboxes from Wikipedia
 
 # USAGE
 
@@ -15,7 +15,7 @@ After compiling, the .jar can be used with the following parameters
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: en  
  -lastchange, -last  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only last change to an existing triple will be saved  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default false  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: false  
  -later, -l  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last timestamp(Date in yyyy-MM-dd) to extract  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: Current date  

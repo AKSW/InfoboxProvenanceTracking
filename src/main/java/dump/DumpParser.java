@@ -127,6 +127,8 @@ public class DumpParser {
 	                "unrecognized file extension and is ignored!");
 	        throw new IOException();
 	    }
+	    
+	    
 	    br.skip(offset);
 	    return br;
 	  }
@@ -183,11 +185,18 @@ public class DumpParser {
 
 	  // reverse order of revisions, so the oldest one ist in index 0
 	  Collections.sort(page.getRevision(), Collections.reverseOrder());
-
+	 
 	  // filter revisions default
 	  for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
 
 		  standardFilter(i);  
+ 
+	  }
+	
+	  
+	  for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
+		 
+		  System.out.println(page.getRevision().get(i).getId());  
  
 	  }
 
@@ -411,14 +420,18 @@ public class DumpParser {
 			if(page.getRevision().get(i).getTemplates().get(j)
 			   .equalsIgnoreCase(page.getRevision().get(i-1).getTemplates().get(j)  )  )
 			tmp ++;
-				
+			
 		}
 			
 		if(tmp == page.getRevision().get(i).getTemplates().size()) {
-				
+			
 			page.getRevision().remove(i);
+			
 		}
 	}
+	
+	
+	
 	  	
   }// end standardFilter
 

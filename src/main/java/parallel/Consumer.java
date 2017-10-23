@@ -71,7 +71,7 @@ public class Consumer extends Thread implements Runnable {
 	  while(done) {
 		long offset = queue.take();
 		if(offset==0 ){
-			  queue.add((long) 0);
+			  queue.put((long) 0);
 			  break;
 		}
 		 
@@ -140,6 +140,7 @@ public class Consumer extends Thread implements Runnable {
 	 
 	 public void wholeProvenanceDefault() {
 		 parser.mapPageDefault();
+		
 		 if (parser.getPage() != null) {wholeProvenance();}//end if
 	 }
 
