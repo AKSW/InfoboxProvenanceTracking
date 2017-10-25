@@ -22,8 +22,11 @@ public class FileHandler {
    */
   public FileHandler(String pathToFolder){
 	  
-	  threadFile = new File("threadfile");
 	  
+	 
+	 threadFile = new File("threadfile");
+	 if(!threadFile.exists()) {threadFile.mkdirs();}
+	 
 	  try{
 		  
 	   if(pathToFolder == null)
@@ -31,8 +34,7 @@ public class FileHandler {
 		  
 	   dumpDirectory = new File(pathToFolder);
 	   
-	   if(threadFile.mkdir())
-		   throw new IOException("Unable to create \"threadfile\"");
+	   
 	   
 	   if(!dumpDirectory.exists())
 			throw new IOException("Unreadable path \"" + pathToFolder + "\"");

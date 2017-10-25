@@ -194,12 +194,6 @@ public class DumpParser {
 	  }
 	
 	  
-	  for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-		 
-		  System.out.println(page.getRevision().get(i).getId());  
- 
-	  }
-
 	  // eventually remove the first revision
 	  // (which doesn't get filtered by standardFilter())
 	  if(page.getRevision().get(0).getTemplates().isEmpty()) {
