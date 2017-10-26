@@ -43,7 +43,7 @@ public class Main {
 						 				 clparser.getTimeFrame().getTimeFrame(),
 						 				 clparser.getFinishedArticles(),
 						 				 clparser.getVariant(),
-						 				 path).start();;
+						 				 path).start();
     								
     		}
     		
