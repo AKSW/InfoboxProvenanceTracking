@@ -1,14 +1,11 @@
 package io;
 
-import dump.DumpParser;
-import rdf.ProvenanceManager;
+import parallel.*;
 
 
-import org.apache.jena.atlas.logging.Log;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ArrayBlockingQueue;
+
 
 /**
  * The main class 
@@ -24,47 +21,21 @@ public class Main {
 	public static void main(String[] args) {
 		
 
-		CLParser clparser = new CLParser(args);
-
-    
-        clparser.validate();
-        
-       
-        FileHandler fh = new FileHandler(clparser.getPath());
-       
-    	while (fh.nextFileEntry()) {
-    		
-    		ExecutorService executor = Executors.newFixedThreadPool(clparser.getThreads());
-    		
-    		String path = fh.getFileEntry();
-    		
-    			for (int i = clparser.getThreads() - 1; i>=0; i-- ){
-    				Runnable worker = new ProvenanceManager("Thread_" + i       							,
-    														path			            					, 
-    														new DumpParser(clparser.getTimeFrame()
-    																               .getTimeFrame(),
-    																	   clparser.getFinishedArticles())  , 
-    														i	  	 	   									,
-    														clparser.getThreads()							,
-    														clparser.getLanguage()							, 
-    														clparser.getVariant()  							,
-    														clparser.getReadvarian()						);
-    				executor.execute(worker);
-    			
-    			}
-    			executor.shutdown();
-    			
-    			
-    			
-    			try {
-    				while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
-    				}
-    			} catch (InterruptedException e) {
-    				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
-    			}
-    			
-    			
-    		}
+		  
+		  
+		  CLParser clParser = new CLParser(args);
+		  clParser.validate();
+		  
+		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
+		  
+		  Producer producer = new Producer(queue, clParser.getPath());
+  		  producer.start();
+  		  
+  		for(int i= 0; i < clParser.getThreadsF(); i++)
+		{
+  			
+  			new Consumer(queue,clParser, "File" + i).start();
+		}
 		
 	}// end main
 

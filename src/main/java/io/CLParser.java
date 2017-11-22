@@ -38,6 +38,8 @@ public class CLParser extends JCommander {
 	 private String language = "en";
 	 @Parameter(names={"-threads", "-t"} , description = "Number of threads to run", required = false)
 	 private int threads = 1;
+	 @Parameter(names={"-threadsF", "-tf"} , description = "Number of parallel processed Files", required = false)
+	 private int threadsF = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
 	 
@@ -90,6 +92,10 @@ public class CLParser extends JCommander {
 		 return threads;
 	 }
 	 
+	 public int getThreadsF(){
+		 return threadsF;
+	 }
+	 
 	 public READVARIANT getReadvarian(){
 		 return readvariant;
 	 }
@@ -117,13 +123,18 @@ public class CLParser extends JCommander {
 			 
 			 if(singleArticle != null && threads != 1) {
 			 threads = 1;
+			 threadsF = 1;
 			 System.out.println("Set maxthread to 1 in case of single Article");
+			 System.out.println("Set maxthreadF to 1 in case of single Article");
 			 }
 			 
 			 if(singleArticle != null)
 			 path = SingleArticle.getPathForArticle(singleArticle, language);
 			 
-				 
+			 if(threadsF <= 0) {
+				 threadsF = 1;
+			 }	 
+			 
 		 }catch(ParameterException e){
 			 System.out.println(e.getMessage());
 			 help();
