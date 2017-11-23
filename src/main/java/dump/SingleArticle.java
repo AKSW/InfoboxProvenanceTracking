@@ -47,8 +47,11 @@ public class SingleArticle {
       url = new URL("https://" + language
         + ".wikipedia.org/w/index.php?title=Special:Export&pages="
         + name + "&history");
+    	
+    	ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+    
     }
-    catch (MalformedURLException e) {
+    catch ( IOException e) {
     //  Log.error(e, "Url is malformed!");
       logger.log(Level.SEVERE, "Url is malformed!", e);
     }

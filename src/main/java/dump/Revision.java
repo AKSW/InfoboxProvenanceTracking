@@ -17,7 +17,7 @@ public class Revision implements Comparable<Revision> {
   private int id;
   private String author;
   private Date timestamp;
-  private String infobox;
+  private String content;
   
   ArrayList<String> templates = null;
   
@@ -51,8 +51,8 @@ public class Revision implements Comparable<Revision> {
   /**
    * @return the text of this revision
    */
-  public String getInfobox() {
-    return infobox;
+  public String getContent() {
+    return content;
   }
   
   

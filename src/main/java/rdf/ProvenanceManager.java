@@ -61,7 +61,6 @@ public class ProvenanceManager implements Runnable {
                            String language,
                            boolean variant,
                            READVARIANT readVariant) {
-	 
     this.language = language;
     this.parser = parser;
     this.parser.setParser(path, equivalenceClass, maxThreads);
