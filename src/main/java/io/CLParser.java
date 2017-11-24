@@ -129,7 +129,7 @@ public class CLParser extends JCommander {
 			 }
 			 
 			 if(singleArticle != null)
-			 path = SingleArticle.getPathForArticle(singleArticle, language);
+			// path = SingleArticle.getPathForArticle(singleArticle, language);
 			 
 			 if(threadsF <= 0) {
 				 threadsF = 1;

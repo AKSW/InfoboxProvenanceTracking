@@ -17,6 +17,7 @@ public class Revision implements Comparable<Revision> {
   private int id;
   private String author;
   private Date timestamp;
+  private String timestampStr;
   private String content;
   
   ArrayList<String> templates = null;
@@ -48,6 +49,10 @@ public class Revision implements Comparable<Revision> {
     return timestamp;
   }
 
+  public String getTimestampStr() {
+	    return timestampStr;
+	  }
+  
   /**
    * @return the text of this revision
    */
@@ -78,6 +83,7 @@ public class Revision implements Comparable<Revision> {
     throws ParseException {
     this.id = id;
     this.author = author;
+    this.timestampStr = timestamp;
     // used to work around the problem with the timezone
     this.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss'Z'")
       .parse(timestamp);

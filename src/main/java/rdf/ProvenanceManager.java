@@ -11,8 +11,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
 
-
 import dump.DumpParser;
+
 import io.READVARIANT;
 
 
@@ -74,15 +74,15 @@ public class ProvenanceManager implements Runnable {
     
    // this.logWriter = new LogWriter(threadName);
     this.writer = new ProvenanceWriter(threadName, false);
+   
   }
+  
+  
+  
 
   @Override
   public void run() {
-
-    // checks which variant is wanted
-    // variant default: get complete provenance
-
-    if (this.variant) {
+	  if (this.variant) {
     	
     	// variant lastchange: get just the last change of each triple
     	// switch betwenn the different readvariants
@@ -132,9 +132,14 @@ public class ProvenanceManager implements Runnable {
         }
     	
     }
-
   }//end run
 
+  
+  public DumpParser getDumpParser() {
+	  return parser;
+  }
+  
+  
   // methode wich catch the wohle provenance
   // and uses the readPageDefault methode from the 
   // DumpParser class
@@ -142,7 +147,8 @@ public class ProvenanceManager implements Runnable {
 
     try {
       while (parser.readPageDefault()) {
-
+    	
+    	
         if (parser.getPage() != null) {
 
           wholeProvenance();
@@ -184,7 +190,7 @@ public class ProvenanceManager implements Runnable {
 
     try {
       while (parser.readTimeFilteredRerun()) {
-
+    	  
         if (parser.getPage() != null) {
 
           wholeProvenance();
@@ -205,6 +211,7 @@ public class ProvenanceManager implements Runnable {
     try {
       while (parser.readPageRerun()) {
 
+ 
         if (parser.getPage() != null) {
 
           wholeProvenance();
@@ -224,7 +231,7 @@ public class ProvenanceManager implements Runnable {
     try {
       while (parser.readPageDefault()) {
         if (parser.getPage() != null) {
-
+        	
           lastChangeProvenance();
         }//end if
       }// end while
@@ -358,7 +365,7 @@ public class ProvenanceManager implements Runnable {
    * If yes, then it does'nt write
    * the difference again, since we just want the last change and no further;
    */
-  public void lastChangeProvenance() {
+  public  void lastChangeProvenance() {
 
 	  
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().

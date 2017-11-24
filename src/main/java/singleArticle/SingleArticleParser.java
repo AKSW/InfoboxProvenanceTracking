@@ -244,11 +244,11 @@ public class SingleArticleParser {
 //		  
 //		  try {
 //			  
-//			  parser.readPageDefault();
+////			  parser.readPageDefault();
 ////			  for(int i = 0; i<parser.getRevisions().getRev().size(); i++) {
 ////				  System.out.println(parser.getRevisions().getRev().get(i).getId());
 ////			  }
-//			System.out.println(parser.getRevisions().getRev().size());
+////			System.out.println(parser.getRevisions().getRev().size());
 //			  System.out.println(parser.getRevisions().getRev().get(parser.getRevisions().getRev().size()-1).getId());
 //		  } catch (IOException | XMLStreamException e) {
 //			System.out.println(e);

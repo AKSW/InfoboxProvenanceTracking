@@ -19,6 +19,10 @@ import java.util.TreeSet;
 
 
 public class DumpParser {
+	
+  // timestamp used to determine the offset during processing a singleArticle
+  private String timestamp;
+	
   private XmlMapper mapper;
   private XMLStreamReader parser;
   private XMLStreamReader filteredParser;
@@ -51,6 +55,10 @@ public class DumpParser {
     return page;
   }
 
+  public String getTimestampt() {
+	    return timestamp;
+	  }
+  
   /**
    * opens the file depending on the file extension as text
    * or compressed bz2 archive
@@ -93,7 +101,7 @@ public class DumpParser {
 
     return br;
   }
-
+  
   /**
    * CASE: default
    * filters revisions so there are just pages which have infoboxes left and
@@ -110,6 +118,8 @@ public class DumpParser {
 
     try {
       page = mapper.readValue(parser, Page.class);
+      timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
+      
     } catch (java.util.NoSuchElementException e) {
       // if no new page is in the dump
      // Log.error(e, CAN_T_READ_MORE_PAGES);
@@ -156,6 +166,7 @@ public class DumpParser {
 
     try {
       page = mapper.readValue(parser, Page.class);
+      timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
     } catch (java.util.NoSuchElementException e) {
       // if no new page is in the dump
       // Log.error(e, CAN_T_READ_MORE_PAGES);
@@ -210,6 +221,7 @@ public class DumpParser {
 
     try {
       page = mapper.readValue(parser, Page.class);
+      timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
     } catch (java.util.NoSuchElementException e) {
       // if no new page is in the dump
       // Log.error(e, CAN_T_READ_MORE_PAGES);
@@ -267,6 +279,7 @@ public class DumpParser {
 
     try {
       page = mapper.readValue(parser, Page.class);
+      timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
     } catch (java.util.NoSuchElementException e) {
       // if no new page is in the dump
       // Log.error(e, CAN_T_READ_MORE_PAGES);
