@@ -36,8 +36,11 @@ public class InfoboxParser {
       // escape backslash and dollar sign in input
       input = input.replace("\\", "\\\\");
       input = input.replace("$", "\\$");
-      
-      
+      input = input.replaceAll("&(?!amp;)", "&amp;");
+      input = input.replaceAll("<", "");
+      input = input.replaceAll(">", ""); 
+				
+    		  
       findSingleLineBoxes(input);
 
       input = removeSingleLineBraces(input);

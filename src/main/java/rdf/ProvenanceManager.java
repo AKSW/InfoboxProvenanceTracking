@@ -88,13 +88,11 @@ public class ProvenanceManager implements Runnable {
     	// switch betwenn the different readvariants
         switch (readVariant) {
           case ReadDefault:
-            //ProvenanceWriter.newRun(threadName);
            // LogWriter.newRun(threadName);
             lastChangeProvenanceDefault();
             break;
           case ReadTimeFiltered:
-          //  ProvenanceWriter.newRun(threadName);
-         //   LogWriter.newRun(threadName);
+           // LogWriter.newRun(threadName);
             lastChangeProvenanceTimeFiltered();
             break;
           case ReadTimeFilteredRerun:
@@ -113,7 +111,7 @@ public class ProvenanceManager implements Runnable {
     	 // switch betwenn the different readvariants
         switch (readVariant) {
           case ReadDefault:
-            ProvenanceWriter.newRun(threadName);
+            //ProvenanceWriter.newRun(threadName);
           //  LogWriter.newRun(threadName);
             wholeProvenanceDefault();
             break;

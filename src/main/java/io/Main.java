@@ -31,24 +31,24 @@ public class Main {
 	 * @param args parameter
 	 */
 	public static void main(String[] args) {
-		
-
 		  CLParser clParser = new CLParser(args);
 		  clParser.validate();
+		
+		
+		  String timestamp;
+
+
 		  
 		  SingleArticle singelArticel = new SingleArticle(clParser);
-		  singelArticel.setPathForArticle("United_States", "en","2017-01-21T08%3A08%3A19Z");
+		  singelArticel.setPathForArticle("United_States", "en","2017-04-08T20:11:11Z");
+		  
 		  
 		  
 		  ExecutorService executor = Executors.newFixedThreadPool(clParser.getThreads());
-		  
 		  ProvenanceManager provenanceManager = singelArticel.createProvenanceManager();
-		  
 		  Runnable worker = provenanceManager;
 		  executor.execute(worker);
-		  
 		  executor.shutdown();
-
 		  try {
 				while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {		 
 				}
@@ -57,9 +57,36 @@ public class Main {
 				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
 		 }
 		  
-		 
-		  System.out.println(provenanceManager.getDumpParser().getTimestampt());
+		  singelArticel.delete();
+		  timestamp=provenanceManager.getDumpParser().getTimestampt();
+		  System.out.println(timestamp);
 		  
+		  
+		  
+		  
+		  
+		  for(int i =0; i< 0; i++ ) {
+		 
+			  SingleArticle singelArticel2 = new SingleArticle(clParser);
+			  singelArticel2.setPathForArticle("United_States", "en",timestamp);
+			  
+			  ExecutorService executor2 = Executors.newFixedThreadPool(clParser.getThreads());
+			  ProvenanceManager provenanceManager2 = singelArticel2.createProvenanceManager();
+			  Runnable worker2 = provenanceManager2;
+			  executor2.execute(worker2);
+			  executor2.shutdown();
+			  try {
+					while (!executor2.awaitTermination(1, TimeUnit.SECONDS)) {		 
+					}
+
+			  } catch (InterruptedException e) {
+					Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
+			 }
+			  singelArticel2.delete();
+			  
+			  timestamp=provenanceManager2.getDumpParser().getTimestampt();
+			  System.out.println(timestamp);
+		  }
 		  
 		  
 		  
@@ -73,7 +100,7 @@ public class Main {
 //  			
 //  			new Consumer(queue,clParser, "File" + i).start();
 //		}
-		
+//		
 	}// end main
 
 }// end class

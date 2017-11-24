@@ -119,10 +119,11 @@ public class DumpParser {
     try {
       page = mapper.readValue(parser, Page.class);
       timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
-      
+   
+    }catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
+    	System.out.println(e);
     } catch (java.util.NoSuchElementException e) {
-      // if no new page is in the dump
-     // Log.error(e, CAN_T_READ_MORE_PAGES);
+      
       return false;
     }
     
@@ -147,6 +148,9 @@ public class DumpParser {
     if (page.getRevision().isEmpty()) {
       page = null;
     }
+    
+    
+    
     filteredParser.next();
     return true;
   }

@@ -8,10 +8,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
-import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -49,12 +47,13 @@ public class ProvenanceWriter {
    * @param isNewFile creates new file if true
    */
   public ProvenanceWriter(String fileName, boolean isNewFile) {
-
+	  
     try {
       this.outputFile = new File("threadfile//" + fileName + ".tsv");
       if (isNewFile) {
         this.outputFile.delete();
       }
+      
       outputFile.createNewFile();
     }
     catch (Exception e) {
@@ -237,23 +236,23 @@ public class ProvenanceWriter {
    *
    * @param path filePath
    */
-  public static void newRun(String path) {
-	  
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(
-      "threadfile//" + path + ".tsv", false))) {
-      String creationDate = new SimpleDateFormat(
-        "yyyy-MM-dd'T'kk:mm:ss'Z'")
-        .format(Calendar.getInstance().getTime());
-    //  writer.write(creationDate + " " + getGitSha1() + "\n");
-    }
-    catch (FileNotFoundException e) {
-     // Log.error(e, "File not found!");
-    	logger.log(Level.SEVERE,"File not found!" , e);
-    }
-    catch (IOException e) {
-    	logger.log(Level.SEVERE,"Could not read or write file!" , e);
-    }
-  }
+//  public static void newRun(String path) {
+//	  
+//    try (Writer writer = new OutputStreamWriter(new FileOutputStream(
+//      "threadfile//" + path + ".tsv", false))) {
+//      String creationDate = new SimpleDateFormat(
+//        "yyyy-MM-dd'T'kk:mm:ss'Z'")
+//        .format(Calendar.getInstance().getTime());
+//    //  writer.write(creationDate + " " + getGitSha1() + "\n");
+//    }
+//    catch (FileNotFoundException e) {
+//     // Log.error(e, "File not found!");
+//    	logger.log(Level.SEVERE,"File not found!" , e);
+//    }
+//    catch (IOException e) {
+//    	logger.log(Level.SEVERE,"Could not read or write file!" , e);
+//    }
+//  }
   
  
 

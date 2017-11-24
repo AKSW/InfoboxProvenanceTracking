@@ -41,25 +41,26 @@ public class SingleArticle {
   
   
   
-  private static File tempDir = new File("ArticleDumps");
+  private File tempDir ;
   private static boolean success = false;  
-  private static int limit = 50;
+  private static int limit = 1;
   private String name = ""; 
   private String path;
   
   private CLParser clParser = null;
-  private DumpParser parser = null;
   private ProvenanceManager provenanceManager = null;
   
   public SingleArticle(CLParser clParser) {
-	  
+	 tempDir = new File("ArticleDumps");
+	 tempDir.mkdir();
+	 
 	  this.clParser = clParser;
   }
   
   
   public ProvenanceManager createProvenanceManager() {
 	  
-	return new ProvenanceManager(name + "/Name"  			,
+	return new ProvenanceManager(name 				 			,
 				path			            					, 
 				new DumpParser(clParser.getTimeFrame()
 												 .getTimeFrame(),
@@ -73,10 +74,7 @@ public class SingleArticle {
 	  
   }
   
-  public DumpParser getDumpParser() {
-	  
-	  return this.parser;
-  }
+  
   
   public ProvenanceManager getProvenanceManager() {
 	  
@@ -114,7 +112,7 @@ public class SingleArticle {
       logger.log(Level.SEVERE, "Url is malformed!", e);
     }
 
-    tempDir.mkdir();
+   
     File dump = new File("ArticleDumps/" + name + ".xml");
     try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
       fos = new FileOutputStream(dump);
@@ -132,8 +130,8 @@ public class SingleArticle {
 
   
   public  void setPathForArticle(String name, String language, String offset) {
-	
-  if(success) {limit = limit + 50;}
+  this.name = name;
+  //if(success) {limit = limit + 50;}
   File dump = null;
   HttpResponse response = null;
 
@@ -141,15 +139,21 @@ public class SingleArticle {
 	    try {
 	    	
 	    boolean done = true;	
-	      do {
-	    	  
+	     
+	      do { 
 	      CloseableHttpClient client = HttpClients.createDefault();
-	      HttpPost post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&offset="+offset+"&action=submit");  
-	    	  
+	      HttpPost post;
+	      if(offset.isEmpty()) {
+	    	 post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&action=submit");
+	      
+	      }else {
+	      
+	         post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&offset="+offset+"&action=submit");  
+	      } 
           List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
           nameValuePairs.add(new BasicNameValuePair("-d",""));
-          //nameValuePairs.add(new BasicNameValuePair("-H","'Accept-Encoding: gzip,deflate'"));
-          //nameValuePairs.add(new BasicNameValuePair("--compressed",""));
+          nameValuePairs.add(new BasicNameValuePair("-H","'Accept-Encoding: gzip,deflate'"));
+          nameValuePairs.add(new BasicNameValuePair("--compressed",""));
           post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
           response = client.execute(post);
           
@@ -161,9 +165,8 @@ public class SingleArticle {
           int count = 0;
           while (!(line = rd.readLine()).contains("</html>")) {
              
-  
         	  count++;
-              
+        
         	  if(count==4) {break;}
         	  
           }
@@ -181,7 +184,7 @@ public class SingleArticle {
           
 	      }while(done);  
           
-	     
+	      tempDir.mkdir();
 	      dump = new File("ArticleDumps/" + name + ".xml");
           ReadableByteChannel rbc = Channels.newChannel(response.getEntity().getContent()); 
           fos = new FileOutputStream(dump);
@@ -206,7 +209,7 @@ public class SingleArticle {
   /**
    * deleting the directory and all files in it
    */
-  public static void delete() {
+  public void delete() {
     try {
       FileUtils.deleteDirectory(tempDir);
     }
