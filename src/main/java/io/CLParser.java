@@ -42,6 +42,8 @@ public class CLParser extends JCommander {
 	 private int threadsF = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
+	 @Parameter(names={"-debug", "-d"} , description = "x", required = false)
+	 private boolean debug = false;
 	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
@@ -82,6 +84,10 @@ public class CLParser extends JCommander {
 	 
 	 public String getPath(){
 		 return path;
+	 }
+	 
+	 public boolean getDebug(){
+		 return debug;
 	 }
 	 
 	 public String getLanguage(){
@@ -129,7 +135,7 @@ public class CLParser extends JCommander {
 			 }
 			 
 			 if(singleArticle != null)
-			// path = SingleArticle.getPathForArticle(singleArticle, language);
+			 path = SingleArticle.getPathForArticle(singleArticle, language);
 			 
 			 if(threadsF <= 0) {
 				 threadsF = 1;

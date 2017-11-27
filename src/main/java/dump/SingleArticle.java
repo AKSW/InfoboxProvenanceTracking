@@ -112,7 +112,7 @@ public class SingleArticle {
       logger.log(Level.SEVERE, "Url is malformed!", e);
     }
 
-   
+    new File("ArticleDumps").mkdir();
     File dump = new File("ArticleDumps/" + name + ".xml");
     try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
       fos = new FileOutputStream(dump);

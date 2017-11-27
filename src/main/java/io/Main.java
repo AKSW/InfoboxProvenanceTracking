@@ -34,7 +34,7 @@ public class Main {
 		  CLParser clParser = new CLParser(args);
 		  clParser.validate();
 		
-		
+		if(clParser.getDebug()) {
 		  String timestamp;
 
 
@@ -88,19 +88,19 @@ public class Main {
 			  System.out.println(timestamp);
 		  }
 		  
+		}else {  
+		
+		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		  
-		  
-//		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
-//		  
-//		  Producer producer = new Producer(queue, clParser.getPath());
-//  		  producer.start();
-//  		  
-//  		for(int i= 0; i < clParser.getThreadsF(); i++)
-//		{
-//  			
-//  			new Consumer(queue,clParser, "File" + i).start();
-//		}
-//		
+		  Producer producer = new Producer(queue, clParser.getPath());
+  		  producer.start();
+  		  
+  		for(int i= 0; i < clParser.getThreadsF(); i++)
+		{
+  			
+  			new Consumer(queue,clParser, "File" + i).start();
+		}
+		}	
 	}// end main
 
 }// end class
