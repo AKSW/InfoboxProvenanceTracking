@@ -104,20 +104,23 @@ public class InfoboxParser {
     return sb.toString();
   }
   
-  private String removeMultiLineBraces(String input) {
-	    Pattern pattern = Pattern.compile("(?s)\\{\\{.*?}}");
+  private String removeBraces(String input) {
+	  
+	    Pattern pattern = Pattern.compile("(?s)\\{\\{.*?\\}\\}");
 	    Matcher matcher = pattern.matcher(input);
-	    StringBuffer sb = new StringBuffer();
-
+	    int offset = 0;
+	    
 	    while (matcher.find()) {
-	      // remove the two braces at beginning and start of the match
-	      matcher.appendReplacement(sb, input.substring(matcher.start() + 2,
-	        matcher.end() - 2));
+	    	
+	    	input = input.substring(0, matcher.start()) + 
+					   input.substring(matcher.start()+2-offset, matcher.end() - 2 -offset) +
+					   input.substring(matcher.end()-offset,input.length());
+	    	offset = offset +4;
 	    }
-	    // append the rest of the string after the last match
-	    matcher.appendTail(sb);
-
-	    return sb.toString();
+	    
+	
+	
+	    return input;
 	  }
 
   /**
@@ -137,31 +140,33 @@ public class InfoboxParser {
     	while(in.hasNextLine()) {
     		  String patt =in.nextLine();
     		
-    		 
+    	
     		  int index1 =0;
-    		  String tmp2;
-    		  String tmp3;
+    		 
     		  
     		  if(input.contains("{{" + patt )) {
     			  index1 =  input.indexOf(patt);
-    			  tmp2 = removeMultiLineBraces(input.substring(index1, input.length()));
-    			  tmp3 = removeSingleLineBraces(tmp2);
-    			  String tmp4 = "{{" + tmp3;
+    			
+    			  tmp = removeSingleLineBraces(input.substring(index1, input.length()));
+    			  tmp = removeSingleLineBraces(tmp);
+    			  tmp = removeBraces(tmp);
     			  
+    			
     			  
-    			  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ patt + ".*?}}");
-    	    	  Matcher matcher = pattern.matcher(tmp4);
+    			  Pattern pattern = Pattern.compile("(?s)"+ patt + ".*?}}");
+    	    	  Matcher matcher = pattern.matcher(tmp);
     			  
     	    	  if (matcher.find()) {
     	    		
-    	    		  tmp = tmp + tmp4.substring(matcher.start(), matcher.end());
-    	    		  templates.add(tmp4.substring(matcher.start(), matcher.end()));
+    	    		  tmp = "{{" + tmp + tmp.substring(matcher.start(), matcher.end());
+    	    		  
+    	    		  templates.add(tmp.substring(matcher.start(), matcher.end()));
     	    		 
     	    	    }
     	    	  
     		  }
     	}
-    	
+    
     }
     catch (IOException e) {
    /*   Log.error(e, "The file which specifies additional boxes"

@@ -43,7 +43,7 @@ public class SingleArticle {
   
   private File tempDir ;
   private static boolean success = false;  
-  private static int limit = 1;
+  private static int limit = 1000;
   private String name = ""; 
   private String path;
   
@@ -131,7 +131,7 @@ public class SingleArticle {
   
   public  void setPathForArticle(String name, String language, String offset) {
   this.name = name;
-  //if(success) {limit = limit + 50;}
+  if(success) {limit = limit + 50;}
   File dump = null;
   HttpResponse response = null;
 

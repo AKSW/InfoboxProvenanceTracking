@@ -109,8 +109,6 @@ public class Revision implements Comparable<Revision> {
     
     InfoboxParser infoboxParser = new InfoboxParser(text.getText());
     
-    
-    
     this.templates = new ArrayList<>();
   
     	if(!infoboxParser.getTemplates().isEmpty()) {
