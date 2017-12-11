@@ -3,6 +3,7 @@ package io;
 import parallel.*;
 import rdf.ProvenanceManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -81,7 +82,10 @@ public class Main {
 			  timestamp=provenanceManager2.getDumpParser().getTimestampt();
 			  
 			  System.out.println(timestamp);
-			  if(timestamp ==null)break;
+			  if(timestamp ==null) {
+				  new File("ArticleDumps/tmp.xml").delete();
+				  break;
+			  }
 		  //}
 		  }
 		}else {  

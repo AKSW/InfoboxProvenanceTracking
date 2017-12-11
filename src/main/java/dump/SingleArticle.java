@@ -221,6 +221,11 @@ public class SingleArticle {
         	  lines.remove(lines.size()-1);
               lines.remove(lines.size()-1);
         	  begin = false;
+        	  
+        	  PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
+              for (String line : lines)
+                  wr.println(line);
+              wr.close();
               
           }else if(!end){
         	  
@@ -238,18 +243,25 @@ public class SingleArticle {
         	  
         	  lines.remove(lines.size()-1);
               lines.remove(lines.size()-1);
+              
+              PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
+              for (String line : lines)
+                  wr.println(line);
+              wr.close();
         	  
+          }else {
+        	  
+        	  PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
+        	  wr.println("</page>");
+        	  wr.println("</mediawiki>");
+        	  wr.close();
+        	 
           }
           
         
           
-          PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
-          for (String line : lines)
-              wr.println(line);
           
           
-          
-          wr.close();
           br.close();
           
         
