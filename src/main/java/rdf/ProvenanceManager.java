@@ -30,13 +30,12 @@ public class ProvenanceManager implements Runnable {
    * variant if whole provenance or just the last change of a triple
    */
   private boolean variant;
-
   private DumpParser parser = null;
   private TripleExtractor tripleExtractor = null;
   //private LogWriter logWriter = null;
   private ProvenanceWriter writer = null;
   private READVARIANT readVariant = null;
-  private String threadName = null;
+ 
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
   // ArrayList for differences between two Models
   ArrayList<Statement[]> differences = null;
@@ -60,20 +59,21 @@ public class ProvenanceManager implements Runnable {
                            int maxThreads,
                            String language,
                            boolean variant,
-                           READVARIANT readVariant) {
+                           READVARIANT readVariant,
+                           boolean isNewFile) {
     this.language = language;
     this.parser = parser;
     this.parser.setParser(path, equivalenceClass, maxThreads);
     this.variant = variant;
     this.readVariant = readVariant;
-    this.threadName = threadName;
+   
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
 
     this.tripleExtractor = new TripleExtractor();
     
    // this.logWriter = new LogWriter(threadName);
-    this.writer = new ProvenanceWriter(threadName, false);
+    this.writer = new ProvenanceWriter(threadName, isNewFile);
    
   }
   

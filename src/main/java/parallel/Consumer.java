@@ -48,7 +48,7 @@ public void run() {
 			ExecutorService executor = Executors.newFixedThreadPool(clParser.getThreads());
 	 
 			for (int i = clParser.getThreads() - 1; i>=0; i-- ){
-						Runnable worker = new ProvenanceManager(threadName + "/Thread_" + i   			,
+						Runnable worker = new ProvenanceManager(threadName + "/Thread_" + i ,
 											path			            					, 
 											new DumpParser(clParser.getTimeFrame()
 																			 .getTimeFrame(),
@@ -57,7 +57,8 @@ public void run() {
 											clParser.getThreads()							,
 											clParser.getLanguage()							, 
 											clParser.getVariant()  							,
-											clParser.getReadvarian()						);
+											clParser.getReadvarian()						,
+											false										     );
 						executor.execute(worker);
 			}// end for
 

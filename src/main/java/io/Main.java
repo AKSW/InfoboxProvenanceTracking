@@ -38,9 +38,9 @@ public class Main {
 		  String timestamp;
 
 		  SingleArticle singelArticel = new SingleArticle(clParser);
-		  singelArticel.setPathForArticle("United_States", "en","0");
 		  
 		  
+		  singelArticel.setPathForArticle("");
 		  ExecutorService executor = Executors.newFixedThreadPool(clParser.getThreads());
 		  ProvenanceManager provenanceManager = singelArticel.createProvenanceManager();
 		  Runnable worker = provenanceManager;
@@ -52,39 +52,38 @@ public class Main {
 
 		  } catch (InterruptedException e) {
 				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
-		 }
+		  }
 		  
-		  singelArticel.delete();
+		
 		  timestamp=provenanceManager.getDumpParser().getTimestampt();
 		  System.out.println(timestamp);
 		  
 		  
-		  
-		  
-		  
-//		  for(int i =0; i< 0; i++ ) {
-//		 
-//			  SingleArticle singelArticel2 = new SingleArticle(clParser);
-//			  singelArticel2.setPathForArticle("United_States", "en",timestamp);
-//			  
-//			  ExecutorService executor2 = Executors.newFixedThreadPool(clParser.getThreads());
-//			  ProvenanceManager provenanceManager2 = singelArticel2.createProvenanceManager();
-//			  Runnable worker2 = provenanceManager2;
-//			  executor2.execute(worker2);
-//			  executor2.shutdown();
-//			  try {
-//					while (!executor2.awaitTermination(1, TimeUnit.SECONDS)) {		 
-//					}
-//
-//			  } catch (InterruptedException e) {
-//					Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
-//			 }
-//			  singelArticel2.delete();
-//			  
-//			  timestamp=provenanceManager2.getDumpParser().getTimestampt();
-//			  System.out.println(timestamp);
-//		  }
-		  
+		  while(true) {
+		  //for(int i =0; i< 7; i++ ) {
+		 
+			  SingleArticle singelArticel2 = new SingleArticle(clParser);
+			  singelArticel2.setPathForArticle(timestamp);
+			  
+			  ExecutorService executor2 = Executors.newFixedThreadPool(clParser.getThreads());
+			  ProvenanceManager provenanceManager2 = singelArticel2.createProvenanceManager();
+			  Runnable worker2 = provenanceManager2;
+			  executor2.execute(worker2);
+			  executor2.shutdown();
+			  try {
+					while (!executor2.awaitTermination(1, TimeUnit.SECONDS)) {		 
+					}
+
+			  } catch (InterruptedException e) {
+					Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
+			 }
+			  
+			  timestamp=provenanceManager2.getDumpParser().getTimestampt();
+			  
+			  System.out.println(timestamp);
+			  if(timestamp ==null)break;
+		  //}
+		  }
 		}else {  
 		
 		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
