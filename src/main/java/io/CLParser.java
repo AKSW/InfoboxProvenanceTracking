@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.logging.Log;
 
@@ -17,6 +20,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 import dump.SingleArticle;
+import rdf.ProvenanceManager;
 
 public class CLParser extends JCommander {
 	
@@ -124,37 +128,8 @@ public class CLParser extends JCommander {
 	 
 	 public void validate(){
 		 
-		 try{
-			 if(singleArticle == null && path == null) 
-			 throw new ParameterException("Article name or dump path needed");  	 
-			 
-			 if(singleArticle != null && path != null)
-			 throw new ParameterException("Parameter singleArticle doesn't need a path"); 
-			 
-			 if(singleArticle != null && threads != 1) {
-			 threads = 1;
-			 threadsF = 1;
-			 System.out.println("Set maxthread to 1 in case of single Article");
-			 System.out.println("Set maxthreadF to 1 in case of single Article");
-			 }
-			 
-			 if(singleArticle != null)
-			 //path = SingleArticle.getPathForArticle(singleArticle, language);
-			 
-			 if(threadsF <= 0) {
-				 threadsF = 1;
-			 }	 
-			 
-		 }catch(ParameterException e){
-			 System.out.println(e.getMessage());
-			 help();
-			 System.exit(1);
-		 }
 		 
-		
-	     this.timeFrame = new TimeFrame(earlier, later);
-		 
-		 
+		 this.timeFrame = new TimeFrame(earlier, later);
 		 if(timeFrame.getTimeFrame() != null){
 			 
 			 readvariant = READVARIANT.ReadTimeFiltered;
@@ -169,6 +144,69 @@ public class CLParser extends JCommander {
 			 readvariant = READVARIANT.ReadTimeFilteredRerun;
 			 readLogs("log");
 		 }
+		 
+		 try{
+			 
+			 
+			 if(singleArticle == null && path == null) 
+			 throw new ParameterException("Article name or dump path needed");  	 
+			 
+			 if(singleArticle != null && path != null)
+			 throw new ParameterException("Parameter singleArticle doesn't need a path"); 
+			 
+			 if(threadsF <= 0) {
+				 threadsF = 1;
+			 }	 
+			 
+			 if(singleArticle != null && threads != 1) {
+			 threads = 1;
+			 threadsF = 1;
+			 System.out.println("Set maxthread to 1 in case of single Article");
+			 System.out.println("Set maxthreadF to 1 in case of single Article");
+			 }
+			 
+			 if(singleArticle != null) {
+				
+				 SingleArticle singelArticel;
+				 String timestamp = "";
+				  while(true) {
+				 
+					  singelArticel = new SingleArticle(this);
+					  singelArticel.setPathForArticle(timestamp);
+					 
+					  
+					  ExecutorService executor = Executors.newFixedThreadPool(this.getThreads());
+					  ProvenanceManager provenanceManager = singelArticel.createProvenanceManager();
+					  Runnable worker = provenanceManager;
+					  executor.execute(worker);
+					  executor.shutdown();
+					  try {
+							while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {		 
+							}
+
+					  } catch (InterruptedException e) {
+							Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
+					 }
+					  
+					  timestamp=provenanceManager.getDumpParser().getTimestampt();
+					  
+					  if(timestamp ==null) {
+						  new File("ArticleDumps/tmp.xml").delete();
+						  break;
+					  }
+				  }
+				  path = new File("ArticleDumps").toString();
+			}
+			
+			 
+		 }catch(ParameterException e){
+			 System.out.println(e.getMessage());
+			 help();
+			 System.exit(1);
+		 }
+		 
+		
+	    
 		 
 	 }
 	 

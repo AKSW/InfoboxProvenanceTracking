@@ -41,14 +41,12 @@ public class SingleArticle {
    * variable for creating and deleting the articledumps directory
    */
   
-  
-  
   private File tempDir ;
   private File dump;
   private static boolean success = false;  
   private static boolean begin = true;
   private static boolean end = false;
-  private static int limit = 100;
+  private static int limit = 500;
   private String name = null; 
   private String language = null; 
   private String path;
@@ -61,12 +59,9 @@ public class SingleArticle {
 	this.language = clParser.getLanguage();
 	
 	
-	
-	tempDir = new File("ArticleDumps");
-	
-	if(!tempDir.isDirectory())
+	if(!new File("ArticleDumps").isDirectory())
 	{
-	tempDir.mkdir();
+		new File("ArticleDumps").mkdirs();
 	}
 	  this.clParser = clParser;
   }
@@ -89,7 +84,9 @@ public class SingleArticle {
 	  
   }
   
-  
+  public String getPath() {
+	  return this.path;
+  }
   
   public ProvenanceManager getProvenanceManager() {
 	  
@@ -129,6 +126,7 @@ public class SingleArticle {
 
     new File("ArticleDumps").mkdir();
     File dump = new File("ArticleDumps/" + name + ".xml");
+    
     try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
       fos = new FileOutputStream(dump);
       fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -146,7 +144,10 @@ public class SingleArticle {
   
   public  void setPathForArticle(String offset) {
   
-  //if(success) {limit = limit + 50;}
+ 
+  if(success) {limit = limit + 50;}
+ 
+	  
   File tmp = null;
   HttpResponse response = null;
 
@@ -271,7 +272,7 @@ public class SingleArticle {
   	  
 	    
 	path = tmp.getAbsoluteFile().toString();
-	    
+	
   }
   
   
