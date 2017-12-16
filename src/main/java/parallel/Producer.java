@@ -28,13 +28,6 @@ public class Producer extends Thread implements Runnable {
     	
     		while(fh.nextFileEntry()) {
     				
-//    				try {
-//    					blockingQueue.add(parser.getOffset());	
-//				
-//    				}catch (IllegalStateException e1) {
-//    					Thread.sleep(5000);
-//    				
-//    				}
     			
     			blockingQueue.put(fh.getFileEntry());
 			}

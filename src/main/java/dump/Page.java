@@ -10,6 +10,7 @@ import java.util.ArrayList;
 /**
  * Creates Page Object with revison, id, titel
  */
+
 @JacksonXmlRootElement(localName = "page")
 public class Page {
 

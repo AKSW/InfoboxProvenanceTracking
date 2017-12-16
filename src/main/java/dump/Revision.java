@@ -19,6 +19,7 @@ public class Revision implements Comparable<Revision> {
   private Date timestamp;
   private String timestampStr;
   private String content;
+  private static int count = 0;
   
   ArrayList<String> templates = null;
   
@@ -118,7 +119,8 @@ public class Revision implements Comparable<Revision> {
     			templates.add( infoboxParser.getTemplates().get(i));
     		}	
     	}
-    	
+    //count++;
+    //System.out.println(count);
   }// end constructor
 
   /**

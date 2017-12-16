@@ -4,13 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
 
 import org.apache.jena.atlas.logging.Log;
 
@@ -20,7 +20,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 import dump.SingleArticle;
-import rdf.ProvenanceManager;
+
 
 public class CLParser extends JCommander {
 	
@@ -168,33 +168,38 @@ public class CLParser extends JCommander {
 			 if(singleArticle != null) {
 				
 				 SingleArticle singelArticel;
+				 
+				 
+				
+				 
 				 String timestamp = "";
 				  while(true) {
 				 
+		
 					  singelArticel = new SingleArticle(this);
 					  singelArticel.setPathForArticle(timestamp);
-					 
-					  
-					  ExecutorService executor = Executors.newFixedThreadPool(this.getThreads());
-					  ProvenanceManager provenanceManager = singelArticel.createProvenanceManager();
-					  Runnable worker = provenanceManager;
-					  executor.execute(worker);
-					  executor.shutdown();
-					  try {
-							while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {		 
-							}
-
-					  } catch (InterruptedException e) {
-							Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
-					 }
-					  
-					  timestamp=provenanceManager.getDumpParser().getTimestampt();
-					  
+					  singelArticel.readPageDefault();
+					
+					  timestamp = singelArticel.getTimestampt();
+					 		  
 					  if(timestamp ==null) {
+						
+						PrintWriter wr;
+						try {
+						  wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+			        	  wr.println("</page>");
+			        	  wr.println("</mediawiki>");
+			        	  wr.close();
+			        	  
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							System.out.println("CLParser: Writer");
+						}
+					
 						  new File("ArticleDumps/tmp.xml").delete();
 						  break;
 					  }
-				  }
+				  }// end while
 				  path = new File("ArticleDumps").toString();
 			}
 			

@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URL;
+
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -24,7 +24,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import java.util.logging.Logger;
+
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,7 +49,7 @@ public class SingleArticle {
   /**
    * variable for creating and deleting the articledumps directory
    */
-  
+  private String timestamp;
   private File tempDir ;
   private File dump;
   private static boolean success = false;  
@@ -51,8 +60,12 @@ public class SingleArticle {
   private String language = null; 
   private String path;
   
-  private CLParser clParser = null;
-  private ProvenanceManager provenanceManager = null;
+  
+  
+  
+  
+  private Page page;
+  
   
   public SingleArticle(CLParser clParser) {
 	this.name = clParser.getSingleArticle();
@@ -63,86 +76,20 @@ public class SingleArticle {
 	{
 		new File("ArticleDumps").mkdirs();
 	}
-	  this.clParser = clParser;
+	
   }
   
-  
-  public ProvenanceManager createProvenanceManager() {
-	  
-	return new ProvenanceManager(name 				 			,
-				path			            					, 
-				new DumpParser(clParser.getTimeFrame()
-												 .getTimeFrame(),
-							   clParser.getFinishedArticles())  , 
-				0	  	 	   									,
-				clParser.getThreads()							,
-				clParser.getLanguage()							, 
-				clParser.getVariant()  							,
-				clParser.getReadvarian()						,				
-				true											);
-	  
-	  
-  }
+   
+  public String getTimestampt() {
+	    return timestamp;
+}
   
   public String getPath() {
 	  return this.path;
   }
   
-  public ProvenanceManager getProvenanceManager() {
-	  
-	  return this.provenanceManager ;
-  }
   
-  /**
-   * this method downloads the history of a specific article as xml and returns
-   * the absolute path to the xml file
-   *
-   * @param name of the article you want to download
-   * @param language of the article you want to download
-   * @return path to the downloaded dump file
-   */
-  public static String getPathForArticle(String name, String language) {
-
-
-	  
-	  
-    if (language.isEmpty()) {
-      language += "en";
-    }
-
-    URL url = null;
-    try {
-      url = new URL("https://" + language
-        + ".wikipedia.org/w/index.php?title=Special:Export&pages="
-        + name + "&history");
-    	
-    	Channels.newChannel(url.openStream());
-    
-    }
-    catch ( IOException e) {
-    //  Log.error(e, "Url is malformed!");
-      logger.log(Level.SEVERE, "Url is malformed!", e);
-    }
-
-    new File("ArticleDumps").mkdir();
-    File dump = new File("ArticleDumps/" + name + ".xml");
-    
-    try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
-      fos = new FileOutputStream(dump);
-      fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-      fos.close();
-      rbc.close();
-    }
-    catch (IOException e) {
-     // Log.error(e, "Cannot read or write data!");
-      logger.log(Level.SEVERE, "Cannot read or write data!", e);
-    }
-	
-    return dump.getAbsoluteFile().getParent();
-  }
-
-  
-  public  void setPathForArticle(String offset) {
+  public void setPathForArticle(String offset) {
   
  
   if(success) {limit = limit + 50;}
@@ -250,18 +197,7 @@ public class SingleArticle {
                   wr.println(line);
               wr.close();
         	  
-          }else {
-        	  
-        	  PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
-        	  wr.println("</page>");
-        	  wr.println("</mediawiki>");
-        	  wr.close();
-        	 
           }
-          
-        
-          
-          
           
           br.close();
           
@@ -269,12 +205,55 @@ public class SingleArticle {
       } catch (IOException e) {
     	  System.out.println(e);
       }
-  	  
-	    
+  	 
 	path = tmp.getAbsoluteFile().toString();
+	
+	
+	
 	
   }
   
+  
+public void readPageDefault(){
+
+		XmlMapper mapper = new XmlMapper();
+		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+	    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
+		XMLStreamReader parser;
+		BufferedReader br;
+		
+		try {
+		
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(path)
+                , "UTF-8"));
+		parser = XMLInputFactory.newInstance()
+	              .createXMLStreamReader(br);
+		
+	     // XMLInputFactory.newInstance().createFilteredReader(parser, new Filter());
+	      // set up the filter
+	      XMLInputFactory.newInstance().createFilteredReader(parser, new Filter(0, 1));
+	      
+	     page = null;
+		
+			page = mapper.readValue(parser, Page.class);
+			
+			timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
+			System.out.println(timestamp);
+		}catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
+			
+			System.out.println("SingleArticle: InvalidDefinitionException" );
+			
+		} catch (java.util.NoSuchElementException e) {
+
+			
+			
+		}catch (XMLStreamException | IOException e ) {
+			
+			System.out.println(e);
+			
+		}
+		
+}
   
   
   

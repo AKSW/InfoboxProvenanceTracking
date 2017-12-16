@@ -1,19 +1,8 @@
 package io;
 
 import parallel.*;
-import rdf.ProvenanceManager;
 
-import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-
-import org.apache.jena.atlas.logging.Log;
-
-import dump.SingleArticle;
-
 
 /**
  * The main class 

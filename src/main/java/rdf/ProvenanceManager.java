@@ -32,15 +32,12 @@ public class ProvenanceManager implements Runnable {
   private boolean variant;
   private DumpParser parser = null;
   private TripleExtractor tripleExtractor = null;
-  //private LogWriter logWriter = null;
   private ProvenanceWriter writer = null;
   private READVARIANT readVariant = null;
  
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
-  // ArrayList for differences between two Models
   ArrayList<Statement[]> differences = null;
   ArrayList<Statement[]> filteredDifferences = new ArrayList<Statement[]>();
-  // ArrayList for already found differences for the newest Model
   ArrayList<Statement> alreadyFoundDifferences = new ArrayList<Statement>();
 
 
