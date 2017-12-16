@@ -1,7 +1,6 @@
 package dump;
 
 import io.CLParser;
-import rdf.ProvenanceManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +14,6 @@ import java.io.PrintWriter;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -27,30 +25,22 @@ import org.apache.http.message.BasicNameValuePair;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import java.util.logging.Logger;
-
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+
 
 /**
  * class for getting the history of one specific article as a xml dump
  */
 public class SingleArticle {
   
-  private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
-  private static FileOutputStream fos;
 
-  /**
-   * variable for creating and deleting the articledumps directory
-   */
+  private FileOutputStream fos;
   private String timestamp;
-  private File tempDir ;
   private File dump;
   private static boolean success = false;  
   private static boolean begin = true;
@@ -59,11 +49,6 @@ public class SingleArticle {
   private String name = null; 
   private String language = null; 
   private String path;
-  
-  
-  
-  
-  
   private Page page;
   
   
@@ -211,10 +196,10 @@ public class SingleArticle {
 	
 	
 	
-  }
+  }//end setPathForArticle
   
   
-public void readPageDefault(){
+  public void readPageDefault(){
 
 		XmlMapper mapper = new XmlMapper();
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -224,21 +209,21 @@ public void readPageDefault(){
 		
 		try {
 		
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(path)
+		  br = new BufferedReader(new InputStreamReader(new FileInputStream(path)
                 , "UTF-8"));
-		parser = XMLInputFactory.newInstance()
+		  parser = XMLInputFactory.newInstance()
 	              .createXMLStreamReader(br);
 		
-	     // XMLInputFactory.newInstance().createFilteredReader(parser, new Filter());
+	 
 	      // set up the filter
 	      XMLInputFactory.newInstance().createFilteredReader(parser, new Filter(0, 1));
 	      
-	     page = null;
+	      page = null;
 		
-			page = mapper.readValue(parser, Page.class);
+		  page = mapper.readValue(parser, Page.class);
 			
-			timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
-			System.out.println(timestamp);
+		  timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
+
 		}catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
 			
 			System.out.println("SingleArticle: InvalidDefinitionException" );
@@ -253,22 +238,7 @@ public void readPageDefault(){
 			
 		}
 		
-}
-  
-  
-  
-  /**
-   * deleting the directory and all files in it
-   */
-  public void delete() {
-    try {
-      FileUtils.deleteDirectory(tempDir);
-    }
-    catch (IOException e) {
-      //Log.error(e, "Cannot delete files or directory!");
-      logger.log(Level.SEVERE, "Cannot delete files or directory!", e);
-    }
-  }
+	}// end readPageDefault
   
   
 }

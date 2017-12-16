@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeSet;
@@ -130,6 +131,8 @@ public class CLParser extends JCommander {
 		 
 		 
 		 this.timeFrame = new TimeFrame(earlier, later);
+		 
+		 
 		 if(timeFrame.getTimeFrame() != null){
 			 
 			 readvariant = READVARIANT.ReadTimeFiltered;
@@ -168,11 +171,20 @@ public class CLParser extends JCommander {
 			 if(singleArticle != null) {
 				
 				 SingleArticle singelArticel;
+				 String timestamp;
 				 
 				 
+				 if(timeFrame.getTimeFrame() != null){
+					
+				 timestamp = later + "T00:00:00Z";
 				
+					 
+				 }else {
+					 
+					 timestamp = "";
+				 }
 				 
-				 String timestamp = "";
+				  
 				  while(true) {
 				 
 		
@@ -186,19 +198,53 @@ public class CLParser extends JCommander {
 						
 						PrintWriter wr;
 						try {
+							
 						  wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
 			        	  wr.println("</page>");
 			        	  wr.println("</mediawiki>");
 			        	  wr.close();
 			        	  
-						} catch (IOException e) {
+						 } catch (IOException e) {
 							// TODO Auto-generated catch block
 							System.out.println("CLParser: Writer");
-						}
+						 }
 					
-						  new File("ArticleDumps/tmp.xml").delete();
-						  break;
+						 new File("ArticleDumps/tmp.xml").delete();
+						 break;
+					   }
+					  
+					   try {
+						  
+					   Date timestampToDate = new SimpleDateFormat("yyyy-MM-dd")
+										.parse(timestamp);
+						
+					   Date earlierToDate = new SimpleDateFormat("yyyy-MM-dd")
+									.parse(earlier);
+							
+					   if(timestampToDate.before(earlierToDate)) {
+						  
+						 PrintWriter wr;
+						 try {
+								
+						   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+				           wr.println("</page>");
+				           wr.println("</mediawiki>");
+				           wr.close();
+				        	  
+						 } catch (IOException e) {
+							// TODO Auto-generated catch block
+							System.out.println("CLParser: Writer");
+						 }
+						
+						 new File("ArticleDumps/tmp.xml").delete();
+						 break;
 					  }
+					  
+					  } catch (ParseException e1) {
+							System.out.println("CLParser: Date parse Exception");
+						}
+					  
+					  
 				  }// end while
 				  path = new File("ArticleDumps").toString();
 			}
