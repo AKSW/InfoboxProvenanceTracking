@@ -172,7 +172,10 @@ public class CLParser extends JCommander {
 				
 				 SingleArticle singelArticel;
 				 String timestamp;
-				 
+				 if(new File("ArticleDumps/"+singleArticle+".xml").exists()) {
+					 
+					 new File("ArticleDumps/"+singleArticle+".xml").delete();
+				 }
 				 
 				 if(timeFrame.getTimeFrame() != null){
 					
