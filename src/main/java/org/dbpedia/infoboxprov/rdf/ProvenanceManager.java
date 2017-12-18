@@ -1,4 +1,4 @@
-package rdf;
+package org.dbpedia.infoboxprov.rdf;
 
 
 import java.io.IOException;
@@ -10,10 +10,8 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
-
-import dump.DumpParser;
-
-import io.READVARIANT;
+import org.dbpedia.infoboxprov.dump.DumpParser;
+import org.dbpedia.infoboxprov.io.READVARIANT;
 
 
 /**

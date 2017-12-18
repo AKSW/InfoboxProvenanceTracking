@@ -1,5 +1,5 @@
 
-package dump;
+package org.dbpedia.infoboxprov.dump;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

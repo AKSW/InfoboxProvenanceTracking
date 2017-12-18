@@ -1,4 +1,4 @@
-package io;
+package org.dbpedia.infoboxprov.io;
 
 import java.io.File;
 import java.io.IOException;

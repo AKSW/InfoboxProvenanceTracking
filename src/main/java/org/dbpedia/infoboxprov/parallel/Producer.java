@@ -1,9 +1,9 @@
-package parallel;
-
-import io.CLParser;
-import io.FileHandler;
+package org.dbpedia.infoboxprov.parallel;
 
 import java.util.concurrent.ArrayBlockingQueue;
+
+import org.dbpedia.infoboxprov.io.CLParser;
+import org.dbpedia.infoboxprov.io.FileHandler;
 
 
 

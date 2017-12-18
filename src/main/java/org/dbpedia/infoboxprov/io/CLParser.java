@@ -1,4 +1,4 @@
-package io;
+package org.dbpedia.infoboxprov.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,13 +14,11 @@ import java.util.TreeSet;
 
 
 import org.apache.jena.atlas.logging.Log;
-
+import org.dbpedia.infoboxprov.dump.SingleArticle;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-
-import dump.SingleArticle;
 
 
 public class CLParser extends JCommander {

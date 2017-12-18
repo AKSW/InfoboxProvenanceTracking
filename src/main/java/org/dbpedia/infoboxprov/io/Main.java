@@ -1,8 +1,8 @@
-package io;
-
-import parallel.*;
+package org.dbpedia.infoboxprov.io;
 
 import java.util.concurrent.ArrayBlockingQueue;
+
+import org.dbpedia.infoboxprov.parallel.*;
 
 /**
  * The main class 

@@ -1,4 +1,4 @@
-package rdf;
+package org.dbpedia.infoboxprov.rdf;
 
 import java.util.ArrayList;
 

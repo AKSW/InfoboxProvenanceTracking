@@ -1,4 +1,4 @@
-package rdf;
+package org.dbpedia.infoboxprov.rdf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,8 +18,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
 //import org.slf4j.event.Level;
 import org.apache.jena.rdf.model.StmtIterator;
-
-import dump.Revision;
+import org.dbpedia.infoboxprov.dump.Revision;
 
 //import static com.jayway.buildnumber.PropertiesFileReader.getGitSha1;
 

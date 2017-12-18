@@ -1,5 +1,5 @@
 
-package dump;
+package org.dbpedia.infoboxprov.dump;
 
 
 import java.io.BufferedInputStream;

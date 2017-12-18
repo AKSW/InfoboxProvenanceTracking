@@ -1,5 +1,5 @@
 
-package dump;
+package org.dbpedia.infoboxprov.dump;
 
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLStreamConstants;

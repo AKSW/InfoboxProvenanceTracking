@@ -1,4 +1,4 @@
-package dump;
+package org.dbpedia.infoboxprov.dump;
 
 
 import com.fasterxml.jackson.databind.DeserializationFeature;

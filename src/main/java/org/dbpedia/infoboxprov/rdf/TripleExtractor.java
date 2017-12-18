@@ -1,4 +1,4 @@
-package rdf;
+package org.dbpedia.infoboxprov.rdf;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

@@ -1,4 +1,4 @@
-package io;
+package org.dbpedia.infoboxprov.io;
 
 /**
  * Enumeration to store different readvariants
