@@ -42,7 +42,9 @@ import java.util.List;
  */
 public class SingleArticle {
   
-
+  final private int MIN =1;
+  final private int MAX =1000;
+	
   private FileOutputStream fos;
   private String timestamp;
   private TimeFrame timeFrame ;
@@ -149,7 +151,7 @@ public class SingleArticle {
 	  
 	  if(success) {
 		  limit = limit + 50;
-		  if (limit > 1000) { limit = 1000;}
+		  if (limit > MAX) { limit = MAX;}
 	  }
 	  
 	  
@@ -186,7 +188,7 @@ public class SingleArticle {
 	        	  success = false;
 	         	 
 	        	  limit = limit - 200;
-	        	  if(limit < 1) {limit = 1;}
+	        	  if(limit < MIN) {limit = MIN;}
 	        	  
 	          }else {
 	        	  success = true;
