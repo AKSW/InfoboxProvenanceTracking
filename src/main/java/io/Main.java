@@ -26,13 +26,13 @@ public class Main {
 		
 		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		  
-		  Producer producer = new Producer(queue, clParser.getPath());
+		  Producer producer = new Producer(queue, clParser , clParser.getPath());
   		  producer.start();
   		  
   		for(int i= 0; i < clParser.getThreadsF(); i++)
 		{
   			
-  			new Consumer(queue,clParser, "File" + i).start();
+  			new Consumer(queue, clParser , "File" + i).start();
 		}
 			
 	}// end main

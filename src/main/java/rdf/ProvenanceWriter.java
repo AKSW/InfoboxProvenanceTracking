@@ -133,10 +133,10 @@ public class ProvenanceWriter {
 	  while ( stmts.hasNext() ) {
 		  String line = "";
 		  Statement triple = stmts.nextStatement();
-		  line += "<" + triple.getSubject() + "> ";
+		  line += "<" + triple.getSubject()   + "> ";
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
-	      line += "# triple does not exist\t";
+	      line += "# triple added"			  + "\t";
 	      line += revisionOfChange.toString() + "\n";
 	      wholeDifferernces.add(line);
 

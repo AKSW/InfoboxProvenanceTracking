@@ -1,6 +1,7 @@
 package dump;
 
 import io.CLParser;
+import io.TimeFrame;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +11,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -41,25 +46,27 @@ public class SingleArticle {
 
   private FileOutputStream fos;
   private String timestamp;
+  private TimeFrame timeFrame ;
   private File dump;
   private static boolean success = false;  
   private static boolean begin = true;
   private static boolean end = false;
-  private static int limit = 500;
+  private static boolean firstRun = true;
+  private static int limit = 1000;
   private String name = null; 
   private String language = null; 
-  private String path;
+  private String path = null;
   private Page page;
   
   
   public SingleArticle(CLParser clParser) {
 	this.name = clParser.getSingleArticle();
 	this.language = clParser.getLanguage();
-	
+	this.timeFrame = clParser.getTimeFrame();
 	
 	if(!new File("ArticleDumps").isDirectory())
 	{
-		new File("ArticleDumps").mkdirs();
+		new File("ArticleDumps").mkdir();
 	}
 	
   }
@@ -74,129 +81,194 @@ public class SingleArticle {
   }
   
   
-  public void setPathForArticle(String offset) {
+  public boolean  setPathForArticle(String offset) {
   
- 
-  if(success) {limit = limit + 50;}
- 
+  if(firstRun && timeFrame.getTimeFrame() == null) {
 	  
-  File tmp = null;
-  HttpResponse response = null;
-
-  
-	    try {
+  	URL url = null;
+  	try {
+	      url = new URL("https://" + language
+	        + ".wikipedia.org/w/index.php?title=Special:Export&pages="
+	        + name + "&history");
+	}
+	    catch (MalformedURLException e) {
 	    	
-	    boolean done = true;	
-	     
-	      do { 
-	      CloseableHttpClient client = HttpClients.createDefault();
-	      HttpPost post;
-	      
-	     
-	      
-	      if(offset.isEmpty()) {
-	    	 post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&action=submit");
-	      
-	      }else {
-	      
-	         post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&offset="+offset+"&action=submit");  
-	      } 
-          List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-          nameValuePairs.add(new BasicNameValuePair("-d",""));
-          nameValuePairs.add(new BasicNameValuePair("-H","'Accept-Encoding: gzip,deflate'"));
-          nameValuePairs.add(new BasicNameValuePair("--compressed",""));
-          post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-          response = client.execute(post);
-           
-          
-          if(response.getStatusLine().getStatusCode()!=200) {
-        	  success = false;
-         	 
-        	  limit = limit - 200;
-        	  
-          }else {
-        	  success = true;
-        	  done = false;
-          }
-          
-          
-	      }while(done);  
-          
+	    	System.out.println(e);
+	 
+	}
+  	
+  	
+  	HttpURLConnection connection;
+  	int code = 0;
+	try {
+		
+		connection = (HttpURLConnection)url.openConnection();
+		connection.setRequestMethod("GET");
+		connection.connect();
+		
+		code = connection.getResponseCode();
+		
+	} catch (IOException e) {
+		
+	} 
+  	
+	if(code != 200) {
+		
+		postRequest(offset);
+		firstRun=false;
+		return true;
+	}
+  
+  	
+  	
+	dump = new File("ArticleDumps/"+name+".xml");
 	    
-	      tmp = new File("ArticleDumps/tmp.xml");
-	     
-          ReadableByteChannel rbc = Channels.newChannel(response.getEntity().getContent()); 
-          fos = new FileOutputStream(tmp);
-          fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-          fos.close();
-          rbc.close();
-            
-          
-          BufferedReader br;
-          br = new BufferedReader(new InputStreamReader(new FileInputStream("ArticleDumps/tmp.xml")
-                  , "UTF-8"));
-          dump = new File("ArticleDumps/"+name+".xml");
-          List<String> lines = new ArrayList<String>();
-          
-          String in ="";
-          while((in=br.readLine())!=null) {
-        	  lines.add(in);
-        	 
-          }
-          
-          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
-          
-          end = true;
-          }
-        
-          if(begin) {
-        	  
-        	  lines.remove(lines.size()-1);
-              lines.remove(lines.size()-1);
-        	  begin = false;
-        	  
-        	  PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
-              for (String line : lines)
-                  wr.println(line);
-              wr.close();
-              
-          }else if(!end){
-        	  
-        	  while(true ){
-        		
-        		  	if(!lines.get(0).contains("<revision>")) {
-        		  		lines.remove(0);
-        		  	}else {
-        		  		break;
-        		  	}
-        		  
-        	  
-        		  	
-        	  }
-        	  
-        	  lines.remove(lines.size()-1);
-              lines.remove(lines.size()-1);
-              
-              PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
-              for (String line : lines)
-                  wr.println(line);
-              wr.close();
-        	  
-          }
-          
-          br.close();
-          
-        
-      } catch (IOException e) {
-    	  System.out.println(e);
-      }
-  	 
-	path = tmp.getAbsoluteFile().toString();
+	try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
+	      fos = new FileOutputStream(dump);
+	       fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+	        fos.close();
+	        rbc.close();
+	 }catch (IOException e) {
+	        System.out.println(e);
+	 }
+
+	return false;
 	
-	
-	
+  }else {
+	  
+	  
+	  postRequest(offset);
+	  return true;
+  }
 	
   }//end setPathForArticle
+  
+  
+  
+  public void postRequest(String offset) {
+	  
+	  
+	  if(success) {
+		  limit = limit + 50;
+		  if (limit > 1000) { limit = 1000;}
+	  }
+	  
+	  
+	  File tmp = null;
+	  HttpResponse response = null;
+
+	  
+		    try {
+		    	
+		    boolean done = true;	
+		     
+		      do { 
+		      CloseableHttpClient client = HttpClients.createDefault();
+		      HttpPost post;
+		      
+		     
+		      
+		      if(offset.isEmpty()) {
+		    	 post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&action=submit");
+		      
+		      }else {
+		      
+		         post = new HttpPost("https://"+language+".wikipedia.org/w/index.php?title=Special:Export&pages="+name+"&dir=desc&limit="+limit+"&offset="+offset+"&action=submit");  
+		      } 
+	          List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+	          nameValuePairs.add(new BasicNameValuePair("-d",""));
+	          nameValuePairs.add(new BasicNameValuePair("-H","'Accept-Encoding: gzip,deflate'"));
+	          nameValuePairs.add(new BasicNameValuePair("--compressed",""));
+	          post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	          response = client.execute(post);
+	           
+	          
+	          if(response.getStatusLine().getStatusCode()!=200) {
+	        	  success = false;
+	         	 
+	        	  limit = limit - 200;
+	        	  if(limit < 1) {limit = 1;}
+	        	  
+	          }else {
+	        	  success = true;
+	        	  done = false;
+	          }
+	          
+	          
+		      }while(done);  
+	          
+		    
+		      tmp = new File("ArticleDumps/tmp.xml");
+		     
+	          ReadableByteChannel rbc = Channels.newChannel(response.getEntity().getContent()); 
+	          fos = new FileOutputStream(tmp);
+	          fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+	          fos.close();
+	          rbc.close();
+	            
+	          
+	          BufferedReader br;
+	          br = new BufferedReader(new InputStreamReader(new FileInputStream("ArticleDumps/tmp.xml")
+	                  , "UTF-8"));
+	          dump = new File("ArticleDumps/"+name+".xml");
+	          List<String> lines = new ArrayList<String>();
+	          
+	          String in ="";
+	          while((in=br.readLine())!=null) {
+	        	  lines.add(in);
+	        	 
+	          }
+	          
+	          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
+	          
+	          end = true;
+	          }
+	        
+	          if(begin) {
+	        	  
+	        	  lines.remove(lines.size()-1);
+	              lines.remove(lines.size()-1);
+	        	  begin = false;
+	        	  
+	        	  PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
+	              for (String line : lines)
+	                  wr.println(line);
+	              wr.close();
+	              
+	          }else if(!end){
+	        	  
+	        	  while(true ){
+	        		
+	        		  	if(!lines.get(0).contains("<revision>")) {
+	        		  		lines.remove(0);
+	        		  	}else {
+	        		  		break;
+	        		  	}
+	        		  
+	        	  
+	        		  	
+	        	  }
+	        	  
+	        	  lines.remove(lines.size()-1);
+	              lines.remove(lines.size()-1);
+	              
+	              PrintWriter wr = new PrintWriter(new FileWriter(dump,true));
+	              for (String line : lines)
+	                  wr.println(line);
+	              wr.close();
+	        	  
+	          }
+	          
+	          br.close();
+	          
+	        
+	      } catch (IOException e) {
+	    	  System.out.println(e);
+	      }
+		   
+		path = tmp.getAbsoluteFile().toString();
+	  
+  }
   
   
   public void readPageDefault(){

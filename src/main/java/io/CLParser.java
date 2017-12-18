@@ -178,7 +178,7 @@ public class CLParser extends JCommander {
 				 }
 				 
 				 if(timeFrame.getTimeFrame() != null){
-					
+			
 				 timestamp = later + "T00:00:00Z";
 				
 					 
@@ -192,7 +192,11 @@ public class CLParser extends JCommander {
 				 
 		
 					  singelArticel = new SingleArticle(this);
-					  singelArticel.setPathForArticle(timestamp);
+					  if(!singelArticel.setPathForArticle(timestamp)) {
+			
+						  break;
+					  }
+					  
 					  singelArticel.readPageDefault();
 					
 					  timestamp = singelArticel.getTimestampt();
@@ -249,7 +253,9 @@ public class CLParser extends JCommander {
 					  
 					  
 				  }// end while
-				  path = new File("ArticleDumps").toString();
+				  
+				  path = "ArticleDumps/"+singleArticle+".xml";
+		
 			}
 			
 			 
