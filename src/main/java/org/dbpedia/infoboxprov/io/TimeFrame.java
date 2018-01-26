@@ -4,7 +4,11 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.Date;
 
-
+/**
+ * Class for handling the timestamps inputed from the user
+ * 
+ * @author daniel
+ */
 
 public class TimeFrame {
 	

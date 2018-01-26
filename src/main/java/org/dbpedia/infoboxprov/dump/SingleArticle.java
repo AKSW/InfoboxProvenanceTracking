@@ -39,6 +39,8 @@ import java.util.List;
 
 /**
  * class for getting the history of one specific article as a xml dump
+ * 
+ * @author daniel
  */
 public class SingleArticle {
   
@@ -83,9 +85,9 @@ public class SingleArticle {
   
   
   public boolean  setPathForArticle(String offset) {
-  
+
   if(firstRun && timeFrame.getTimeFrame() == null) {
-	  
+	
   	URL url = null;
   	try {
 	      url = new URL("https://" + language
@@ -114,7 +116,7 @@ public class SingleArticle {
 	} 
   	
 	if(code != 200) {
-		
+	
 		postRequest(offset);
 		firstRun=false;
 		return true;
@@ -136,7 +138,6 @@ public class SingleArticle {
 	return false;
 	
   }else {
-	  
 	  
 	  postRequest(offset);
 	  return true;
@@ -211,7 +212,7 @@ public class SingleArticle {
 	          BufferedReader br;
 	          br = new BufferedReader(new InputStreamReader(new FileInputStream("ArticleDumps/tmp.xml")
 	                  , "UTF-8"));
-	          dump = new File("ArticleDumps/"+name+".xml");
+	          dump = new File("ArticleDumps/" + name + ".xml");
 	          List<String> lines = new ArrayList<String>();
 	          
 	          String in ="";
@@ -219,10 +220,13 @@ public class SingleArticle {
 	        	  lines.add(in);
 	        	 
 	          }
-	          
+	        
 	          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
 	          
 	          end = true;
+	          
+	          
+	          
 	          }
 	        
 	          if(begin) {

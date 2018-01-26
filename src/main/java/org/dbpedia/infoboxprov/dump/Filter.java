@@ -7,8 +7,10 @@ import javax.xml.stream.XMLStreamReader;
 
 
 /**
+ * The Class Filter is used to skip the Jackson parsed pages and contribute the
+ * tasks between the used threads
+ * 
  * @author Daniel Pohl
- * @version 1.0 April 2017
  */
 class Filter implements StreamFilter {
 	

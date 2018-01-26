@@ -7,6 +7,8 @@ import java.util.Stack;
 
 /**
  * provides iterator for the dumps to be processed
+ * 
+ * @author daniel
  */
 public class FileHandler {
  

@@ -7,6 +7,8 @@ import org.apache.jena.rdf.model.StmtIterator;
 
 /**
  * Extracts the Tripels from an URI
+ * 
+ * @author daniel
  */
 public class TripleExtractor {
 

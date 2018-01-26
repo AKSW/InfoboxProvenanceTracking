@@ -10,6 +10,14 @@ import org.dbpedia.infoboxprov.dump.DumpParser;
 import org.dbpedia.infoboxprov.io.CLParser;
 import org.dbpedia.infoboxprov.rdf.ProvenanceManager;
 
+
+/**
+ * The Consumer Class takes the Fileentries out of the BlockingQueue and starts the 
+ * ProvenanceManager
+ * 
+ * @author daniel
+ */
+
 public class Consumer extends Thread implements Runnable{
 
 	

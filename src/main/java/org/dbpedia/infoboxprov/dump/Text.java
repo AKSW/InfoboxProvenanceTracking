@@ -5,7 +5,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 
 /**
- * provides the Text of the infobox
+ * Class needed temporary for reading the XML with Jackson and deserialized mapping
+ * 
+ * @author daniel
  */
 public class Text {
 

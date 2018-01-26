@@ -30,6 +30,8 @@ import org.dbpedia.infoboxprov.dump.Revision;
  * can see what has changed. After the 2 triples you always have the revision
  * object to see when the change was made and by who, you also get the exact
  * revision number of that change too.
+ * 
+ * @author daniel
  */
 public class ProvenanceWriter {
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
@@ -228,32 +230,5 @@ public class ProvenanceWriter {
       logger.log(Level.SEVERE,"Could not read or write file!" , e);
     }
   }
-
-  /**
-   * cleans all existing files with differences and writes the actual Date in
-   * the header
-   *
-   * @param path filePath
-   */
-//  public static void newRun(String path) {
-//	  
-//    try (Writer writer = new OutputStreamWriter(new FileOutputStream(
-//      "threadfile//" + path + ".tsv", false))) {
-//      String creationDate = new SimpleDateFormat(
-//        "yyyy-MM-dd'T'kk:mm:ss'Z'")
-//        .format(Calendar.getInstance().getTime());
-//    //  writer.write(creationDate + " " + getGitSha1() + "\n");
-//    }
-//    catch (FileNotFoundException e) {
-//     // Log.error(e, "File not found!");
-//    	logger.log(Level.SEVERE,"File not found!" , e);
-//    }
-//    catch (IOException e) {
-//    	logger.log(Level.SEVERE,"Could not read or write file!" , e);
-//    }
-//  }
-  
- 
-
 
 }

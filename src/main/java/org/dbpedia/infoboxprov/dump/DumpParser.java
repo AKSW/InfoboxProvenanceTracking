@@ -18,6 +18,25 @@ import java.util.Date;
 import java.util.TreeSet;
 
 
+/**
+ * Class for parsing the DumpFiles using the JacksonFramework
+ * 
+ * The fileiterators are oriented on the <page> </page> tags and set up at the
+ * setParser() methode
+ * 
+ * The setParser() methode also set up how many pages will be skipped at every equivalenceclass.
+ * It means the calls  setParser(path , 0, 3), setParser(path , 1, 3) , setParser(path , 2, 3)
+ * will lead to the following result.
+ * 
+ * The first  iterator reads the pages 0, 3, 6, 9, ...
+ * The second iterator reads the pages 1, 4, 7, 10, ...
+ * The third  iterator reads the pages 2, 5, 8, 11, ...
+ * 
+ * This equivalenceclasses are determined through the number of used threads
+ * 
+ * @author daniel
+ */
+
 public class DumpParser {
 	
   // timestamp used to determine the offset during processing a singleArticle
@@ -26,7 +45,6 @@ public class DumpParser {
   private XMLStreamReader parser;
   private XMLStreamReader filteredParser;
   private Page page;
-  private TreeSet<Integer> finishedArticles;
   private Date[] extractionTimeFrame;
   public static final String CAN_T_READ_MORE_PAGES = "Can't read more pages";
 
@@ -42,7 +60,6 @@ public class DumpParser {
     this.mapper = new XmlMapper();
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-    this.finishedArticles = finishedArticles;
     this.extractionTimeFrame = extractionTimeFrame;
   }
 
@@ -146,7 +163,6 @@ public class DumpParser {
     }
     
     
-    
     filteredParser.next();
     return true;
   }
@@ -207,116 +223,7 @@ public class DumpParser {
     return true;
   }
 
-  /**
-   * CASE: timefiltered, rerun
-   * filters revisions, which are not in the finishedArticles,
-   * so there are just pages which have infoboxes left and
-   * deletes revisions where the infobox is equal, and deletes revisions which
-   * are not in the timeframe
-   * @return boolean if new Page (true) or not (false)
-   * @throws IOException IOException
-   * @throws XMLStreamException XMLStreamException
-   */
-  public boolean readTimeFilteredRerun() throws
-          IOException, XMLStreamException {
-
-    try {
-      page = mapper.readValue(parser, Page.class);
-   
-    } catch (java.util.NoSuchElementException e) {
-      // if no new page is in the dump
-      // Log.error(e, CAN_T_READ_MORE_PAGES);
-      return false;
-    }
-
-    if ( !finishedArticles.contains(page.getId())) {
-
-      // reverse order of revisions, so the oldest one ist in index 0
-      Collections.sort(page.getRevision(), Collections.reverseOrder());
-
-      // filter revisions default
-      for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-     	 
-    	  standardFilter(i);  
-      
-      }
-      
-      // filter revisions time
-      for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-
-        i = dateFilter(i, extractionTimeFrame);
-
-      }
-
-      // eventually remove the first revision
-      // (which doesn't get filtered by standardFilter())
-      if(page.getRevision().get(0).getTemplates().isEmpty()) {
-   	   page.getRevision().remove(0);
-      }
-
-      // if no revisions are left, page is irrelevant
-      if (page.getRevision().isEmpty()) {
-        page = null;
-      }
-    }
-    else {
-      page = null;
-    }
-    filteredParser.next();
-    return true;
-  }
-
-  /**
-   * CASE: rerun
-   * filters revisions, which are not in the finishedArticles,
-   * so there are just pages which have infoboxes left and
-   * deletes revisions where the infobox is equal
-   * @return boolean if new Page (true) or not (false)
-   * @throws IOException IOException
-   * @throws XMLStreamException XMLStreamException
-   */
-  public boolean readPageRerun() throws
-          IOException, XMLStreamException {
-
-    try {
-      page = mapper.readValue(parser, Page.class);
-   
-    } catch (java.util.NoSuchElementException e) {
-      // if no new page is in the dump
-      // Log.error(e, CAN_T_READ_MORE_PAGES);
-      return false;
-    }
-
-    if (!finishedArticles.contains(page.getId())) {
-
-      // reverse order of revisions, so the oldest one ist in index 0
-      Collections.sort(page.getRevision(), Collections.reverseOrder());
-
-      for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-     	
-    	  standardFilter(i);  
-     	 
-      }
-
-      // eventually remove the first revision
-      // (which doesn't get filtered by standardFilter())
-      if(page.getRevision().get(0).getTemplates().isEmpty()) {
-   	   page.getRevision().remove(0);
-      }
-
-      
-      
-      // if no revisions are left, page is irrelevant
-      if (page.getRevision().isEmpty()) {
-        page = null;
-      }
-    }
-    else {
-      page = null;
-    }
-    filteredParser.next();
-    return true;
-  }
+  
 
   
   /**

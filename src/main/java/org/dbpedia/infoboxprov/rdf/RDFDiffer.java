@@ -11,7 +11,8 @@ import org.apache.jena.rdf.model.StmtIterator;
 /**
  * Class to find the differences between two RDF graphs and to map the triples
  * that have changed
- *
+ * 
+ * @author daniel
  */
 public class RDFDiffer {
 	
@@ -34,14 +35,7 @@ public class RDFDiffer {
 	
   }
   
-  public RDFDiffer(Model newModel, Model oldModel ,ArrayList<Statement[]> addedTriple) {
-
-
-	  this.newModel = newModel;
-	  this.oldModel = oldModel;
-	  this.addedTriple = addedTriple;
-	
-  }
+  
   
   
   public Model getNewModel() {
@@ -53,12 +47,8 @@ public class RDFDiffer {
   }
   
   /**
-   * Method gets two models, finds their differences and maps the triples that
+   * Method finds the differences between the  initialized models and maps the triples that
    * have changed
-   *
-   * @param newModel contains the newer rdf-version of the article
-   * @param oldModel contains the older rdf-version of the article
-   * @return ArrayList with the old Triples and the corresponding new Triples
    */
   public void determineLeftDifferences(  ) {
 	 
@@ -118,6 +108,10 @@ public class RDFDiffer {
     return;
   }
   
+  /**
+   * Method finds the differences between the  initialized models and maps the triples that
+   * have changed
+   */
   public void determineLeftRightDifferences(  ) {
 		 
 	 

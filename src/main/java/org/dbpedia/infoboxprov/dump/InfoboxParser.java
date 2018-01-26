@@ -12,22 +12,13 @@ import java.util.regex.Pattern;
 /**
  * Class for reading String and checking the availability of infoboxes
  *
+ * @author daniel
  */
 public class InfoboxParser {
 
-  /**
-   * the infobox text
-   */
   
-
   ArrayList<String> templates = null;
  
-  /**
-   * constructor creates a new InfoboxParser object and keeps only the infobox
-   * text
-   *
-   * @param input the complete revision text
-   */
   public InfoboxParser(String input) {
 	  this.templates = new ArrayList<>();
 	  

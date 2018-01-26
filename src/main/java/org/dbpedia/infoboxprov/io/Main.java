@@ -6,6 +6,8 @@ import org.dbpedia.infoboxprov.parallel.*;
 
 /**
  * The main class 
+ * 
+ * @author daniel
  */
 public class Main {
 
@@ -22,7 +24,10 @@ public class Main {
 		  CLParser clParser = new CLParser(args);
 		  clParser.validate();
 		
-		 
+		 /**
+		  * To process multiple files a BlockingQueue is used. The number is controlled through the
+		  * threadF parameter and the files are collected from the directory ArticleDumps.
+		  */
 		
 		  ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		  

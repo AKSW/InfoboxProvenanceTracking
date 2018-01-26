@@ -10,7 +10,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Class for easy revision handling
+ * Class needed temporary for reading the XML with Jackson and deserialized mapping
+ * 
+ * @author daniel
  */
 public class Revision implements Comparable<Revision> {
 

@@ -8,7 +8,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.ArrayList;
 
 /**
- * Creates Page Object with revison, id, titel
+ * Class needed temporary for reading the XML with Jackson and deserialized mapping
+ * 
+ * @author daniel
  */
 
 @JacksonXmlRootElement(localName = "page")

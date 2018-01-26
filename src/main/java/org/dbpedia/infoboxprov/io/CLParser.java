@@ -1,9 +1,6 @@
 package org.dbpedia.infoboxprov.io;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,13 +10,17 @@ import java.util.Date;
 import java.util.TreeSet;
 
 
-import org.apache.jena.atlas.logging.Log;
 import org.dbpedia.infoboxprov.dump.SingleArticle;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+/**
+ * Class for parsing the comandline and determine the wanted READVARIANT
+ * 
+ * @author daniel
+ */
 
 public class CLParser extends JCommander {
 	
@@ -33,20 +34,16 @@ public class CLParser extends JCommander {
 	 private String later = newDate;
 	 @Parameter(names={"-earlier", "-e"} , description = "Earliest timestamp (Date in yyyy-MM-dd) to extract", required = false)
 	 private String earlier = "2001-01-02";
-	 @Parameter(names={"-rerun", "-r"} , description = "Rerun program after a crash", required = false)
-	 private boolean rerun = false;
 	 @Parameter(names="-path" , description = "Path to the dump containing directory", required = false)
 	 private String path = null;
 	 @Parameter(names={"-language", "-lang"}, description = "Dump Language", required = false)
 	 private String language = "en";
 	 @Parameter(names={"-threads", "-t"} , description = "Number of threads to run", required = false)
 	 private int threads = 1;
-	 @Parameter(names={"-threadsF", "-tf"} , description = "Number of parallel processed Files", required = false)
+	 @Parameter(names={"-threadsF", "-tf"} , description = "Number of parallel processed files", required = false)
 	 private int threadsF = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
-	 @Parameter(names={"-debug", "-d"} , description = "x", required = false)
-	 private boolean debug = false;
 	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
@@ -89,10 +86,6 @@ public class CLParser extends JCommander {
 		 return path;
 	 }
 	 
-	 public boolean getDebug(){
-		 return debug;
-	 }
-	 
 	 public String getLanguage(){
 		 return language;
 	 }
@@ -132,19 +125,10 @@ public class CLParser extends JCommander {
 		 
 		 
 		 if(timeFrame.getTimeFrame() != null){
-			 
+		
 			 readvariant = READVARIANT.ReadTimeFiltered;
 			
-		 } else if (rerun){
-			
-			 readvariant = READVARIANT.ReadRerun;
-			 readLogs("log");
-			 
-		 } else if (rerun && timeFrame.getTimeFrame() != null){
-			 
-			 readvariant = READVARIANT.ReadTimeFilteredRerun;
-			 readLogs("log");
-		 }
+		 } 
 		 
 		 try{
 			 
@@ -178,7 +162,7 @@ public class CLParser extends JCommander {
 				 if(timeFrame.getTimeFrame() != null){
 			
 				 timestamp = later + "T00:00:00Z";
-				
+					
 					 
 				 }else {
 					 
@@ -231,7 +215,7 @@ public class CLParser extends JCommander {
 						 PrintWriter wr;
 						 try {
 								
-						   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+						   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/" + singleArticle + ".xml"),true));
 				           wr.println("</page>");
 				           wr.println("</mediawiki>");
 				           wr.close();
@@ -274,32 +258,7 @@ public class CLParser extends JCommander {
 		 jCommander.usage();
 	 }
 	 
-	 /**
-	 * method to extract the article ids out of log files in /log/
-	 *
-	 * @param pathToLogs path to the logs created by an earlier run
-	 */
-	public void readLogs(String pathToLogs) {
-		File logDirectory = new File(pathToLogs);
-		finishedArticles = new TreeSet<>();
-		String temporaryArticleID;
-		for (File logFile : logDirectory.listFiles()) {
-			System.out.println(logFile.toString());
-			try (BufferedReader br = new BufferedReader(
-					new FileReader(logFile))) {
-				br.readLine();
-				while ((temporaryArticleID = br.readLine()) != null) {
-					System.out.println(temporaryArticleID);
-					finishedArticles.add(Integer.parseInt(temporaryArticleID));
-				}
-			} catch (FileNotFoundException e) {
-				Log.error(e, "File not found!");
-				continue;
-			} catch (IOException e) {
-				Log.error(e, "COULD_NOT_READ_OR_WRITE_CONTEXT");
-			}
-		}
-	}// end readLog
+	 
 	 
 	 
 	 

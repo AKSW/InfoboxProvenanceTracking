@@ -13,6 +13,8 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 /**
  * Class for reading bzip2 compressed files
+ * 
+ * @author daniel
  */
 public class Bz2Reader extends BufferedReader {
 

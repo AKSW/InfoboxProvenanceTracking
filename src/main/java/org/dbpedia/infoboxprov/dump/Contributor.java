@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
- * Class needed temporary for reading the XML with Jackson
+ * Class needed temporary for reading the XML with Jackson and deserialized mapping
+ * 
+ * @author daniel
  */
 public class Contributor {
 

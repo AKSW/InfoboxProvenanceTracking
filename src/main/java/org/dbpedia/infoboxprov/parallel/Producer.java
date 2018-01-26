@@ -6,7 +6,12 @@ import org.dbpedia.infoboxprov.io.CLParser;
 import org.dbpedia.infoboxprov.io.FileHandler;
 
 
-
+/**
+ * The Producer class collects all the files from the ArticleDump directory and
+ * send it to the BlockingQueue
+ * 
+ * @author daniel
+ */
 
 public class Producer extends Thread implements Runnable {
 

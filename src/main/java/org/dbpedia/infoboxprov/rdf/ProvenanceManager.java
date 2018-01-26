@@ -15,24 +15,23 @@ import org.dbpedia.infoboxprov.io.READVARIANT;
 
 
 /**
- * controls the flow of the second part of the programm
+ * The Class ProvenanceManager works in three steps.
+ * 
+ * 1. Handle the parameter lastChange to get either the wohle provenance of an article or just the last change of a triple
+ * 2. Starts the CLParser determined READVARIANT
+ * 3. Hand over the RDF Triple to the writer
+ * 
+ * @author daniel
  */
 public class ProvenanceManager implements Runnable {
 
-  /**
-   * language of article
-   */
+  
   private String language = null;
-
-  /**
-   * variant if whole provenance or just the last change of a triple
-   */
   private boolean variant;
   private DumpParser parser = null;
   private TripleExtractor tripleExtractor = null;
   private ProvenanceWriter writer = null;
   private READVARIANT readVariant = null;
- 
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
   ArrayList<Statement[]> differences = null;
   ArrayList<Statement[]> filteredDifferences = new ArrayList<Statement[]>();
@@ -40,7 +39,7 @@ public class ProvenanceManager implements Runnable {
 
 
   /**
-   * @param threadName       Name of the thrrad
+   * @param threadName       Name of the thread
    * @param path             Path to the Dumpfile
    * @param equivalenceClass used to separate between the different equivalence classes
    * @param language         language of the article
@@ -77,24 +76,16 @@ public class ProvenanceManager implements Runnable {
 
   @Override
   public void run() {
+	  // variant lastchange: get just the last change of each triple
 	  if (this.variant) {
     	
-    	// variant lastchange: get just the last change of each triple
-    	// switch betwenn the different readvariants
+		// switch between the different READVARIANT
         switch (readVariant) {
           case ReadDefault:
-           // LogWriter.newRun(threadName);
             lastChangeProvenanceDefault();
             break;
           case ReadTimeFiltered:
-           // LogWriter.newRun(threadName);
             lastChangeProvenanceTimeFiltered();
-            break;
-          case ReadTimeFilteredRerun:
-            lastChangeProvenanceTimeFrameRerun();
-            break;
-          case ReadRerun:
-            lastChangeProvenanceRerun();
             break;
           default:
 
@@ -103,23 +94,13 @@ public class ProvenanceManager implements Runnable {
     }
     else {
     	
-    	 // switch betwenn the different readvariants
+    	// switch between the different READVARIANT
         switch (readVariant) {
           case ReadDefault:
-            //ProvenanceWriter.newRun(threadName);
-          //  LogWriter.newRun(threadName);
             wholeProvenanceDefault();
             break;
           case ReadTimeFiltered:
-        // ProvenanceWriter.newRun(threadName);
-        //    LogWriter.newRun(threadName);
             wholeProvenanceTimeFiltered();
-            break;
-          case ReadTimeFilteredRerun:
-            wholeProvenanceTimeFrameRerun();
-            break;
-          case ReadRerun:
-            wholeProvenanceRerun();
             break;
           default:
         }
@@ -133,9 +114,7 @@ public class ProvenanceManager implements Runnable {
   }
   
   
-  // methode wich catch the wohle provenance
-  // and uses the readPageDefault methode from the 
-  // DumpParser class
+  
   public void wholeProvenanceDefault() {
 
     try {
@@ -150,15 +129,11 @@ public class ProvenanceManager implements Runnable {
       }// end while
     }//end try
     catch (IOException | XMLStreamException e) {
-     // log.error(e, "Could not read or write context");
     	logger.log( Level.INFO, "Exception occur", e );
     }
   }//end wholeProvenanceDefault
 
 
-  // methode wich catch the wohle provenance
-  // and uses the readPageTimeFiltered methode from the 
-  // DumpParser class
   public void wholeProvenanceTimeFiltered() {
 
     try {
@@ -176,50 +151,9 @@ public class ProvenanceManager implements Runnable {
     }
   }//end wholeProvenanceTimeFiltered
   
-  // methode wich catch the wohle provenance
-  // and uses the readPageTimeFrameRerun methode from the 
-  // DumpParser class
-  public void wholeProvenanceTimeFrameRerun() {
+  
 
-    try {
-      while (parser.readTimeFilteredRerun()) {
-    	  
-        if (parser.getPage() != null) {
-
-          wholeProvenance();
-
-        }//end if
-      }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
-  }//end wholeProvenanceTimeFrameRerun
-
-  // methode wich catch the wohle provenance
-  // and uses the readPageRerun methode from the 
-  // DumpParser class
-  public void wholeProvenanceRerun() {
-
-    try {
-      while (parser.readPageRerun()) {
-
- 
-        if (parser.getPage() != null) {
-
-          wholeProvenance();
-
-        }//end if
-      }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
-  }//end wholeProvenanceRerun
-
-  // methode wich catch the last change provenance
-  // and uses the readPageDefault methode from the 
-  // DumpParser class
+  
   public void lastChangeProvenanceDefault() {
     try {
       while (parser.readPageDefault()) {
@@ -235,9 +169,7 @@ public class ProvenanceManager implements Runnable {
     }
   }//end lastChangeProvenance
 
-  // methode wich catch the last change provenance
-  // and uses the readPageTimeFiltered methode from
-  // the DumpParser class
+ 
   public void lastChangeProvenanceTimeFiltered() {
 
     try {
@@ -255,45 +187,8 @@ public class ProvenanceManager implements Runnable {
     }
   }//end lastChangeProvenanceTimeFiltered
 
-  // methode wich catch the last change provenance
-  // and uses the readPageTimeFrameRerun methode from
-  // the DumpParser class
-  public void lastChangeProvenanceTimeFrameRerun() {
-
-    try {
-      while (parser.readTimeFilteredRerun()) {
-
-        if (parser.getPage() != null) {
-
-          lastChangeProvenance();
-
-        }//end if
-      }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
-  }//end lastChangeProvenanceTimeFrameRerun
-
-  // methode wich catch the last change provenance
-  // and uses the readPageRerun methode from
-  // the DumpParser class
-  public void lastChangeProvenanceRerun() {
-
-    try {
-      while (parser.readPageRerun()) {
-
-        if (parser.getPage() != null) {
-
-          lastChangeProvenance();
-
-        }//end if
-      }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-      logger.log( Level.INFO, "Exception occur", e );
-    }
-  }//end lastChangeProvenanceRerun
+  
+  
 
 
   /**
@@ -307,8 +202,7 @@ public class ProvenanceManager implements Runnable {
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
 	      this.language);
 	  
-	
-	  
+
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 		
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
@@ -336,8 +230,6 @@ public class ProvenanceManager implements Runnable {
 			}
 		}
 		newestModel = rdfDiffer.getNewModel();
-		
-		
 	}
 	   
 	writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
