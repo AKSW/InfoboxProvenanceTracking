@@ -31,9 +31,10 @@ After compiling, the .jar can be used with the following parameters
  -threads, -t  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of threads to run  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: 1  
-  -threadsF, -tf
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of parallel processed files
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: 1 
+ -threadsF, -tf  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of parallel processed files   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: 1  
+  
   e.g.:  
   -name miele -last  
   -path /src/test/resources/inputde -lang de -earlier 2014-10-09 -later 2016-12-30
