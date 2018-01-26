@@ -19,10 +19,12 @@ After compiling, the .jar can be used with the following parameters
  -later, -l  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last timestamp(Date in yyyy-MM-dd) to extract  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: Current date  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This parameter is also a possibility to trim the number of loaded revisions. In case it is set to 2015-01-01. The program loads all revisions from 2001-01-02 until 
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2015-01-01 excluding. The Wikipedia-Api doesn't support a trim of the lower 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This parameter is also a possibility to trim the number of loaded revisions. In case it is set to 2015-01-01. The program 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loads all revisions from 2001-01-02 until 
+    2015-01-01 excluding. The Wikipedia-Api doesn't support a trim of the lower 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boarder.
-  -name, -a  
+    
+ -name, -a  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name of the Article  
  -path  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Path to the dump containing directory    
