@@ -11,7 +11,7 @@ import org.dbpedia.infoboxprov.parallel.*;
  */
 public class Main {
 
-	public static String timestamp;
+
 	
 	/**
 	 * Main method for the project

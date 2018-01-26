@@ -1,5 +1,6 @@
 package org.dbpedia.infoboxprov.parallel;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.dbpedia.infoboxprov.io.CLParser;
@@ -19,12 +20,20 @@ public class Producer extends Thread implements Runnable {
 	private ArrayBlockingQueue<String> blockingQueue = null;
 	private FileHandler fh = null;
 	private CLParser clParser;
-
+	private File threadFile = null;
+	
 	public Producer(ArrayBlockingQueue<String> queue, CLParser clParser , String path) {
 		this.blockingQueue = queue; 
 		this.clParser = clParser;
+	
+		
+		 threadFile = new File("threadfile");
+		 if(!threadFile.exists()) {
+			 
+			 threadFile.mkdirs();}
 		
 		if(clParser.getSingleArticle() == null) {
+			
 		this.fh = new FileHandler(clParser.getPath());
 		
 		}

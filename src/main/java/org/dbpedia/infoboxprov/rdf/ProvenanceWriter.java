@@ -55,6 +55,7 @@ public class ProvenanceWriter {
         this.outputFile.delete();
       }
       
+      
       outputFile.createNewFile();
     }
     catch (Exception e) {

@@ -13,7 +13,7 @@ import java.util.Stack;
 public class FileHandler {
  
   private File dumpDirectory = null;
-  private File threadFile = null;
+ 
   private Stack<File> dumpDirectoryContents = null;
   private String fileEntry;
  
@@ -24,10 +24,9 @@ public class FileHandler {
    */
   public FileHandler(String pathToFolder){
 	  
-	  
 	 
-	 threadFile = new File("threadfile");
-	 if(!threadFile.exists()) {threadFile.mkdirs();}
+	 
+	
 	 
 	  try{
 		  
