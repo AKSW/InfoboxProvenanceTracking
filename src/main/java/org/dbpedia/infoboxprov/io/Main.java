@@ -13,8 +13,6 @@ public class Main {
 
 	public static String timestamp;
 	
-	
-	
 	/**
 	 * Main method for the project
 	 *
