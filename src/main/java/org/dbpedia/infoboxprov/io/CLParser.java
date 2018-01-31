@@ -44,7 +44,8 @@ public class CLParser extends JCommander {
 	 private int threadsF = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
-	 
+	 @Parameter(names={"-deamon"} , description = "Port for the webinterface", required = false)
+	 private int deamon = -1;
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
 	 private TreeSet<Integer> finishedArticles = null;
@@ -116,6 +117,10 @@ public class CLParser extends JCommander {
 	 
 	 public String getSingleArticle() {
 		 return singleArticle;
+	 }
+	 
+	 public int getPort() {
+		 return deamon;
 	 }
 	 
 	 public void validate(){

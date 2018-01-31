@@ -25,7 +25,7 @@ public class Consumer extends Thread implements Runnable{
 protected ArrayBlockingQueue<String> queue = null;	
 private CLParser clParser;
 private String threadName;
-
+private boolean finished;
 
 public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String threadName) {
 	
@@ -36,6 +36,8 @@ public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String thre
 	
 
 }
+
+
 
 @Override
 public void run() {
@@ -70,7 +72,6 @@ public void run() {
 			}// end for
 
 			executor.shutdown();
-
 
 
 			try {
