@@ -32,12 +32,15 @@ public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String thre
 	this.threadName = threadName;
 	this.queue = queue;
 	this.clParser = clParser;
+	this.finished = false;
 	new File("threadfile/" + threadName).mkdir(); 
 	
 
 }
 
-
+public boolean getFinished() {
+	return finished;
+}
 
 @Override
 public void run() {
@@ -72,12 +75,12 @@ public void run() {
 			}// end for
 
 			executor.shutdown();
-
+			
 
 			try {
 				while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {		 
 				}
-
+				finished = true;
 			} catch (InterruptedException e) {
 				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
 			}

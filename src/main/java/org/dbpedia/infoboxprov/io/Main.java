@@ -28,14 +28,14 @@ public class Main {
 		
 		
 		CLParser clParser = new CLParser(args);
-		clParser.validate();
+		//CLParser clParser = new CLParser("miele", "en");
 		  
 		/**
 		 * To process multiple files a BlockingQueue is used. The number is controlled through the
 		 * threadF parameter and the files are collected from the directory ArticleDumps.
 		 */
 			
-		ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
+		
 		  
 		  if(clParser.getPort()>=0) {
 			  
@@ -58,23 +58,14 @@ public class Main {
 			     server.start();
 			     System.out.println("Started!");
 			     
-			     Producer producer = new Producer(queue, clParser , clParser.getPath());
-			  		producer.start();
-			  		  
-			  		for(int i= 0; i < clParser.getThreadsF(); i++)
-					{
-			  			
-			  			new Consumer(queue, clParser , "File" + i).start();
-					}
-			  		
 			  
 			     server.join();
 			   
 		  }else {
-		    
-			  	Producer producer = new Producer(queue, clParser , clParser.getPath());
-			  	producer.start();
-  		  
+			  	ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
+			    clParser.validate();
+			    new Producer(queue, clParser , clParser.getPath()).start();
+			  
 			  	for(int i= 0; i < clParser.getThreadsF(); i++)
 			  	{
   			

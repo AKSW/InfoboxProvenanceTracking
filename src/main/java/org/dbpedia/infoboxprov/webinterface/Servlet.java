@@ -1,13 +1,20 @@
 package org.dbpedia.infoboxprov.webinterface;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.dbpedia.infoboxprov.io.CLParser;
+import org.dbpedia.infoboxprov.parallel.Consumer;
+import org.dbpedia.infoboxprov.parallel.Producer;
 
 /**
  * Servlet implementation class EchoServlet
@@ -17,27 +24,57 @@ public class Servlet extends HttpServlet {
 	   @Override
 	   public void doGet(HttpServletRequest request, HttpServletResponse response)
 	               throws IOException, ServletException {
+		   
+		   String title = request.getParameter("title");
+		   String language = request.getParameter("language");
+		   
+		   
+		   CLParser clParser = new CLParser(title, language);
+		   clParser.validate();
+		   ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
+		   
+		   new Producer(queue, clParser , clParser.getPath()).start();
+		   Consumer consumer = new Consumer(queue, clParser , "Web");
+		   consumer.start();
+		   
+		   while(!consumer.getFinished()) {
+			   System.out.println("Thread in process");
+			   
+			   try {
+				Thread.sleep(2000);
+			   } catch (InterruptedException e) {
+				   Thread.currentThread().interrupt();
+			   }
+			   
+		   }
+		   
+		   	  BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/Thread_0.tsv"));
+		   	  String tmp = "";
+		   
 		   // Set the response message's MIME type
 		      response.setContentType("text/html;charset=UTF-8");
-		      // Allocate a output writer to write the response message into the network socket
+		   // Allocate a output writer to write the response message into the network socket
 		      PrintWriter out = response.getWriter();
 		 
 		      // Write the response message, in an HTML page
 		      try {
-		         out.println("<!DOCTYPE html>");
-		         out.println("<html><head>");
-		         out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-		         out.println("<title>Hello, World</title></head>");
-		         out.println("<body>");
-		         out.println("<h1>Hello, world!</h1>");  // says Hello
-		         
-		         // Hyperlink "BACK" to input page
-		         out.println("<a href='index.html'>BACK</a>");
-		         
-		         out.println("</body>");
-		         out.println("</html>");
+		    	  
+		    	  while((tmp = br.readLine()) != null){
+		    		tmp =  tmp.replaceAll("<", "&lt");
+		    		tmp =  tmp.replaceAll(">", "&gt");
+		    		tmp = tmp.replaceAll("\t", "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp");
+		    		out.println(tmp + "<br>"); 
+		    	  }
+		    	 
+		    	  
 		      } finally {
 		         out.close();  // Always close the output writer
+		         br.close();
+		         new File("threadfile/Web/Thread_0.tsv").delete();
+		        
 		      }
-	}
+		        
+	   }
+	   
+	   
 }

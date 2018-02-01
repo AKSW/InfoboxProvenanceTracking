@@ -24,7 +24,8 @@ import com.beust.jcommander.ParameterException;
 
 public class CLParser extends JCommander {
 	
-	 private String newDate =new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+	 private String newDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+	 private String errorCode = "";
 	 
 	 @Parameter(names={"-help", "-h"} , description = "Print help information and exit", required = false)
 	 private boolean showHelp = false;
@@ -79,6 +80,12 @@ public class CLParser extends JCommander {
 		}
 	 }
 	 
+	 public CLParser(String singleArticle, String language) {
+		 this.singleArticle = singleArticle;
+		 this.language = language;
+		 
+	 }
+	 
 	 public CLParser getCLParser(){
 		 return this;
 	 }
@@ -123,6 +130,10 @@ public class CLParser extends JCommander {
 		 return deamon;
 	 }
 	 
+	 public String getErrorCode() {
+		 return errorCode;
+	 }
+	 
 	 public void validate(){
 		 
 		 
@@ -137,7 +148,7 @@ public class CLParser extends JCommander {
 		 
 		 try{
 			 
-			 
+			 if(deamon < 0) {
 			 if(singleArticle == null && path == null) 
 			 throw new ParameterException("Article name or dump path needed");  	 
 			 
@@ -153,6 +164,15 @@ public class CLParser extends JCommander {
 			 threadsF = 1;
 			 System.out.println("Set maxthread to 1 in case of single Article");
 			 System.out.println("Set maxthreadF to 1 in case of single Article");
+			 }
+			 
+			 }else {
+				 
+			 if(singleArticle == null) { 
+				 errorCode = "Article name needed"; 	
+			 } 
+			 threads = 1;
+			 threadsF = 1;
 			 }
 			 
 			 if(singleArticle != null) {
@@ -256,6 +276,9 @@ public class CLParser extends JCommander {
 	    
 		 
 	 }
+	 
+	
+	 
 	 
 	 public void help() {
 		 
