@@ -45,8 +45,8 @@ public class CLParser extends JCommander {
 	 private int threadsF = 1;
 	 @Parameter(names={"-lastchange", "-last"} , description = "Only last change to an existing triple will be saved", required = false)
 	 private boolean lastChange = false;
-	 @Parameter(names={"-deamon"} , description = "Port for the webinterface", required = false)
-	 private int deamon = -1;
+	 @Parameter(names={"-daemon"} , description = "Port for the webinterface", required = false)
+	 private int daemon = -1;
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
 	 private TreeSet<Integer> finishedArticles = null;
@@ -84,7 +84,7 @@ public class CLParser extends JCommander {
 	 public CLParser(String singleArticle, String language, int port) {
 		 this.singleArticle = singleArticle;
 		 this.language = language;
-		 this.deamon = port;
+		 this.daemon = port;
 		 this.tempID = UUID.randomUUID();
 	
 	 }
@@ -130,7 +130,7 @@ public class CLParser extends JCommander {
 	 }
 	 
 	 public int getPort() {
-		 return deamon;
+		 return daemon;
 	 }
 	 
 	 public String getErrorCode() {
@@ -155,7 +155,7 @@ public class CLParser extends JCommander {
 		 
 		 try{
 			 
-			 if(deamon < 0) {
+			 if(daemon < 0) {
 			 if(singleArticle == null && path == null) 
 			 throw new ParameterException("Article name or dump path needed");  	 
 			 
@@ -189,7 +189,7 @@ public class CLParser extends JCommander {
 				 
 				
 				 
-				 if(new File("ArticleDumps/"+singleArticle+".xml").exists() && deamon < 0) {
+				 if(new File("ArticleDumps/"+singleArticle+".xml").exists() && daemon < 0) {
 					 
 					 new File("ArticleDumps/"+singleArticle+".xml").delete();
 				 }
@@ -223,7 +223,7 @@ public class CLParser extends JCommander {
 						PrintWriter wr;
 						try {
 							
-							if(deamon >= 0) {
+							if(daemon >= 0) {
 								
 								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
 							
@@ -258,7 +258,7 @@ public class CLParser extends JCommander {
 						 PrintWriter wr;
 						 try {
 								
-							 if(deamon >= 0) {
+							 if(daemon >= 0) {
 									
 								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
 							
@@ -289,7 +289,7 @@ public class CLParser extends JCommander {
 					  
 				  }// end while
 				  
-				  if(deamon >= 0) {
+				  if(daemon >= 0) {
 					
 					  
 					  path = "ArticleDumps/"+singleArticle + tempID + ".xml";
