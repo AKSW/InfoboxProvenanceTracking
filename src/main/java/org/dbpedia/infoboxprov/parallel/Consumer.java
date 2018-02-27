@@ -26,6 +26,7 @@ protected ArrayBlockingQueue<String> queue = null;
 private CLParser clParser;
 private String threadName;
 private boolean finished;
+private String webAppName;
 
 public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String threadName) {
 	
@@ -35,7 +36,16 @@ public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String thre
 	this.finished = false;
 	new File("threadfile/" + threadName).mkdir(); 
 	
+	if(clParser.getPort() >= 0) {
+		
+		webAppName = "" + clParser.getTempID();
+		
+	}else {
+		
+		webAppName = "/Thread_";
+	}
 
+	System.out.println(webAppName);
 }
 
 public boolean getFinished() {
@@ -60,7 +70,7 @@ public void run() {
 			ExecutorService executor = Executors.newFixedThreadPool(clParser.getThreads());
 	 
 			for (int i = clParser.getThreads() - 1; i>=0; i-- ){
-						Runnable worker = new ProvenanceManager(threadName + "/Thread_" + i ,
+						Runnable worker = new ProvenanceManager(threadName + "/" + webAppName + i ,
 											path			            					, 
 											new DumpParser(clParser.getTimeFrame()
 																			 .getTimeFrame(),

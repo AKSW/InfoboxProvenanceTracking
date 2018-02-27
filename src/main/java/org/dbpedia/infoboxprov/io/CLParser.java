@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeSet;
-
+import java.util.UUID;
 
 import org.dbpedia.infoboxprov.dump.SingleArticle;
 
@@ -51,9 +51,10 @@ public class CLParser extends JCommander {
 	 private TimeFrame timeFrame = null;
 	 private TreeSet<Integer> finishedArticles = null;
 	 private JCommander jCommander = null;
+	 private UUID tempID;
 	 
 	 public CLParser(String[] args) {
-		 
+		 this.tempID = UUID.randomUUID();
 		jCommander = new JCommander(this);
 		try {
 			
@@ -80,10 +81,12 @@ public class CLParser extends JCommander {
 		}
 	 }
 	 
-	 public CLParser(String singleArticle, String language) {
+	 public CLParser(String singleArticle, String language, int port) {
 		 this.singleArticle = singleArticle;
 		 this.language = language;
-		 
+		 this.deamon = port;
+		 this.tempID = UUID.randomUUID();
+	
 	 }
 	 
 	 public CLParser getCLParser(){
@@ -134,6 +137,10 @@ public class CLParser extends JCommander {
 		 return errorCode;
 	 }
 	 
+	 public UUID getTempID() {
+		 return tempID;
+	 }
+	 
 	 public void validate(){
 		 
 		 
@@ -179,7 +186,10 @@ public class CLParser extends JCommander {
 				
 				 SingleArticle singelArticel;
 				 String timestamp;
-				 if(new File("ArticleDumps/"+singleArticle+".xml").exists()) {
+				 
+				
+				 
+				 if(new File("ArticleDumps/"+singleArticle+".xml").exists() && deamon < 0) {
 					 
 					 new File("ArticleDumps/"+singleArticle+".xml").delete();
 				 }
@@ -213,8 +223,16 @@ public class CLParser extends JCommander {
 						PrintWriter wr;
 						try {
 							
-						  wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
-			        	  wr.println("</page>");
+							if(deamon >= 0) {
+								
+								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
+							
+							}else {
+							
+								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+							}
+						  
+						  wr.println("</page>");
 			        	  wr.println("</mediawiki>");
 			        	  wr.close();
 			        	  
@@ -222,8 +240,8 @@ public class CLParser extends JCommander {
 							// TODO Auto-generated catch block
 							System.out.println("CLParser: Writer");
 						 }
-					
-						 new File("ArticleDumps/tmp.xml").delete();
+						
+						 new File("ArticleDumps/" + tempID + ".xml").delete();
 						 break;
 					   }
 					  
@@ -240,7 +258,15 @@ public class CLParser extends JCommander {
 						 PrintWriter wr;
 						 try {
 								
-						   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/" + singleArticle + ".xml"),true));
+							 if(deamon >= 0) {
+									
+								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
+							
+							}else {
+							
+								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+							}
+							 
 				           wr.println("</page>");
 				           wr.println("</mediawiki>");
 				           wr.close();
@@ -250,7 +276,9 @@ public class CLParser extends JCommander {
 							System.out.println("CLParser: Writer");
 						 }
 						
-						 new File("ArticleDumps/tmp.xml").delete();
+						 new File("ArticleDumps/" + tempID + ".xml").delete();
+						
+						 
 						 break;
 					  }
 					  
@@ -261,8 +289,15 @@ public class CLParser extends JCommander {
 					  
 				  }// end while
 				  
-				  path = "ArticleDumps/"+singleArticle+".xml";
-		
+				  if(deamon >= 0) {
+					
+					  
+					  path = "ArticleDumps/"+singleArticle + tempID + ".xml";
+				  
+				  }else {
+					  new File("ArticleDumps/tmp.xml").delete();
+					  path = "ArticleDumps/"+singleArticle + ".xml";
+				  }
 			}
 			
 			 

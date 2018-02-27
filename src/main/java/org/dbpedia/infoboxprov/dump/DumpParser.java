@@ -46,7 +46,7 @@ public class DumpParser {
   private XMLStreamReader filteredParser;
   private Page page;
   private Date[] extractionTimeFrame;
-  public static final String CAN_T_READ_MORE_PAGES = "Can't read more pages";
+  private BufferedReader reader;
 
 
   
@@ -81,8 +81,8 @@ public class DumpParser {
    * @throws IOException IOException
    * @throws CompressorException CompressorException
    */
-  public BufferedReader getFile(String path) throws IOException, CompressorException {
-    BufferedReader br;
+  public void setReader(String path) throws IOException, CompressorException {
+   
 
     // the filename extension
     String extension = "";
@@ -98,12 +98,12 @@ public class DumpParser {
     switch (extension) {
       case "xml":
       case "txt":
-        br = new BufferedReader(new InputStreamReader(new FileInputStream(path)
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)
                 , "UTF-8"));
         break;
       case "bz2":
         // calls Bz2Reader
-        br = new Bz2Reader(path);
+        reader = new Bz2Reader(path);
         break;
       default:
         // print error message
@@ -112,7 +112,7 @@ public class DumpParser {
         throw new IOException();
     }
 
-    return br;
+    
   }
   
   /**
@@ -136,6 +136,8 @@ public class DumpParser {
     }catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
     	System.out.println(e);
     } catch (java.util.NoSuchElementException e) {
+   
+      reader.close();
       
       return false;
     }
@@ -185,7 +187,9 @@ public class DumpParser {
  
     } catch (java.util.NoSuchElementException e) {
       // if no new page is in the dump
-      // Log.error(e, CAN_T_READ_MORE_PAGES);
+
+      reader.close();
+     
       return false;
     }
 
@@ -232,8 +236,9 @@ public class DumpParser {
    */
   public void setParser(String path, int tmp, int tmp2) {
 	    try {
+	      setReader(path);
 	      this.parser = XMLInputFactory.newInstance()
-	              .createXMLStreamReader(getFile(path));
+	              .createXMLStreamReader(reader);
 	     // XMLInputFactory.newInstance().createFilteredReader(parser, new Filter());
 	      // set up the filter
 	      this.filteredParser = XMLInputFactory.newInstance().createFilteredReader(parser, new Filter(tmp, tmp2));

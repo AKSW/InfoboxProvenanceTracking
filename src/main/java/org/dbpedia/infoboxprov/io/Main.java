@@ -1,5 +1,6 @@
 package org.dbpedia.infoboxprov.io;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.dbpedia.infoboxprov.parallel.*;
@@ -39,6 +40,19 @@ public class Main {
 		  
 		  if(clParser.getPort()>=0) {
 			  
+			  
+			  String[] entries = new File("ArticleDumps").list();
+			  
+			
+			  
+              for (int i=0;i<entries.length;i++){
+            	  
+            	
+                  new File("ArticleDumps/" + entries[i]).delete();
+           
+              }
+			  
+			  
 			  Server server = new Server(clParser.getPort());
 			     // Handler for multiple web apps
 			     HandlerCollection handlers = new HandlerCollection();
@@ -56,7 +70,7 @@ public class Main {
 			     // Starting the Server
 
 			     server.start();
-			     System.out.println("Started!");
+			     System.out.println("Server started at URL: localhost:" + clParser.getPort() + "/provenance");
 			     
 			  
 			     server.join();

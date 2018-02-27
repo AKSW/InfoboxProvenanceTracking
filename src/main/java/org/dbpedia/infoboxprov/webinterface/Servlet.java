@@ -29,14 +29,14 @@ public class Servlet extends HttpServlet {
 		   String language = request.getParameter("language");
 		   
 		   
-		   CLParser clParser = new CLParser(title, language);
+		   CLParser clParser = new CLParser(title, language, request.getLocalPort());
 		   clParser.validate();
 		   ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		   
 		   new Producer(queue, clParser , clParser.getPath()).start();
 		   Consumer consumer = new Consumer(queue, clParser , "Web");
 		   consumer.start();
-		   
+		   System.out.println("----------");
 		   while(!consumer.getFinished()) {
 			   System.out.println("Thread in process");
 			   
@@ -48,7 +48,7 @@ public class Servlet extends HttpServlet {
 			   
 		   }
 		   
-		   	  BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/Thread_0.tsv"));
+		   	  BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/" + clParser.getTempID() + "0.tsv"));
 		   	  String tmp = "";
 		   
 		   // Set the response message's MIME type
@@ -70,8 +70,10 @@ public class Servlet extends HttpServlet {
 		      } finally {
 		         out.close();  // Always close the output writer
 		         br.close();
-		         new File("threadfile/Web/Thread_0.tsv").delete();
+		         new File("threadfile/Web/" + clParser.getTempID() + "0.tsv").delete();
 		        
+		         new File("ArticleDumps/"+ clParser.getSingleArticle() + clParser.getTempID() +".xml").delete();
+		        // new File("title").delete();
 		      }
 		        
 	   }

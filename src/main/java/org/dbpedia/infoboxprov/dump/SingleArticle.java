@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -60,12 +61,19 @@ public class SingleArticle {
   private String language = null; 
   private String path = null;
   private Page page;
-  
+  private UUID tempID;
+  private boolean daemon = false;
   
   public SingleArticle(CLParser clParser) {
 	this.name = clParser.getSingleArticle();
 	this.language = clParser.getLanguage();
 	this.timeFrame = clParser.getTimeFrame();
+	this.tempID = clParser.getTempID();
+	
+	if(clParser.getPort()>=0) {
+	
+		daemon = true;
+	}
 	
 	if(!new File("ArticleDumps").isDirectory())
 	{
@@ -85,9 +93,9 @@ public class SingleArticle {
   
   
   public boolean  setPathForArticle(String offset) {
-
-  if(firstRun && timeFrame.getTimeFrame() == null) {
 	
+  if(firstRun && timeFrame.getTimeFrame() == null) {
+	 
   	URL url = null;
   	try {
 	      url = new URL("https://" + language
@@ -122,9 +130,12 @@ public class SingleArticle {
 		return true;
 	}
   
+  	if(daemon) {
+  		dump = new File("ArticleDumps/"+ name + tempID +".xml");
+  	}else {
   	
-  	
-	dump = new File("ArticleDumps/"+name+".xml");
+	dump = new File("ArticleDumps/"+ name +".xml");
+	}
 	    
 	try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
 	      fos = new FileOutputStream(dump);
@@ -138,7 +149,7 @@ public class SingleArticle {
 	return false;
 	
   }else {
-	  
+	 
 	  postRequest(offset);
 	  return true;
   }
@@ -148,7 +159,7 @@ public class SingleArticle {
   
   
   public void postRequest(String offset) {
-	  
+	 
 	  
 	  if(success) {
 		  limit = limit + 50;
@@ -200,7 +211,7 @@ public class SingleArticle {
 		      }while(done);  
 	          
 		    
-		      tmp = new File("ArticleDumps/tmp.xml");
+		      tmp = new File("ArticleDumps/" + tempID + ".xml");
 		     
 	          ReadableByteChannel rbc = Channels.newChannel(response.getEntity().getContent()); 
 	          fos = new FileOutputStream(tmp);
@@ -210,9 +221,19 @@ public class SingleArticle {
 	            
 	          
 	          BufferedReader br;
-	          br = new BufferedReader(new InputStreamReader(new FileInputStream("ArticleDumps/tmp.xml")
+	          br = new BufferedReader(new InputStreamReader(new FileInputStream("ArticleDumps/" + tempID + ".xml")
 	                  , "UTF-8"));
-	          dump = new File("ArticleDumps/" + name + ".xml");
+	          
+	          if(daemon) {
+	        	  
+	        	  dump = new File("ArticleDumps/" + name + tempID + ".xml"); 
+	        	  
+	          }else {
+	        	  
+	        	  dump = new File("ArticleDumps/" + name  + ".xml");
+	          
+	          }
+	          
 	          List<String> lines = new ArrayList<String>();
 	          
 	          String in ="";
@@ -220,7 +241,7 @@ public class SingleArticle {
 	        	  lines.add(in);
 	        	 
 	          }
-	        
+	          br.close();
 	          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
 	          
 	          end = true;
@@ -241,7 +262,7 @@ public class SingleArticle {
 	              wr.close();
 	              
 	          }else if(!end){
-	        	  
+	        
 	        	  while(true ){
 	        		
 	        		  	if(!lines.get(0).contains("<revision>")) {
@@ -263,9 +284,9 @@ public class SingleArticle {
 	              wr.close();
 	        	  
 	          }
-	          
-	          br.close();
-	          
+	         
+	      
+	         
 	        
 	      } catch (IOException e) {
 	    	  System.out.println(e);
@@ -300,7 +321,8 @@ public class SingleArticle {
 		  page = mapper.readValue(parser, Page.class);
 			
 		  timestamp = page.getRevision().get(page.getRevision().size()-1).getTimestampStr();
-
+		  br.close();
+		  
 		}catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
 			
 			System.out.println("SingleArticle: InvalidDefinitionException" );

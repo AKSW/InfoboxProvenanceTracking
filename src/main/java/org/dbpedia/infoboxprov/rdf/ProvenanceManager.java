@@ -1,6 +1,5 @@
 package org.dbpedia.infoboxprov.rdf;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -234,7 +233,7 @@ public class ProvenanceManager implements Runnable {
 	   
 	writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
 	System.out.println("Finished article: " + parser.getPage().getTitle());
-	  
+
   }//end wholeProvenance
 
 
@@ -287,7 +286,7 @@ public class ProvenanceManager implements Runnable {
 	  
 	 writer.writeModel(newestModel,  parser.getPage().getRevision().get(0));
 	 System.out.println("Finished article: " + parser.getPage().getTitle());
-	   
+	 
    }//end astChangeProvenance
 
 
