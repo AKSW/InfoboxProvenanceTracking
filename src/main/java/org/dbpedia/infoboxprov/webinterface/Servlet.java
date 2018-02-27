@@ -25,6 +25,8 @@ public class Servlet extends HttpServlet {
 	   public void doGet(HttpServletRequest request, HttpServletResponse response)
 	               throws IOException, ServletException {
 		   
+		   response.setContentType("text/tab-separated-values; charset=utf-8");
+		   
 		   String title = request.getParameter("title");
 		   String language = request.getParameter("language");
 		   
@@ -36,7 +38,7 @@ public class Servlet extends HttpServlet {
 		   new Producer(queue, clParser , clParser.getPath()).start();
 		   Consumer consumer = new Consumer(queue, clParser , "Web");
 		   consumer.start();
-		   System.out.println("----------");
+		
 		   while(!consumer.getFinished()) {
 			   System.out.println("Thread in process");
 			   
@@ -60,10 +62,10 @@ public class Servlet extends HttpServlet {
 		      try {
 		    	  
 		    	  while((tmp = br.readLine()) != null){
-		    		tmp =  tmp.replaceAll("<", "&lt");
-		    		tmp =  tmp.replaceAll(">", "&gt");
-		    		tmp = tmp.replaceAll("\t", "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp");
-		    		out.println(tmp + "<br>"); 
+		    		//tmp =  tmp.replaceAll("<", "&lt");
+		    		//tmp =  tmp.replaceAll(">", "&gt");
+		    		//tmp = tmp.replaceAll("\t", "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp");
+		    		out.println(tmp ); 
 		    	  }
 		    	 
 		    	  

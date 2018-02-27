@@ -45,7 +45,6 @@ public Consumer(ArrayBlockingQueue<String> queue, CLParser clParser, String thre
 		webAppName = "/Thread_";
 	}
 
-	System.out.println(webAppName);
 }
 
 public boolean getFinished() {
