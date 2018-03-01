@@ -70,15 +70,13 @@ public void run() {
 	 
 			for (int i = clParser.getThreads() - 1; i>=0; i-- ){
 						Runnable worker = new ProvenanceManager(threadName + "/" + webAppName + i ,
-											path			            					, 
-											new DumpParser(clParser.getTimeFrame()
-																			 .getTimeFrame(),
-														   clParser.getFinishedArticles())  , 
-											i	  	 	   									,
-											clParser.getThreads()							,
-											clParser.getLanguage()							, 
-											clParser.getVariant()  							,
-											clParser.getReadvarian()						,
+											path			            						  , 
+											new DumpParser(clParser)							  , 
+											i	  	 	   										  ,
+											clParser.getThreads()								  ,
+											clParser.getLanguage()								  , 
+											clParser.getVariant()  								  ,
+											clParser.getReadvarian()							  ,
 											false										     );
 						executor.execute(worker);
 			}// end for

@@ -16,12 +16,12 @@ import java.util.regex.Pattern;
  */
 public class InfoboxParser {
 
-  
   ArrayList<String> templates = null;
+  ArrayList<String> foundTemplates = null;
  
-  public InfoboxParser(String input) {
-	  this.templates = new ArrayList<>();
-	  
+  public InfoboxParser(String input,  ArrayList<String> templates) {
+	  this.foundTemplates = new ArrayList<>();
+	  this.templates = templates;
 	  
     if (input != null) {
       // escape backslash and dollar sign in input
@@ -32,9 +32,9 @@ public class InfoboxParser {
       input = input.replaceAll(">", ""); 
 				
     		  
-      findSingleLineBoxes(input);
+      //findSingleLineBoxes(input);
 
-      input = removeSingleLineBraces(input);
+      //input = removeSingleLineBraces(input);
       findMultiLineBoxes(input);
     }
   }
@@ -51,7 +51,7 @@ public class InfoboxParser {
 	    	  Matcher matcher = pattern.matcher(input);
 	    	  if (matcher.find()) {
 	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
-	    		  templates.add(input.substring(matcher.start(), matcher.end()));
+	    		  foundTemplates.add(input.substring(matcher.start(), matcher.end()));
 	    		 
 	    	    }
 	    	   
@@ -124,12 +124,45 @@ public class InfoboxParser {
 
 	String tmp = "";  
 	  
-    try (InputStream searchPatternStream = getClass().getResourceAsStream(
-      "/multiLineTemplates" + ".txt");
+	for(int i = 0; i < templates.size(); i++) {
+		 String patt = templates.get(i);
+		 
+		  int index1 =0;
+ 		 
+		  
+		  if(input.contains("{{" + patt )) {
+			  index1 =  input.indexOf(patt);
+			
+			  tmp = removeSingleLineBraces(input.substring(index1, input.length()));
+			  tmp = removeSingleLineBraces(tmp);
+			  tmp = removeBraces(tmp);
+			  
+			
+			  
+			  Pattern pattern = Pattern.compile("(?s)"+ patt + ".*?}}");
+	    	  Matcher matcher = pattern.matcher(tmp);
+			  
+	    	  if (matcher.find()) {
+	    		
+	    		  tmp = "{{" + tmp + tmp.substring(matcher.start(), matcher.end());
+
+	    		  foundTemplates.add(tmp.substring(matcher.start(), matcher.end()));
+	    		 
+	    	    }
+	    	  
+		  }
+		 
+	}
+	
+   /* try (InputStream searchPatternStream = getClass().getResourceAsStream(
+      "/templates" + ".txt");
       Scanner in = new Scanner(searchPatternStream, "UTF-8")) {
 
     	while(in.hasNextLine()) {
-    		  String patt =in.nextLine();
+    		  String patt = in.nextLine();
+    		 
+    		
+    		  
     		
     	
     		  int index1 =0;
@@ -150,8 +183,8 @@ public class InfoboxParser {
     	    	  if (matcher.find()) {
     	    		
     	    		  tmp = "{{" + tmp + tmp.substring(matcher.start(), matcher.end());
-    	    		  
-    	    		  templates.add(tmp.substring(matcher.start(), matcher.end()));
+    	    		//  System.out.println(tmp.substring(matcher.start(), matcher.end()));
+    	    		  foundTemplates.add(tmp.substring(matcher.start(), matcher.end()));
     	    		 
     	    	    }
     	    	  
@@ -160,10 +193,10 @@ public class InfoboxParser {
     
     }
     catch (IOException e) {
-   /*   Log.error(e, "The file which specifies additional boxes"
-        + "other than the Infobox could not be read!");*/
+      Log.error(e, "The file which specifies additional boxes"
+        + "other than the Infobox could not be read!");
     	System.out.println("Fehler InfoboxParser");
-    }
+    }*/
 
    
   }
@@ -177,7 +210,7 @@ public class InfoboxParser {
   public ArrayList<String> getTemplates() {
 	  
 		  
-	   return templates;
+	   return foundTemplates;
 	   
 	  
   }

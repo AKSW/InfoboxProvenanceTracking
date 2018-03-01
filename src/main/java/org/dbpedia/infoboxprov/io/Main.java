@@ -78,7 +78,7 @@ public class Main {
 		  }else {
 			  	ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 			    clParser.validate();
-			    new Producer(queue, clParser , clParser.getPath()).start();
+			    new Producer(queue, clParser ).start();
 			  
 			  	for(int i= 0; i < clParser.getThreadsF(); i++)
 			  	{

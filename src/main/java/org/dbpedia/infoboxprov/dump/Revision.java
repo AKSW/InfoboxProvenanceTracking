@@ -69,10 +69,11 @@ public class Revision implements Comparable<Revision> {
    * @param author the author of this new revision
    * @param timestamp the timestamp of this new revision
    */
-  public Revision(int id, String author, Date timestamp) {
+  public Revision(int id, String author, Date timestamp, String text) {
     this.id = id;
     this.author = author;
     this.timestamp = timestamp;
+    this.content = text;
   }
 
   /**
@@ -81,7 +82,7 @@ public class Revision implements Comparable<Revision> {
    * @param timestamp the timestamp of this new revision as string
    * @throws ParseException Standard ParseException
    */
-  public Revision(int id, String author, String timestamp)
+  public Revision(int id, String author, String timestamp, String text)
     throws ParseException {
     this.id = id;
     this.author = author;
@@ -89,6 +90,7 @@ public class Revision implements Comparable<Revision> {
     // used to work around the problem with the timezone
     this.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss'Z'")
       .parse(timestamp);
+    this.content = text;
   }
 
   /**
@@ -105,21 +107,22 @@ public class Revision implements Comparable<Revision> {
     @JacksonXmlProperty(
       localName = "contributor") Contributor contributor,
     @JacksonXmlProperty(localName = "text") Text text)
+  
     throws ParseException {
 
-    this(id, contributor.getUsername(), timestamp);
+    this(id, contributor.getUsername(), timestamp, text.getText());
     
-    InfoboxParser infoboxParser = new InfoboxParser(text.getText());
+   // InfoboxParser infoboxParser = new InfoboxParser(text.getText());
     
     this.templates = new ArrayList<>();
   
-    	if(!infoboxParser.getTemplates().isEmpty()) {
+    /*	if(!infoboxParser.getTemplates().isEmpty()) {
     			
     		for(int i = 0; i<infoboxParser.getTemplates().size(); i++) {
     		 
     			templates.add( infoboxParser.getTemplates().get(i));
     		}	
-    	}
+    	}*/
 
   }// end constructor
 

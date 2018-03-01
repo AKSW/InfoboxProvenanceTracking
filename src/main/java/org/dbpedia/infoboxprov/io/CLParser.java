@@ -1,15 +1,25 @@
 package org.dbpedia.infoboxprov.io;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.jena.rdf.model.Statement;
 import org.dbpedia.infoboxprov.dump.SingleArticle;
 
 import com.beust.jcommander.JCommander;
@@ -47,14 +57,22 @@ public class CLParser extends JCommander {
 	 private boolean lastChange = false;
 	 @Parameter(names={"-daemon"} , description = "Port for the webinterface", required = false)
 	 private int daemon = -1;
+	 @Parameter(names={"-config", "-c"} , description = "Path to the configfile", required = false)
+	 private String config = "src/main/resources/config.txt";
+	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
 	 private TreeSet<Integer> finishedArticles = null;
 	 private JCommander jCommander = null;
 	 private UUID tempID;
 	 
+	 private ArrayList<String> templates = null;
+	 private ArrayList<String> predicates = null;
+	 
 	 public CLParser(String[] args) {
-		 this.tempID = UUID.randomUUID();
+		this.tempID = UUID.randomUUID();
+		parseConfig(config);
+		
 		jCommander = new JCommander(this);
 		try {
 			
@@ -141,6 +159,14 @@ public class CLParser extends JCommander {
 		 return tempID;
 	 }
 	 
+	 public ArrayList<String> getTamplates(){
+		 return templates;
+	 }
+	 
+	 public ArrayList<String> getPredicates(){
+		 return predicates;
+	 }
+	 
 	 public void validate(){
 		 
 		 
@@ -156,33 +182,37 @@ public class CLParser extends JCommander {
 		 try{
 			 
 			 if(daemon < 0) {
-			 if(singleArticle == null && path == null) 
-			 throw new ParameterException("Article name or dump path needed");  	 
+				 if(singleArticle == null && path == null) 
+					 throw new ParameterException("Article name or dump path needed");  	 
 			 
-			 if(singleArticle != null && path != null)
-			 throw new ParameterException("Parameter singleArticle doesn't need a path"); 
+				 if(singleArticle != null && path != null)
+					 throw new ParameterException("Parameter singleArticle doesn't need a path"); 
 			 
-			 if(threadsF <= 0) {
-				 threadsF = 1;
-			 }	 
+				 if(threadsF <= 0) {
+					 
+					 threadsF = 1;
+					 System.out.println("Set maxthreadF to 1 in case of single Article");
+				 }	 
 			 
-			 if(singleArticle != null && threads != 1) {
-			 threads = 1;
-			 threadsF = 1;
-			 System.out.println("Set maxthread to 1 in case of single Article");
-			 System.out.println("Set maxthreadF to 1 in case of single Article");
-			 }
+				 if(singleArticle != null && threads != 1) {
+					 threads = 1;
+					 threadsF = 1;
+					 System.out.println("Set maxthread to 1 in case of single Article");
+					 System.out.println("Set maxthreadF to 1 in case of single Article");
+				 }
 			 
-			 }else {
+		    }else {
 				 
-			 if(singleArticle == null) { 
-				 errorCode = "Article name needed"; 	
-			 } 
-			 threads = 1;
-			 threadsF = 1;
-			 }
+		    	if(singleArticle == null) { 
+		    		errorCode = "Article name needed"; 	
+		    	}
+		    	
+		    	threads = 1;
+		    	threadsF = 1;
 			 
-			 if(singleArticle != null) {
+		    }
+			 
+			if(singleArticle != null) {
 				
 				 SingleArticle singelArticel;
 				 String timestamp;
@@ -196,7 +226,7 @@ public class CLParser extends JCommander {
 				 
 				 if(timeFrame.getTimeFrame() != null){
 			
-				 timestamp = later + "T00:00:00Z";
+					 timestamp = later + "T00:00:00Z";
 					
 					 
 				 }else {
@@ -312,7 +342,53 @@ public class CLParser extends JCommander {
 		 
 	 }
 	 
+	private void parseConfig(String path) {
+		templates = new ArrayList<String>();
+		
+		/* if(new File("src/main/resources/templates.txt").exists()) {
+			 
+			 new File("src/main/resources/templates.txt").delete();
+		 }*/
+		
+		
+		  try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		
+			String tmp = null;
+			String[] tokens;
+			
+			while ((tmp = br.readLine()) != null)  {
+			 
+				tokens = tmp.split("=");
+				tmp = tokens[1];
+				tokens = tmp.split("#");
+			 
+					for(String s:tokens){
+						templates.add(s);
+					
+					}
+				
+			
+					/*for(int  i = 0; i < templates.size(); i++) {
+						System.out.println(templates.get(i));
+					}*/
+				
+			}
+			
+			br.close();
+			
+		  }catch (FileNotFoundException e) {
+			
+			  System.out.println("Configfile not found!");
+
+		  }catch (IOException e) {
+			  
+			System.out.println(e);
+			
+		  }
+		   
 	
+	}
 	 
 	 
 	 public void help() {

@@ -24,7 +24,7 @@ public class RDFDiffer {
   Model oldModel = null;
 	
   ArrayList<Statement[]> newTripleOldTriple = null;
-  ArrayList<Statement[]> addedTriple = null;
+ 
 
   public RDFDiffer(Model newModel, Model oldModel) {
 

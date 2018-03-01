@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import org.apache.commons.compress.compressors.CompressorException;
+import org.dbpedia.infoboxprov.io.CLParser;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Date;
-import java.util.TreeSet;
 
 
 /**
@@ -47,7 +47,7 @@ public class DumpParser {
   private Page page;
   private Date[] extractionTimeFrame;
   private BufferedReader reader;
-
+  private CLParser clParser;
 
   
   /**
@@ -55,12 +55,14 @@ public class DumpParser {
    * @param extractionTimeFrame timeframe with from and until
    * @param finishedArticles ArrayList with integers as page id
    */
-  public DumpParser(Date[] extractionTimeFrame,
-                    TreeSet<Integer> finishedArticles) {
+  public DumpParser(CLParser clParser) {
     this.mapper = new XmlMapper();
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-    this.extractionTimeFrame = extractionTimeFrame;
+    this.clParser = clParser;
+    this.extractionTimeFrame = clParser.getTimeFrame()
+			 .getTimeFrame();
+    
   }
 
 
@@ -145,9 +147,29 @@ public class DumpParser {
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
 
+   
+    
+    for(int i = 0; i < page.getRevision().size(); i++) {
+    	
+    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), clParser.getTamplates());
+     	
+    	 if(!infoboxParser.getTemplates().isEmpty()) {
+ 			
+     		for(int j = 0; j<infoboxParser.getTemplates().size(); j++) {
+     		 
+     			page.getRevision().get(i).getTemplates().add( infoboxParser.getTemplates().get(j));
+     		}	
+     	}
+    	 
+    }
+    
+    
     // filter revisions default
     for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
     	
+    	
+    	
+    	 
     	 standardFilter(i);  
     	 
     }
@@ -196,6 +218,21 @@ public class DumpParser {
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
 
+    for(int i = 0; i < page.getRevision().size(); i++) {
+    
+     InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), clParser.getTamplates());
+    	
+   	 if(!infoboxParser.getTemplates().isEmpty()) {
+			
+    		for(int j = 0; j<infoboxParser.getTemplates().size(); j++) {
+    		 
+    			page.getRevision().get(i).getTemplates().add( infoboxParser.getTemplates().get(j));
+    		}	
+    	}
+   	 
+    }
+    
+    
     // filter revisions default
     for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
    	 

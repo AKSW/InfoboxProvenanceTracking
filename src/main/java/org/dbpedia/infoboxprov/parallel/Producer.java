@@ -22,7 +22,7 @@ public class Producer extends Thread implements Runnable {
 	private CLParser clParser;
 	private File threadFile = null;
 	
-	public Producer(ArrayBlockingQueue<String> queue, CLParser clParser , String path) {
+	public Producer(ArrayBlockingQueue<String> queue, CLParser clParser ) {
 		this.blockingQueue = queue; 
 		this.clParser = clParser;
 	

@@ -35,7 +35,7 @@ public class Servlet extends HttpServlet {
 		   clParser.validate();
 		   ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		   
-		   new Producer(queue, clParser , clParser.getPath()).start();
+		   new Producer(queue, clParser ).start();
 		   Consumer consumer = new Consumer(queue, clParser , "Web");
 		   consumer.start();
 		
