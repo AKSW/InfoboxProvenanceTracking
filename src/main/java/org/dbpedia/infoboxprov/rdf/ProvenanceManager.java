@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
 import org.dbpedia.infoboxprov.dump.DumpParser;
+import org.dbpedia.infoboxprov.io.CLParser;
 import org.dbpedia.infoboxprov.io.READVARIANT;
 
 
@@ -33,9 +34,9 @@ public class ProvenanceManager implements Runnable {
   private READVARIANT readVariant = null;
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
   ArrayList<Statement[]> differences = null;
-  ArrayList<Statement[]> filteredDifferences = new ArrayList<Statement[]>();
-  ArrayList<Statement> alreadyFoundDifferences = new ArrayList<Statement>();
-
+  ArrayList<Statement[]> filteredDifferences = null;
+  ArrayList<Statement> alreadyFoundDifferences = null;
+  private CLParser clParser = null;
 
   /**
    * @param threadName       Name of the thread
@@ -49,16 +50,17 @@ public class ProvenanceManager implements Runnable {
                            String path,
                            DumpParser parser,
                            int equivalenceClass,
-                           int maxThreads,
-                           String language,
-                           boolean variant,
-                           READVARIANT readVariant,
+                           CLParser clParser,
                            boolean isNewFile) {
-    this.language = language;
+    this.clParser = clParser;
+	this.language = clParser.getLanguage();
+    this.variant = clParser.getVariant();
+    this.readVariant = clParser.getReadvarian();
+    
     this.parser = parser;
-    this.parser.setParser(path, equivalenceClass, maxThreads);
-    this.variant = variant;
-    this.readVariant = readVariant;
+    this.parser.setParser(path, equivalenceClass, clParser.getThreadsF());
+  
+    
    
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
@@ -84,6 +86,7 @@ public class ProvenanceManager implements Runnable {
             lastChangeProvenanceDefault();
             break;
           case ReadTimeFiltered:
+        	 
             lastChangeProvenanceTimeFiltered();
             break;
           default:
@@ -199,13 +202,13 @@ public class ProvenanceManager implements Runnable {
 	  
 	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	      this.language);
+	          this.language, clParser.getPredicates() );
 	  
 
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
-		
+
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language);
+              getRevision().get(i).getId(), this.language, clParser.getPredicates());
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 	    
@@ -254,14 +257,14 @@ public class ProvenanceManager implements Runnable {
 	  
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	      this.language);
+	      this.language, clParser.getPredicates());
 	  
 	
 	  
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 		//System.out.println(parser.getPage().getRevision().get(i).getId() +"---" +i);
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language);
+              getRevision().get(i).getId(), this.language, clParser.getPredicates());
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 		rdfDiffer.determineLeftDifferences();

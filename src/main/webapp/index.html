@@ -11,20 +11,29 @@
     	left:50%;
    		top:50%;
     	margin-left:-390px;
-    	margin-top:-345px;
+    	margin-top:-300px;
 	}
 	</style>
     
     <body>
-      <div class="center">
+      <div class="row">
            <h2>Provenance Tracking</h2>
              <form method="get" action="servlet">
                 Page title<br/>
              	<input type="text" name="title" value="miele"/><br/>
              	Language<br/> <select name = "language">
+				<option selected value="en">en</option>
      			<option value="de">de</option>
-      			<option value="en">en</option>
    				</select><br/>
+				Templates<br/>
+             	<input type="text" name="templates" value="Infobox#Chembox"/><br/>
+				Predicates<br/>
+             	<input type="text" name="predicates" value="http://en.dbpedia.org/property"/><br/>
+				earlier Date (e.g. 2014-01-02)<br/>
+             	<input type="text" name="earlierDate" value=""/><br/>
+				later Date (e.g. 2017-09-15)<br/>
+             	<input type="text" name="laterDate" value=""/><br/>
+				
    				 <input type="submit" value="Start"/>
              </form>
       </div>

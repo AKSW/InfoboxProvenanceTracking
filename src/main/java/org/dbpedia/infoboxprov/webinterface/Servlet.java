@@ -29,9 +29,12 @@ public class Servlet extends HttpServlet {
 		   
 		   String title = request.getParameter("title");
 		   String language = request.getParameter("language");
+		   String templates = request.getParameter("templates");
+		   String predicates = request.getParameter("predicates");
+		   String earlierDate = request.getParameter("earlierDate");
+		   String laterDate = request.getParameter("laterDate");
 		   
-		   
-		   CLParser clParser = new CLParser(title, language, request.getLocalPort());
+		   CLParser clParser = new CLParser(title, language, templates, predicates, earlierDate, laterDate, request.getLocalPort());
 		   clParser.validate();
 		   ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		   
@@ -66,6 +69,7 @@ public class Servlet extends HttpServlet {
 		    		//tmp =  tmp.replaceAll(">", "&gt");
 		    		//tmp = tmp.replaceAll("\t", "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp");
 		    		out.println(tmp ); 
+		    	
 		    	  }
 		    	 
 		    	  
@@ -73,8 +77,9 @@ public class Servlet extends HttpServlet {
 		         out.close();  // Always close the output writer
 		         br.close();
 		         new File("threadfile/Web/" + clParser.getTempID() + "0.tsv").delete();
-		        
+		      
 		         new File("ArticleDumps/"+ clParser.getSingleArticle() + clParser.getTempID() +".xml").delete();
+		         new File("ArticleDumps/" + clParser.getTempID() +".xml").delete();
 		        // new File("title").delete();
 		      }
 		        

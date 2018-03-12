@@ -1,5 +1,7 @@
 package org.dbpedia.infoboxprov.rdf;
 
+import java.util.ArrayList;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -20,7 +22,7 @@ public class TripleExtractor {
    * @return Model
  * @throws FileNotFoundException 
    */
-  public Model generateModel(int revisionsNumber, String language)  {
+  public Model generateModel(int revisionsNumber, String language, ArrayList<String> predicates)  {
 	
 	Model tmp = ModelFactory.createDefaultModel();
     Model newModel = ModelFactory.createDefaultModel();
@@ -37,12 +39,21 @@ public class TripleExtractor {
     while ( stmts.hasNext() ) {
   	  Statement triple = stmts.nextStatement();
   	  String tripleStr = triple .getPredicate().toString();
-  	  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
+  	  //System.out.println(tripleStr);
+  	  
+  	  for(int i = 0; i < predicates.size(); i++) {
+  	  
+  		  if(tripleStr.contains(predicates.get(i))){
+  			  newModel.add(triple); 
+  		  }
+  	  }
+  	  
+  	/*  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
   			!tripleStr.contains("wikiPageUsesTemplate")  )
   	  {
   		 
   		 
-  		newModel.add(triple);  }
+  		newModel.add(triple);  }*/
   	  
     }
    

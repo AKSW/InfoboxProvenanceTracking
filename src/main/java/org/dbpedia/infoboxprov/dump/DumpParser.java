@@ -239,15 +239,22 @@ public class DumpParser {
     	standardFilter(i); 
    	 
     }
-
-    
+  
+   
+  
     // filter revisions time
-    for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-
+    for (int i = page.getRevision().size()-1; i >= 0; i-- ) {
+    
       i = dateFilter(i, extractionTimeFrame);
 
     }
 
+    
+    
+        
+    	
+
+   
 
     // eventually remove the first revision
     // (which doesn't get filtered by standardFilter())
@@ -255,6 +262,8 @@ public class DumpParser {
  	   page.getRevision().remove(0);
     }
 
+   
+    
     // if no revisions are left, page is irrelevant
     if (page.getRevision().isEmpty()) {
       page = null;
@@ -331,7 +340,7 @@ public class DumpParser {
   private int dateFilter(int i, Date[] extractionTimeFrame) {
 
     // If there is a time restriction revisions out of it will be removed
-      
+	
 	  if (page.getRevision().get(i).getTimestamp().after
               (extractionTimeFrame[1])) {
         page.getRevision().remove(i);
@@ -339,6 +348,7 @@ public class DumpParser {
 	  	  
       } else if (page.getRevision().get(i).getTimestamp().before
               (extractionTimeFrame[0])) {
+    	 
         page.getRevision().remove(i);
        
       }

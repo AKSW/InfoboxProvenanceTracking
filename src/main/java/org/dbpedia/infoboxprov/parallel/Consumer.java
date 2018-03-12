@@ -73,10 +73,7 @@ public void run() {
 											path			            						  , 
 											new DumpParser(clParser)							  , 
 											i	  	 	   										  ,
-											clParser.getThreads()								  ,
-											clParser.getLanguage()								  , 
-											clParser.getVariant()  								  ,
-											clParser.getReadvarian()							  ,
+											clParser										      ,
 											false										     );
 						executor.execute(worker);
 			}// end for

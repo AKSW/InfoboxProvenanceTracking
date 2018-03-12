@@ -6,20 +6,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.jena.rdf.model.Statement;
 import org.dbpedia.infoboxprov.dump.SingleArticle;
 
 import com.beust.jcommander.JCommander;
@@ -69,6 +64,9 @@ public class CLParser extends JCommander {
 	 private ArrayList<String> templates = null;
 	 private ArrayList<String> predicates = null;
 	 
+	 /**
+	  * Constructor for the Comandlinetool
+	  */
 	 public CLParser(String[] args) {
 		this.tempID = UUID.randomUUID();
 		parseConfig(config);
@@ -99,11 +97,54 @@ public class CLParser extends JCommander {
 		}
 	 }
 	 
-	 public CLParser(String singleArticle, String language, int port) {
+	 /**
+	  * Constructor for the Webinterface
+	  */
+	 public CLParser(String singleArticle, 
+			 		 String language, 
+			 		 String templates, 
+			 		 String predicates, 
+			 		 String earlierDate,
+			 		 String laterDate,
+			 		 int port) {
 		 this.singleArticle = singleArticle;
 		 this.language = language;
 		 this.daemon = port;
 		 this.tempID = UUID.randomUUID();
+		 this.templates = new ArrayList<String>();
+		 this.predicates = new ArrayList<String>();
+		 
+		 String[] tokens;
+		 
+		 tokens = templates.split("#");
+			
+		 for(String s:tokens){
+					
+			this.templates.add(s);
+		 }
+		 
+		 tokens = predicates.split("#");
+		 
+		 for(String s:tokens){
+				
+				this.predicates.add(s);
+		 }
+	
+		
+		if(earlierDate.length() > 0  ) {
+			
+			
+			earlier = earlierDate;
+			
+		} if(laterDate.length() > 0 ) {
+			
+			later = laterDate;
+			
+		}
+		
+		 System.out.println(earlier);
+		 System.out.println(later);
+		
 	
 	 }
 	 
@@ -214,7 +255,7 @@ public class CLParser extends JCommander {
 			 
 			if(singleArticle != null) {
 				
-				 SingleArticle singelArticel;
+				 SingleArticle article;
 				 String timestamp;
 				 
 				
@@ -234,20 +275,37 @@ public class CLParser extends JCommander {
 					 timestamp = "";
 				 }
 				 
+				 /**
+				  * Need for checking: postRequest success and update the chuncksize,
+				  *	postRequest first chunck don't add the haeder every time, postRequest
+				  * postRequest last chunck add </page> and </mediawiki> at the end
+				  * firstrun, check to load the article in one chunck
+				  * postlimt, limit the chuncksize
+				  */
+				  boolean postSucess = false;
+				  boolean postBegin = true;
+				  boolean postEnd = false;
+				  boolean firstrun = true;
+				  int 	  postLimit = 1000;
 				  
 				  while(true) {
 				 
 		
-					  singelArticel = new SingleArticle(this);
-					  if(!singelArticel.setPathForArticle(timestamp)) {
-			
+					  article = new SingleArticle(this);
+					  if(!article.setPathForArticle(timestamp, postSucess, postBegin, postEnd, firstrun, postLimit) ) {
+						 
 						  break;
 					  }
+				
+					  postSucess = article.getSuccess();
+					  postBegin = article.getBegin();
+					  firstrun = article.getFirtsrun();
+					  postLimit = article.getLimit();
 					  
-					  singelArticel.readPageDefault();
+					  article.readPageDefault();
 					
-					  timestamp = singelArticel.getTimestampt();
-					 		  
+					  timestamp = article.getTimestampt();
+				
 					  if(timestamp ==null) {
 						
 						PrintWriter wr;
@@ -344,7 +402,7 @@ public class CLParser extends JCommander {
 	 
 	private void parseConfig(String path) {
 		templates = new ArrayList<String>();
-		
+		predicates = new ArrayList<String>();
 		/* if(new File("src/main/resources/templates.txt").exists()) {
 			 
 			 new File("src/main/resources/templates.txt").delete();
@@ -355,25 +413,43 @@ public class CLParser extends JCommander {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 		
 			String tmp = null;
+			String usedArrayList = null;
 			String[] tokens;
 			
 			while ((tmp = br.readLine()) != null)  {
 			 
 				tokens = tmp.split("=");
+				usedArrayList = tokens[0];
 				tmp = tokens[1];
 				tokens = tmp.split("#");
-			 
-					for(String s:tokens){
-						templates.add(s);
+				
+				for(String s:tokens){
+						
+						if(usedArrayList.contains("TemplateFilter")) {
+						
+							templates.add(s);
 					
-					}
+						}else if(usedArrayList.contains("PredicateFilter")) {
+							
+							predicates.add(s);
+							
+						}
+					
+				}
 				
 			
-					/*for(int  i = 0; i < templates.size(); i++) {
-						System.out.println(templates.get(i));
-					}*/
+					
 				
 			}
+			
+			/*for(int  i = 0; i < templates.size(); i++) {
+				System.out.println(templates.get(i));
+			}
+			
+			for(int  i = 0; i < predicates.size(); i++) {
+				System.out.println(predicates.get(i));
+			}*/
+			
 			
 			br.close();
 			

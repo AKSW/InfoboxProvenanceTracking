@@ -1,1 +1,2 @@
 TemplateFilter =Infobox#Chembox#Drugbox#Geobox#Football box#GNF Protein box#Coordinate#Normdaten
+PredicateFilter =http://en.dbpedia.org/property

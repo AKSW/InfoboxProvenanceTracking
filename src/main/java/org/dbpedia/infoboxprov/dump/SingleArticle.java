@@ -45,18 +45,17 @@ import java.util.UUID;
  */
 public class SingleArticle {
   
-  final private int MIN =1;
-  final private int MAX =1000;
+  final private int MIN = 1;
+  final private int MAX = 1000;
 	
   private FileOutputStream fos;
   private String timestamp;
   private TimeFrame timeFrame ;
   private File dump;
-  private static boolean success = false;  
-  private static boolean begin = true;
-  private static boolean end = false;
-  private static boolean firstRun = true;
-  private static int limit = 1000;
+  private boolean success;  
+  private boolean begin;
+  private boolean firstRun;
+  private int limit;
   private String name = null; 
   private String language = null; 
   private String path = null;
@@ -69,6 +68,11 @@ public class SingleArticle {
 	this.language = clParser.getLanguage();
 	this.timeFrame = clParser.getTimeFrame();
 	this.tempID = clParser.getTempID();
+	
+	this.begin = false;
+
+	this.success = false;
+	this.firstRun = false;
 	
 	if(clParser.getPort()>=0) {
 	
@@ -91,9 +95,31 @@ public class SingleArticle {
 	  return this.path;
   }
   
+  public boolean getSuccess() {
+	  return this.success;
+  }
   
-  public boolean  setPathForArticle(String offset) {
-	
+  public boolean getBegin() {
+	  return this.begin;
+  }
+  
+  
+  
+  public boolean getFirtsrun() {
+	  return this.firstRun;
+  }
+  
+  public int getLimit() {
+	  return this.limit;
+  }
+  
+  public boolean  setPathForArticle(String offset, 
+		  							boolean a_success, 
+		  							boolean a_begin, 
+		  							boolean a_end, 
+		  							boolean a_firstrun,
+		  							int a_limit) {
+
   if(firstRun && timeFrame.getTimeFrame() == null) {
 	 
   	URL url = null;
@@ -125,7 +151,7 @@ public class SingleArticle {
   	
 	if(code != 200) {
 	
-		postRequest(offset);
+		postRequest(offset, a_success, a_begin, a_end, a_limit);
 		firstRun=false;
 		return true;
 	}
@@ -150,7 +176,7 @@ public class SingleArticle {
 	
   }else {
 	 
-	  postRequest(offset);
+	  postRequest(offset, a_success, a_begin, a_end, a_limit);
 	  return true;
   }
 	
@@ -158,11 +184,11 @@ public class SingleArticle {
   
   
   
-  public void postRequest(String offset) {
+  public void postRequest(String offset, boolean a_success, boolean a_begin, boolean a_end, int a_limit) {
 	 
 	  
-	  if(success) {
-		  limit = limit + 50;
+	  if(a_success) {
+		  limit = a_limit + 50;
 		  if (limit > MAX) { limit = MAX;}
 	  }
 	  
@@ -199,11 +225,13 @@ public class SingleArticle {
 	          if(response.getStatusLine().getStatusCode()!=200) {
 	        	  success = false;
 	         	 
-	        	  limit = limit - 200;
+	        	  limit = a_limit - 200;
 	        	  if(limit < MIN) {limit = MIN;}
 	        	  
 	          }else {
+	        	 
 	        	  success = true;
+	        	 
 	        	  done = false;
 	          }
 	          
@@ -244,14 +272,14 @@ public class SingleArticle {
 	          br.close();
 	          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
 	          
-	          end = true;
+	          a_end = true;
 	          
 	          
 	          
 	          }
 	        
-	          if(begin) {
-	        	  
+	          if(a_begin) {
+	        	
 	        	  lines.remove(lines.size()-1);
 	              lines.remove(lines.size()-1);
 	        	  begin = false;
@@ -261,10 +289,12 @@ public class SingleArticle {
 	                  wr.println(line);
 	              wr.close();
 	              
-	          }else if(!end){
+	          }else if(!a_end){
 	        
 	        	  while(true ){
 	        		
+	        		 
+	        		  
 	        		  	if(!lines.get(0).contains("<revision>")) {
 	        		  		lines.remove(0);
 	        		  	}else {
@@ -274,7 +304,7 @@ public class SingleArticle {
 	        	  
 	        		  	
 	        	  }
-	        	  
+	        	 
 	        	  lines.remove(lines.size()-1);
 	              lines.remove(lines.size()-1);
 	              
