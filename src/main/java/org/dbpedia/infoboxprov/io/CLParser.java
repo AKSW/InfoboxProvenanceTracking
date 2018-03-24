@@ -54,6 +54,8 @@ public class CLParser extends JCommander {
 	 private int daemon = -1;
 	 @Parameter(names={"-config", "-c"} , description = "Path to the configfile", required = false)
 	 private String config = "src/main/resources/config.txt";
+	 @Parameter(names={"-url", "-u"} , description = "extraction URL", required = false)
+	 private String url = "/provenance";
 	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
@@ -106,6 +108,7 @@ public class CLParser extends JCommander {
 			 		 String predicates, 
 			 		 String earlierDate,
 			 		 String laterDate,
+			 		 String tracking,
 			 		 int port) {
 		 this.singleArticle = singleArticle;
 		 this.language = language;
@@ -142,9 +145,16 @@ public class CLParser extends JCommander {
 			
 		}
 		
-		 System.out.println(earlier);
-		 System.out.println(later);
+		if(tracking.equalsIgnoreCase("last")) {
+			
+			lastChange = true;
+		}
 		
+		 System.out.println("Started Article: " + singleArticle);
+		 System.out.println("TimeFrame earlier: " + earlier);
+		 System.out.println("TimeFrame later: " + later);
+	
+		 System.out.println("Last Change: " + lastChange);
 	
 	 }
 	 
@@ -206,6 +216,10 @@ public class CLParser extends JCommander {
 	 
 	 public ArrayList<String> getPredicates(){
 		 return predicates;
+	 }
+	 
+	 public String getURL(){
+		 return url;
 	 }
 	 
 	 public void validate(){

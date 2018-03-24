@@ -25,7 +25,7 @@ public class Servlet extends HttpServlet {
 	   public void doGet(HttpServletRequest request, HttpServletResponse response)
 	               throws IOException, ServletException {
 		   
-		   response.setContentType("text/tab-separated-values; charset=utf-8");
+		   
 		   
 		   String title = request.getParameter("title");
 		   String language = request.getParameter("language");
@@ -33,8 +33,9 @@ public class Servlet extends HttpServlet {
 		   String predicates = request.getParameter("predicates");
 		   String earlierDate = request.getParameter("earlierDate");
 		   String laterDate = request.getParameter("laterDate");
+		   String tracking = request.getParameter("tracking");
 		   
-		   CLParser clParser = new CLParser(title, language, templates, predicates, earlierDate, laterDate, request.getLocalPort());
+		   CLParser clParser = new CLParser(title, language, templates, predicates, earlierDate, laterDate, tracking ,request.getLocalPort());
 		   clParser.validate();
 		   ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 		   
@@ -43,7 +44,6 @@ public class Servlet extends HttpServlet {
 		   consumer.start();
 		
 		   while(!consumer.getFinished()) {
-			   System.out.println("Thread in process");
 			   
 			   try {
 				Thread.sleep(2000);
@@ -57,7 +57,9 @@ public class Servlet extends HttpServlet {
 		   	  String tmp = "";
 		   
 		   // Set the response message's MIME type
-		      response.setContentType("text/html;charset=UTF-8");
+		   	response.setContentType("text/tab-separated-values; charset=utf-8");
+		   	//response.setContentType("text/plain; charset=utf-8");
+		    //  response.setContentType("text/html;charset=UTF-8");
 		   // Allocate a output writer to write the response message into the network socket
 		      PrintWriter out = response.getWriter();
 		 
@@ -65,9 +67,6 @@ public class Servlet extends HttpServlet {
 		      try {
 		    	  
 		    	  while((tmp = br.readLine()) != null){
-		    		//tmp =  tmp.replaceAll("<", "&lt");
-		    		//tmp =  tmp.replaceAll(">", "&gt");
-		    		//tmp = tmp.replaceAll("\t", "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp");
 		    		out.println(tmp ); 
 		    	
 		    	  }
