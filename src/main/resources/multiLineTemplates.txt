@@ -1,6 +1,0 @@
-Infobox
-Chembox
-Drugbox
-Geobox
-Football box
-GNF Protein box
