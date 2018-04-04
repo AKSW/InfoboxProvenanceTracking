@@ -54,14 +54,13 @@ public class CLParser extends JCommander {
 	 private int daemon = -1;
 	 @Parameter(names={"-config", "-c"} , description = "Path to the configfile", required = false)
 	 private String config = "src/main/resources/config.txt";
-	 @Parameter(names={"-url", "-u"} , description = "extraction URL", required = false)
-	 private String url = "/provenance";
 	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
 	 private TreeSet<Integer> finishedArticles = null;
 	 private JCommander jCommander = null;
 	 private UUID tempID;
+	 private String url = "/provenance";
 	 
 	 private ArrayList<String> templates = null;
 	 private ArrayList<String> predicates = null;
@@ -219,6 +218,7 @@ public class CLParser extends JCommander {
 	 }
 	 
 	 public String getURL(){
+		 
 		 return url;
 	 }
 	 
@@ -427,25 +427,33 @@ public class CLParser extends JCommander {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 		
 			String tmp = null;
-			String usedArrayList = null;
+			String configLine = null;
 			String[] tokens;
 			
 			while ((tmp = br.readLine()) != null)  {
 			 
 				tokens = tmp.split("=");
-				usedArrayList = tokens[0];
+				configLine = tokens[0];
 				tmp = tokens[1];
 				tokens = tmp.split("#");
 				
 				for(String s:tokens){
 						
-						if(usedArrayList.contains("TemplateFilter")) {
+						if(configLine.contains("TemplateFilter")) {
 						
 							templates.add(s);
 					
-						}else if(usedArrayList.contains("PredicateFilter")) {
+						}else if(configLine.contains("PredicateFilter")) {
 							
 							predicates.add(s);
+							
+						}else if (configLine.contains("Url")) {
+							
+							url = tmp;
+							
+						}else if(configLine.contains("Port")) {
+							
+							daemon = Integer.parseInt(tmp);
 							
 						}
 					

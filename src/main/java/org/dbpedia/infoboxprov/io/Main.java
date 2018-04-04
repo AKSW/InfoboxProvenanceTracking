@@ -28,8 +28,7 @@ public class Main {
 		
 		
 		CLParser clParser = new CLParser(args);
-		//CLParser clParser = new CLParser("miele", "en");
-		  
+		
 		/**
 		 * To process multiple files a BlockingQueue is used. The number is controlled through the
 		 * threadF parameter and the files are collected from the directory ArticleDumps.
@@ -39,8 +38,8 @@ public class Main {
 		  
 		  if(clParser.getPort()>=0) {
 			  
-			// empty the folder ArticleDumps
-			  /*String[] entries = new File("ArticleDumps").list();
+			/** empty the folder ArticleDumps
+			    String[] entries = new File("ArticleDumps").list();
 			  
               for (int i=0;i<entries.length;i++){
             	  
@@ -65,9 +64,9 @@ public class Main {
 			     server.setHandler(handlers);
 			     
 			     // Starting the Server
-
+			    
 			     server.start();
-			     System.out.println("Server started at URL: localhost:" + clParser.getPort() + clParser.getURL());
+			     System.out.println("Server started at URL: " +   "http://localhost:" + clParser.getPort() + clParser.getURL());
 			     
 			  
 			     server.join();
