@@ -36,7 +36,7 @@ public class ProvenanceManager implements Runnable {
   ArrayList<Statement[]> differences = null;
   ArrayList<Statement[]> filteredDifferences = null;
   ArrayList<Statement> alreadyFoundDifferences = null;
-  private CLParser clParser = null;
+ 
 
   /**
    * @param threadName       Name of the thread
@@ -52,7 +52,7 @@ public class ProvenanceManager implements Runnable {
                            int equivalenceClass,
                            CLParser clParser,
                            boolean isNewFile) {
-    this.clParser = clParser;
+
 	this.language = clParser.getLanguage();
     this.variant = clParser.getVariant();
     this.readVariant = clParser.getReadvarian();
@@ -65,7 +65,7 @@ public class ProvenanceManager implements Runnable {
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
 
-    this.tripleExtractor = new TripleExtractor();
+    this.tripleExtractor = new TripleExtractor(clParser.getExtractionUrl(), clParser.getPredicates());
     
    // this.logWriter = new LogWriter(threadName);
     this.writer = new ProvenanceWriter(threadName, isNewFile);
@@ -202,13 +202,13 @@ public class ProvenanceManager implements Runnable {
 	  
 	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	          this.language, clParser.getPredicates() );
+	          this.language );
 	  
 
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language, clParser.getPredicates());
+              getRevision().get(i).getId(), this.language );
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 	    
@@ -257,14 +257,14 @@ public class ProvenanceManager implements Runnable {
 	  
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	      this.language, clParser.getPredicates());
+	      this.language);
 	  
 	
 	  
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 		//System.out.println(parser.getPage().getRevision().get(i).getId() +"---" +i);
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language, clParser.getPredicates());
+              getRevision().get(i).getId(), this.language);
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 		rdfDiffer.determineLeftDifferences();

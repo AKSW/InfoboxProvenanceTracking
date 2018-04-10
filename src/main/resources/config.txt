@@ -1,4 +1,5 @@
 TemplateFilter =Infobox#Chembox#Drugbox#Geobox#Football box#GNF Protein box#Coordinate#Normdaten
 PredicateFilter =http://en.dbpedia.org/property
+Url =/provenance
 Port =8080
-Url =/mappings.dbpedia.org/server/extraction/
+ExtractionUrl =http://mappings.dbpedia.org/server/extraction/

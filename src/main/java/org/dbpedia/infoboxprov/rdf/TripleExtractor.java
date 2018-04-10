@@ -14,7 +14,17 @@ import org.apache.jena.rdf.model.StmtIterator;
  */
 public class TripleExtractor {
 
-
+	
+	private String extractionUrl = null;
+	private ArrayList<String> predicates = null;
+	
+	TripleExtractor(String extractionUrl, ArrayList<String> predicates){
+		
+		this.extractionUrl = extractionUrl;
+		this.predicates = predicates;
+		
+	}
+	
   /**
    * function for reading turtle-triples only from an URI with given language
    * @param revisionsNumber revisionnumber
@@ -22,13 +32,12 @@ public class TripleExtractor {
    * @return Model
  * @throws FileNotFoundException 
    */
-  public Model generateModel(int revisionsNumber, String language, ArrayList<String> predicates)  {
+  public Model generateModel(int revisionsNumber, String language )  {
 	
 	Model tmp = ModelFactory.createDefaultModel();
     Model newModel = ModelFactory.createDefaultModel();
 
-    
-    tmp.read("http://mappings.dbpedia.org/server/extraction/" +
+    tmp.read(extractionUrl +
             language + "/extract" + "?title=&revid=" + revisionsNumber +
       "&format=turtle-triples&" + "extractors=custom", null, "TURTLE");
     

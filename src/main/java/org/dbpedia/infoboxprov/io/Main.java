@@ -66,7 +66,7 @@ public class Main {
 			     // Starting the Server
 			    
 			     server.start();
-			     System.out.println("Server started at URL: " +   "http://localhost:" + clParser.getPort() + clParser.getURL());
+			     System.out.println("Server started at URL: localhost:" + clParser.getPort() + clParser.getURL());
 			     
 			  
 			     server.join();

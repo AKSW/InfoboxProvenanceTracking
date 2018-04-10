@@ -54,6 +54,8 @@ public class CLParser extends JCommander {
 	 private int daemon = -1;
 	 @Parameter(names={"-config", "-c"} , description = "Path to the configfile", required = false)
 	 private String config = "src/main/resources/config.txt";
+	 @Parameter(names={"-url", "-u"} , description = "Url of the dbpedia OnlineExtractor", required = false)
+	 private String extractionUrl = "http://mappings.dbpedia.org/server/extraction/";
 	 
 	 private READVARIANT readvariant = READVARIANT.ReadDefault;
 	 private TimeFrame timeFrame = null;
@@ -220,6 +222,10 @@ public class CLParser extends JCommander {
 	 public String getURL(){
 		 
 		 return url;
+	 }
+	 
+	 public String getExtractionUrl() {
+		 return extractionUrl;
 	 }
 	 
 	 public void validate(){
@@ -447,7 +453,7 @@ public class CLParser extends JCommander {
 							
 							predicates.add(s);
 							
-						}else if (configLine.contains("Url")) {
+						}else if (configLine.equalsIgnoreCase("Url")) {
 							
 							url = tmp;
 							
@@ -455,6 +461,10 @@ public class CLParser extends JCommander {
 							
 							daemon = Integer.parseInt(tmp);
 							
+						}else if(configLine.contains("ExtractionUrl")) {
+							
+							extractionUrl = tmp;
+						
 						}
 					
 				}
