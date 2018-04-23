@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -47,8 +48,7 @@ public class DumpParser {
   private Page page;
   private Date[] extractionTimeFrame;
   private BufferedReader reader;
-  private CLParser clParser;
-
+  private ArrayList<String> templates;
   
   /**
    *
@@ -59,10 +59,20 @@ public class DumpParser {
     this.mapper = new XmlMapper();
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-    this.clParser = clParser;
     this.extractionTimeFrame = clParser.getTimeFrame()
 			 .getTimeFrame();
-    
+   
+    this.templates = clParser.getTamplates();
+  }
+  
+  public DumpParser(Date[] extractionTimeFrame, ArrayList<String> templates) {
+	  
+	  this.mapper = new XmlMapper();
+	    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+	    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
+	    this.extractionTimeFrame = extractionTimeFrame;
+	   
+	    this.templates = templates;
   }
 
 
@@ -151,7 +161,7 @@ public class DumpParser {
     
     for(int i = 0; i < page.getRevision().size(); i++) {
     	
-    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), clParser.getTamplates());
+    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
      	
     	 if(!infoboxParser.getTemplates().isEmpty()) {
  			
@@ -220,7 +230,7 @@ public class DumpParser {
 
     for(int i = 0; i < page.getRevision().size(); i++) {
     
-     InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), clParser.getTamplates());
+     InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
     	
    	 if(!infoboxParser.getTemplates().isEmpty()) {
 			
