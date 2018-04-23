@@ -128,7 +128,7 @@ public class SingleArticle {
 		  							boolean a_firstrun,
 		  							int a_limit) {
 
-  if(firstRun && timeFrame.getTimeFrame() == null) {
+  if(firstRun && timeFrame.getDateArray() == null) {
 	 
   	URL url = null;
   	try {

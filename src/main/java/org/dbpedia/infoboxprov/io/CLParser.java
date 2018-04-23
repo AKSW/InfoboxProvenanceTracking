@@ -234,7 +234,7 @@ public class CLParser extends JCommander {
 		 this.timeFrame = new TimeFrame(earlier, later);
 		 
 		 
-		 if(timeFrame.getTimeFrame() != null){
+		 if(timeFrame.getDateArray() != null){
 		
 			 readvariant = READVARIANT.ReadTimeFiltered;
 			
@@ -285,7 +285,7 @@ public class CLParser extends JCommander {
 					 new File("ArticleDumps/"+singleArticle+".xml").delete();
 				 }
 				 
-				 if(timeFrame.getTimeFrame() != null){
+				 if(timeFrame.getDateArray() != null){
 			
 					 timestamp = later + "T00:00:00Z";
 					

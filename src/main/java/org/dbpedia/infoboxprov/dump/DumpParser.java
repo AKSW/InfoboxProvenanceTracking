@@ -60,7 +60,7 @@ public class DumpParser {
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
     this.extractionTimeFrame = clParser.getTimeFrame()
-			 .getTimeFrame();
+			 .getDateArray();
    
     this.templates = clParser.getTamplates();
   }

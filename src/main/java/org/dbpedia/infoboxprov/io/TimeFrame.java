@@ -68,7 +68,7 @@ public class TimeFrame {
 	
 	}
 	
-	public Date[] getTimeFrame() {
+	public Date[] getDateArray() {
 		return timeFrame;
 	}
 	
