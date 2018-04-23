@@ -198,8 +198,9 @@ public class DumpParser {
 
    
     // if no revisions are left, page is irrelevant
-    if (page.getRevision().isEmpty()) {
-      page = null;
+   if(!page.getRevision().isEmpty() && page.getRevision().get(0).getTemplates().isEmpty()) {
+   	
+ 	   page.getRevision().remove(0);
     }
     
     
@@ -250,59 +251,73 @@ public class DumpParser {
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
 
+   
+    
     for(int i = 0; i < page.getRevision().size(); i++) {
     
     	
     	
      InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
     	
+    
+     
    	 if(!infoboxParser.getTemplates().isEmpty()) {
 			
-    		for(int j = 0; j<infoboxParser.getTemplates().size(); j++) {
+    		for(int j = 0; j < infoboxParser.getTemplates().size(); j++) {
     		 
     			page.getRevision().get(i).getTemplates().add( infoboxParser.getTemplates().get(j));
+    			
+    			 
     		}	
     	}
    	 
     }
     
+    //System.out.println(page.getRevision().size());
     
     // filter revisions default
     for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
-   	 
-    	standardFilter(i); 
-   	 
-    }
-  
-   
-  
-    // filter revisions time
-    for (int i = page.getRevision().size()-1; i >= 0; i-- ) {
-    
-      i = dateFilter(i, extractionTimeFrame);
-
-    }
-
-    
-    
-        
     	
-
-   
-
+    	standardFilter(i); 
+    	
+    	 if(page.getRevision().size() == 1) {
+       	  
+       	  break;
+         }
+   	 
+    }
+    
+	// filter revisions time
+	for (int i = 0; i < page.getRevision().size(); i++ ) {
+    
+		 
+		i =   dateFilter(i, extractionTimeFrame);
+		  
+    	 if(page.getRevision().size() == 1) {
+          	  
+          	  break;
+            }
+	  	}
+    
     // eventually remove the first revision
     // (which doesn't get filtered by standardFilter())
-    if(page.getRevision().get(0).getTemplates().isEmpty()) {
+    if(page.getRevision().size() > 1 && page.getRevision().get(0).getTemplates().isEmpty() ) {
+    	
+    	
+    	
  	   page.getRevision().remove(0);
+ 	   
     }
 
   
     
     // if no revisions are left, page is irrelevant
     if (page.getRevision().isEmpty()) {
+    	
       page = null;
+      
     }
-
+   
     try {
     	
 		filteredParser.next();
@@ -377,23 +392,25 @@ public class DumpParser {
    * @param extractionTimeFrame start and end date of the relevant revisions
    *                            to keep
    */
-  private int dateFilter(int i, Date[] extractionTimeFrame) {
+  private int  dateFilter(int i, Date[] extractionTimeFrame) {
 
+	 
+	  
     // If there is a time restriction revisions out of it will be removed
-	
+	  
 	  if (page.getRevision().get(i).getTimestamp().after
               (extractionTimeFrame[1])) {
         page.getRevision().remove(i);
-       
+        i--;
 	  	  
       } else if (page.getRevision().get(i).getTimestamp().before
               (extractionTimeFrame[0])) {
     	 
         page.getRevision().remove(i);
-       
+       i--;
       }
     
-    return i;
+  return i;
   }// end dateFilter
   
    
