@@ -90,6 +90,7 @@ public class SingleArticle {
 	  
 	  this.name = name;
 	  this.language = language;
+	  this.daemon = false;
 	  
   }
   
