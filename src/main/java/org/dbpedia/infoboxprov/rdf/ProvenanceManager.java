@@ -135,7 +135,7 @@ public class ProvenanceManager implements Runnable {
 
   public void wholeProvenanceTimeFiltered() {
 
-  
+	 
       while (parser.readPageTimeFiltered()) {
 
         if (parser.getPage() != null) {
@@ -164,7 +164,8 @@ public class ProvenanceManager implements Runnable {
 
  
   public void lastChangeProvenanceTimeFiltered() {
-
+	  
+	  
   
       while (parser.readPageTimeFiltered()) {
 
@@ -191,10 +192,12 @@ public class ProvenanceManager implements Runnable {
 	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
 	          this.language );
-	  
+	  	
 
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 
+		
+		
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
               getRevision().get(i).getId(), this.language );
 		  
@@ -205,6 +208,8 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
+			
+			
 			if (stmt[1] == null) {	
 			
 				writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));

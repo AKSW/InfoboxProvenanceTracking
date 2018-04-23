@@ -137,34 +137,29 @@ public class InfoboxParser {
 	  
 	if(templates == null) {
 		
-		String patt = "";
-		int index1 =0;
- 		 
-		  
-		  if(input.contains("{{" + patt )) {
-			  index1 =  input.indexOf(patt);
-			
-			  tmp = removeSingleLineBraces(input.substring(index1, input.length()));
-			  tmp = removeSingleLineBraces(tmp);
-			  tmp = removeBraces(tmp);
-			  
-			
-			  
-			  Pattern pattern = Pattern.compile("(?s)"+ patt + ".*?}}");
-	    	  Matcher matcher = pattern.matcher(tmp);
-			  
-	    	  if (matcher.find()) {
-	    		
-	    		  tmp = "{{" + tmp + tmp.substring(matcher.start(), matcher.end());
-
-	    		  foundTemplates.add(tmp.substring(matcher.start(), matcher.end()));
+		
+		
+		
+		String[] in = {""};
+		for (String string : in)
+		{
+	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ string + ".*?}}");
+	    	  Matcher matcher = pattern.matcher(input);
+	    	  while (matcher.find()) {
+	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
+	    		  
+	    		  foundTemplates.add(input.substring(matcher.start(), matcher.end()));
 	    		 
 	    	    }
+	    	   
 	    	  
-		  }
+	      }
 		
+		  
 		return;
 	}
+	
+	
 	
 	for(int i = 0; i < templates.size(); i++) {
 		 String patt = templates.get(i);

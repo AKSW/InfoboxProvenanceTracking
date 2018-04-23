@@ -252,6 +252,8 @@ public class DumpParser {
 
     for(int i = 0; i < page.getRevision().size(); i++) {
     
+    	
+    	
      InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
     	
    	 if(!infoboxParser.getTemplates().isEmpty()) {
@@ -294,7 +296,7 @@ public class DumpParser {
  	   page.getRevision().remove(0);
     }
 
-   
+  
     
     // if no revisions are left, page is irrelevant
     if (page.getRevision().isEmpty()) {

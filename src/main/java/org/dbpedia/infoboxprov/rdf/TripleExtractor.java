@@ -37,6 +37,8 @@ public class TripleExtractor {
 	Model tmp = ModelFactory.createDefaultModel();
     Model newModel = ModelFactory.createDefaultModel();
 
+   
+    
     tmp.read(extractionUrl +
             language + "/extract" + "?title=&revid=" + revisionsNumber +
       "&format=turtle-triples&" + "extractors=custom", null, "TURTLE");
@@ -47,6 +49,9 @@ public class TripleExtractor {
     
     while ( stmts.hasNext() ) {
   	  Statement triple = stmts.nextStatement();
+  	  
+  
+  	  
   	  String tripleStr = triple .getPredicate().toString();
   	  //System.out.println(tripleStr);
   	  
@@ -56,7 +61,7 @@ public class TripleExtractor {
   			  newModel.add(triple); 
   		  }
   	  }
-  	  
+  
   	/*  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
   			!tripleStr.contains("wikiPageUsesTemplate")  )
   	  {
