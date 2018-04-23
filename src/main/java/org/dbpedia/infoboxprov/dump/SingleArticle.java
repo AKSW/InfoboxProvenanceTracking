@@ -168,7 +168,9 @@ public class SingleArticle {
   		dump = new File("ArticleDumps/"+ name + tempID +".xml");
   	}else {
   	
-	dump = new File("ArticleDumps/"+ name +".xml");
+  		
+  		
+  		dump = new File("ArticleDumps/"+ name +".xml");
 	}
 	    
 	try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
@@ -332,6 +334,7 @@ public class SingleArticle {
 		   
 		path = tmp.getAbsoluteFile().toString();
 	  
+		
   }
   
   

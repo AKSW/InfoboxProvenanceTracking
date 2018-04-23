@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
  * 
  * @author Daniel Pohl
  */
-class Filter implements StreamFilter {
+public class Filter implements StreamFilter {
 	
 
   private int tmp = 0;
