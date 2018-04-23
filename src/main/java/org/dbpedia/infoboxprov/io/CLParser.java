@@ -420,6 +420,7 @@ public class CLParser extends JCommander {
 		 
 	 }
 	 
+	
 	private void parseConfig(String path) {
 		templates = new ArrayList<String>();
 		predicates = new ArrayList<String>();

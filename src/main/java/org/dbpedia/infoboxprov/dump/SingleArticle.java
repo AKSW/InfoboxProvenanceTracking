@@ -86,6 +86,13 @@ public class SingleArticle {
 	
   }
   
+  public SingleArticle(String name, String language) {
+	  
+	  this.name = name;
+	  this.language = language;
+	  
+  }
+  
    
   public String getTimestampt() {
 	    return timestamp;
