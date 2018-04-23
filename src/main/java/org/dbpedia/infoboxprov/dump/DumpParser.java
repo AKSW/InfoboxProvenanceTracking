@@ -135,24 +135,30 @@ public class DumpParser {
    * @throws IOException IOException
    * @throws XMLStreamException XMLStreamException
    */
-  public boolean readPageDefault() throws IOException,
-          XMLStreamException {
+  public boolean readPageDefault() {
 	
 	page = null;
 	
 
-    try {
-      page = mapper.readValue(parser, Page.class);
-   
+	 try {
+	    	
+	      page = mapper.readValue(parser, Page.class);
+	 
+	    } catch (java.util.NoSuchElementException | IOException e) {
+	     
 
-    }catch(com.fasterxml.jackson.databind.exc.InvalidDefinitionException e) {
-    	System.out.println(e);
-    } catch (java.util.NoSuchElementException e) {
-   
-      reader.close();
-      
-      return false;
-    }
+	      try {
+	    	  
+			reader.close();
+			
+		  } catch (IOException e1) {
+			  
+			System.out.println("Can't close DumpParser reader!");
+			
+		  }
+	     
+	      return false;
+	    }
     
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
@@ -197,7 +203,13 @@ public class DumpParser {
     }
     
     
-    filteredParser.next();
+    try {
+    	
+		filteredParser.next();
+		
+	} catch (XMLStreamException e) {
+		
+	}
     return true;
   }
 
@@ -211,16 +223,26 @@ public class DumpParser {
    * @throws IOException IOException
    * @throws XMLStreamException XMLStreamException
    */
-  public boolean readPageTimeFiltered() throws IOException,
-          XMLStreamException {
+  public boolean readPageTimeFiltered()  {
 
+	page = null;
+	  
     try {
+    	
       page = mapper.readValue(parser, Page.class);
  
-    } catch (java.util.NoSuchElementException e) {
-      // if no new page is in the dump
+    } catch (java.util.NoSuchElementException | IOException e) {
+     
 
-      reader.close();
+      try {
+    	  
+		reader.close();
+		
+	  } catch (IOException e1) {
+		  
+		System.out.println("Can't close DumpParser reader!");
+		
+	  }
      
       return false;
     }
@@ -279,7 +301,13 @@ public class DumpParser {
       page = null;
     }
 
-    filteredParser.next();
+    try {
+    	
+		filteredParser.next();
+		
+	} catch (XMLStreamException e) {
+		
+	}
     return true;
   }
 

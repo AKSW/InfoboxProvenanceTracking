@@ -119,7 +119,7 @@ public class ProvenanceManager implements Runnable {
   
   public void wholeProvenanceDefault() {
 
-    try {
+
       while (parser.readPageDefault()) {
     	
     	
@@ -129,16 +129,13 @@ public class ProvenanceManager implements Runnable {
 
         }//end if
       }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
+   
   }//end wholeProvenanceDefault
 
 
   public void wholeProvenanceTimeFiltered() {
 
-    try {
+  
       while (parser.readPageTimeFiltered()) {
 
         if (parser.getPage() != null) {
@@ -147,17 +144,14 @@ public class ProvenanceManager implements Runnable {
 
         }//end if
       }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
+    
   }//end wholeProvenanceTimeFiltered
   
   
 
   
   public void lastChangeProvenanceDefault() {
-    try {
+  
       while (parser.readPageDefault()) {
         if (parser.getPage() != null) {
         	
@@ -165,16 +159,13 @@ public class ProvenanceManager implements Runnable {
         }//end if
       }// end while
 
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
+   
   }//end lastChangeProvenance
 
  
   public void lastChangeProvenanceTimeFiltered() {
 
-    try {
+  
       while (parser.readPageTimeFiltered()) {
 
         if (parser.getPage() != null) {
@@ -183,10 +174,7 @@ public class ProvenanceManager implements Runnable {
 
         }//end if
       }// end while
-    }//end try
-    catch (IOException | XMLStreamException e) {
-    	logger.log( Level.INFO, "Exception occur", e );
-    }
+   
   }//end lastChangeProvenanceTimeFiltered
 
   
