@@ -169,7 +169,7 @@ public class SingleArticle {
   	
   		
   		
-  		dump = new File("ArticleDumps/"+ name +".xml");
+  		dump = new File("ArticleDumps/" + name + "_" + language +  ".xml");
 	}
 	    
 	try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
@@ -267,7 +267,7 @@ public class SingleArticle {
 	        	  
 	          }else {
 	        	  
-	        	  dump = new File("ArticleDumps/" + name  + ".xml");
+	        	  dump = new File("ArticleDumps/" + name + "_" + language +  ".xml");
 	          
 	          }
 	          
