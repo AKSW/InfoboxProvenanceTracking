@@ -53,7 +53,7 @@ public class InfoboxParser {
   private void findSingleLineBoxes(String input) {
 	  String tmp = "";  
 	  
-	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{.*?}}");
+	    	  Pattern pattern = Pattern.compile("\\{\\{.*?}}");
 	    	  Matcher matcher = pattern.matcher(input);
 	    	  if (matcher.find()) {
 	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
