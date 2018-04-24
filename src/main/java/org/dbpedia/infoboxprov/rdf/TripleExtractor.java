@@ -32,21 +32,18 @@ public class TripleExtractor {
    * @return Model
  * @throws FileNotFoundException 
    */
-  public Model generateModel(int revisionsNumber, String language )  {
+  public Model generateModel(int revisionsNumber, String language, boolean variant )  {
 	
 	Model tmp = ModelFactory.createDefaultModel();
+	
+	 tmp.read(extractionUrl +
+	            language + "/extract" + "?title=&revid=" + revisionsNumber +
+	      "&format=turtle-triples&" + "extractors=custom", null, "TURTLE");
+	
+	if(variant) {
+	
     Model newModel = ModelFactory.createDefaultModel();
-
-   
-    
-    tmp.read(extractionUrl +
-            language + "/extract" + "?title=&revid=" + revisionsNumber +
-      "&format=turtle-triples&" + "extractors=custom", null, "TURTLE");
-    
     StmtIterator stmts = tmp.listStatements();
-	 
-    
-    
     while ( stmts.hasNext() ) {
   	  Statement triple = stmts.nextStatement();
   	  
@@ -73,6 +70,28 @@ public class TripleExtractor {
    
 
    return newModel;
+   
+	} else {
+		
+		StmtIterator stmts = tmp.listStatements();
+	    while ( stmts.hasNext() ) {
+	  	  Statement triple = stmts.nextStatement();
+	  	  String tripleStr = triple .getPredicate().toString();
+	  	 
+	  	  
+	  	  for(int i = 0; i < predicates.size(); i++) {
+	  	  
+	  		  if(tripleStr.contains(predicates.get(i))){
+	  			  tmp.remove(triple); 
+	  		  }
+	  	  }
+	  
+	  	
+	  	  
+	    }
+		
+	return tmp;
+	}
 
   }
 
