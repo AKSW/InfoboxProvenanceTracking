@@ -53,32 +53,13 @@ public class InfoboxParser {
   private void findSingleLineBoxes(String input) {
 	  String tmp = "";  
 	  
-	    try (InputStream searchPatternStream = getClass().getResourceAsStream(
-	      "/singleLineTemplates" + ".txt");
-	      Scanner in = new Scanner(searchPatternStream, "UTF-8")) {
-
-	      while(in.hasNextLine()) {
-	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ in.nextLine() + ".*?}}");
+	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{.*?}}");
 	    	  Matcher matcher = pattern.matcher(input);
 	    	  if (matcher.find()) {
 	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
 	    		  foundTemplates.add(input.substring(matcher.start(), matcher.end()));
 	    		 
 	    	    }
-	    	   
-	    	  
-	      }
-	   
-	    	
-	    }
-	    catch (IOException e) {
-	   /*   Log.error(e, "The file which specifies additional boxes"
-	        + "other than the Infobox could not be read!");*/
-	    	System.out.println("Fehler InfoboxParser");
-	    }
-
-	    
-	  
   }
   
   
@@ -137,8 +118,8 @@ public class InfoboxParser {
 	  
 	if(templates == null) {
 		
-		
-		
+		findSingleLineBoxes(input);
+	    input = removeSingleLineBraces(input);
 		
 		String[] in = {""};
 		for (String string : in)
