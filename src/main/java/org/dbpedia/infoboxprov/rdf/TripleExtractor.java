@@ -18,7 +18,7 @@ public class TripleExtractor {
 	private String extractionUrl = null;
 	private ArrayList<String> predicates = null;
 	
-	TripleExtractor(String extractionUrl, ArrayList<String> predicates){
+	public TripleExtractor(String extractionUrl, ArrayList<String> predicates){
 		
 		this.extractionUrl = extractionUrl;
 		this.predicates = predicates;
