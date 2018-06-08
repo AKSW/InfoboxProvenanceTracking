@@ -1,6 +1,8 @@
 package org.dbpedia.infoboxprov.rdf;
 
 import java.util.ArrayList;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -11,6 +13,8 @@ public class TripleExtractor {
 	
 	private String extractionUrl = null;
 	private ArrayList<String> predicates = null;
+	
+	private ArrayList<Pair<Integer, String>  > reusedPredicates = null;
 	
 	public TripleExtractor(String extractionUrl, ArrayList<String> predicates){
 		
@@ -38,21 +42,21 @@ public class TripleExtractor {
 	if(variant) {
 	
    
-    StmtIterator stmts = tmp.listStatements();
-    while ( stmts.hasNext() ) {
-  	  Statement triple = stmts.nextStatement();
+		StmtIterator stmts = tmp.listStatements();
+		while ( stmts.hasNext() ) {
+			Statement triple = stmts.nextStatement();
   	  
   
   	  
-  	  String tripleStr = triple .getPredicate().toString();
-  	  //System.out.println(tripleStr);
+			String tripleStr = triple .getPredicate().toString();
+			//System.out.println(tripleStr);
   	  
-  	  for(int i = 0; i < predicates.size(); i++) {
+			for(int i = 0; i < predicates.size(); i++) {
   	  
-  		  if(tripleStr.contains(predicates.get(i))){
-  			  newModel.add(triple); 
-  		  }
-  	  }
+				if(tripleStr.contains(predicates.get(i))){
+					newModel.add(triple); 
+				}
+			}
   
   	/*  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
   			!tripleStr.contains("wikiPageUsesTemplate")  )
@@ -61,10 +65,7 @@ public class TripleExtractor {
   		 
   		newModel.add(triple);  }*/
   	  
-    }
-   
-
-  
+		}
    
 	} else {
 		
@@ -100,5 +101,11 @@ public class TripleExtractor {
 	return newModel;
 
   }
+  
+  
+  
+  
+  	
+  
 
 }

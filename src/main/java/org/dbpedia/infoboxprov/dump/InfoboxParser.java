@@ -107,8 +107,15 @@ public class InfoboxParser {
 	  }
 
   /**
-   * Second step: Searching all multi lined expressions of the form "{######}"
+   * Second step: Searching all multi lined expressions of the form "{{######}}"
    * to find the infobox saves the infobox text
+   *
+   *
+   *In case the InfoboxParser is constructed with templates unequal to null the search is more specific
+   *and cutting the template at the wrong position doesn't happens.
+   *
+   *In case the InfoboxParser is constructed with templates equal to null. The search goes for all templates of the form {{####}}
+   *but sometimes the template will cut at the wrong position. Maybe some unequal revisions will recognized as equal.
    *
    * @param input the whole text of the revision
    */
@@ -118,6 +125,8 @@ public class InfoboxParser {
 	  
 	if(templates == null) {
 		
+		//First step: remove all singleLineBraces to avoid cutting the template at the wrong position.
+		//Maybe where are multiLineTemplates interleaved. Than the template will cut at the wrong position
 		findSingleLineBoxes(input);
 	    input = removeSingleLineBraces(input);
 		
@@ -155,8 +164,6 @@ public class InfoboxParser {
 			  tmp = removeSingleLineBraces(tmp);
 			  tmp = removeBraces(tmp);
 			  
-			
-			  
 			  Pattern pattern = Pattern.compile("(?s)"+ patt + ".*?}}");
 	    	  Matcher matcher = pattern.matcher(tmp);
 			  
@@ -167,64 +174,13 @@ public class InfoboxParser {
 	    		  foundTemplates.add(tmp.substring(matcher.start(), matcher.end()));
 	    		 
 	    	    }
-	    	  
 		  }
 		 
 	}
 	
-   /* try (InputStream searchPatternStream = getClass().getResourceAsStream(
-      "/templates" + ".txt");
-      Scanner in = new Scanner(searchPatternStream, "UTF-8")) {
-
-    	while(in.hasNextLine()) {
-    		  String patt = in.nextLine();
-    		 
-    		
-    		  
-    		
-    	
-    		  int index1 =0;
-    		 
-    		  
-    		  if(input.contains("{{" + patt )) {
-    			  index1 =  input.indexOf(patt);
-    			
-    			  tmp = removeSingleLineBraces(input.substring(index1, input.length()));
-    			  tmp = removeSingleLineBraces(tmp);
-    			  tmp = removeBraces(tmp);
-    			  
-    			
-    			  
-    			  Pattern pattern = Pattern.compile("(?s)"+ patt + ".*?}}");
-    	    	  Matcher matcher = pattern.matcher(tmp);
-    			  
-    	    	  if (matcher.find()) {
-    	    		
-    	    		  tmp = "{{" + tmp + tmp.substring(matcher.start(), matcher.end());
-    	    		//  System.out.println(tmp.substring(matcher.start(), matcher.end()));
-    	    		  foundTemplates.add(tmp.substring(matcher.start(), matcher.end()));
-    	    		 
-    	    	    }
-    	    	  
-    		  }
-    	}
-    
-    }
-    catch (IOException e) {
-      Log.error(e, "The file which specifies additional boxes"
-        + "other than the Infobox could not be read!");
-    	System.out.println("Fehler InfoboxParser");
-    }*/
-
-   
   }
   
-  
-  
-  
- 
-  
- 
+
   public ArrayList<String> getTemplates() {
 	  
 		  
