@@ -1,8 +1,6 @@
 package org.dbpedia.infoboxprov.rdf;
 
 import java.util.ArrayList;
-
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -14,7 +12,7 @@ public class TripleExtractor {
 	private String extractionUrl = null;
 	private ArrayList<String> predicates = null;
 	
-	private ArrayList<Pair<Integer, String>  > reusedPredicates = null;
+	
 	
 	public TripleExtractor(String extractionUrl, ArrayList<String> predicates){
 		
@@ -58,12 +56,7 @@ public class TripleExtractor {
 				}
 			}
   
-  	/*  if(tripleStr.contains("http://"+language+".dbpedia.org/property")&&
-  			!tripleStr.contains("wikiPageUsesTemplate")  )
-  	  {
-  		 
-  		 
-  		newModel.add(triple);  }*/
+  	
   	  
 		}
    

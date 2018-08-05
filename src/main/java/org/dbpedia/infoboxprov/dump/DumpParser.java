@@ -167,8 +167,9 @@ public class DumpParser {
     
     for(int i = 0; i < page.getRevision().size(); i++) {
     	
-    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
-     	
+    	 //InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
+    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), null);
+    	 
     	 if(!infoboxParser.getTemplates().isEmpty()) {
  			
      		for(int j = 0; j<infoboxParser.getTemplates().size(); j++) {
@@ -257,7 +258,8 @@ public class DumpParser {
     
     	
     	
-     InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
+     //InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
+   	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), null);
     	
     
      

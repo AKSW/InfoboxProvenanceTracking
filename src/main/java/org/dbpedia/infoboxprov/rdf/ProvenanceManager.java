@@ -1,11 +1,7 @@
 package org.dbpedia.infoboxprov.rdf;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
-import javax.xml.stream.XMLStreamException;
+import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
@@ -32,7 +28,7 @@ public class ProvenanceManager implements Runnable {
   private TripleExtractor tripleExtractor = null;
   private ProvenanceWriter writer = null;
   private READVARIANT readVariant = null;
-  private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
+
   ArrayList<Statement[]> differences = null;
   ArrayList<Statement[]> filteredDifferences = null;
   ArrayList<Statement> alreadyFoundDifferences = null;

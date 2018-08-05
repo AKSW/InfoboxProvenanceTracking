@@ -1,11 +1,8 @@
 
 package org.dbpedia.infoboxprov.dump;
 
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,7 +84,7 @@ public class InfoboxParser {
     return sb.toString();
   }
   
-  private String removeBraces(String input) {
+  public String removeBraces(String input) {
 	  
 	    Pattern pattern = Pattern.compile("(?s)\\{\\{.*?\\}\\}");
 	    Matcher matcher = pattern.matcher(input);
@@ -125,26 +122,8 @@ public class InfoboxParser {
 	  
 	if(templates == null) {
 		
-		//First step: remove all singleLineBraces to avoid cutting the template at the wrong position.
-		//Maybe where are multiLineTemplates interleaved. Than the template will cut at the wrong position
-		findSingleLineBoxes(input);
-	    input = removeSingleLineBraces(input);
 		
-		String[] in = {""};
-		for (String string : in)
-		{
-	    	  Pattern pattern = Pattern.compile("(?s)\\{\\{"+ string + ".*?}}");
-	    	  Matcher matcher = pattern.matcher(input);
-	    	  while (matcher.find()) {
-	    		  tmp = tmp + input.substring(matcher.start(), matcher.end());
-	    		  
-	    		  foundTemplates.add(input.substring(matcher.start(), matcher.end()));
-	    		 
-	    	    }
-	    	   
-	    	  
-	      }
-		
+		findTemplates(input);
 		  
 		return;
 	}
@@ -188,6 +167,78 @@ public class InfoboxParser {
 	   
 	  
   }
+  
+  private int paranthesisCheck(String input) {
+	  
+      Stack<Integer> stk = new Stack<Integer>();
+      String exp = input;        
 
+      int len = exp.length();
+ 
+      int index = 0;
+      
+      for (int i = 0; i < len; i++){    
+
+          char ch = exp.charAt(i);
+
+          if (ch == '{')
+
+              stk.push(i);
+
+          else if (ch == '}'){
+
+              try{
+
+                  int p = stk.pop() + 1;
+
+              }
+
+              catch(Exception e){
+            	 
+                  return  i +2;
+
+              }
+
+          }            
+
+      }
+      
+      return index;
+  }
+  
+  
+ private void findTemplates(String input) {
+	  
+	  	String tmp = "";
+		String input2 = "";
+		
+		 Pattern pattern = Pattern.compile("(?s)\\{\\{.*?}}");
+		 Matcher matcher = pattern.matcher(input);
+ 	  	 while (matcher.find()) {
+ 	  		 
+ 	  
+ 	  		 if(input.substring(matcher.start() + 2, matcher.end()).contains("{{")) {
+ 	  		 
+ 	  			 
+ 	  		 input2 = input.substring(matcher.start() + 2 , input.length());
+ 	  		 int endIndex = paranthesisCheck(input2) + matcher.start() + 2;	
+ 	  		 input2 = input.substring(matcher.start() , endIndex );
+ 	  	
+ 	  		 foundTemplates.add(input2);
+ 	  		 input = input.substring(endIndex, input.length());
+ 	  		 matcher = pattern.matcher(input);
+ 				
+ 	  		 }else {
+ 	  		 
+ 	  		 	tmp = tmp + input.substring(matcher.start(), matcher.end());
+ 	  		 	foundTemplates.add(input.substring(matcher.start(), matcher.end()));
+ 	  		 }
+ 		 
+ 	    }
+		
+	  
+	  
+  }
+  
   
 }

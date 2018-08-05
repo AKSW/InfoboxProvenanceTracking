@@ -442,7 +442,7 @@ public class CLParser extends JCommander {
 				tokens = tmp.split("=");
 				configLine = tokens[0];
 				tmp = tokens[1];
-				tokens = tmp.split("#");
+				tokens = tmp.split("\\|");
 				
 				for(String s:tokens){
 						
@@ -475,13 +475,13 @@ public class CLParser extends JCommander {
 				
 			}
 			
-			/*for(int  i = 0; i < templates.size(); i++) {
+			for(int  i = 0; i < templates.size(); i++) {
 				System.out.println(templates.get(i));
 			}
 			
 			for(int  i = 0; i < predicates.size(); i++) {
 				System.out.println(predicates.get(i));
-			}*/
+			}
 			
 			
 			br.close();
