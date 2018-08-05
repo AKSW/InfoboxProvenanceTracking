@@ -19,7 +19,7 @@ public class Producer extends Thread implements Runnable {
 	
 	private ArrayBlockingQueue<String> blockingQueue = null;
 	private FileHandler fh = null;
-	private CLParser clParser;
+	private CLParser clParser = null;
 	private File threadFile = null;
 	
 	public Producer(ArrayBlockingQueue<String> queue, CLParser clParser ) {

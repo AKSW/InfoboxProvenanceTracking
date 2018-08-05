@@ -55,7 +55,7 @@ public class ProvenanceManager implements Runnable {
     this.readVariant = clParser.getReadvarian();
     
     this.parser = parser;
-    this.parser.setParser(path, equivalenceClass, clParser.getThreadsF());
+    this.parser.setParser(path, equivalenceClass, clParser.getThreads());
   
     
    

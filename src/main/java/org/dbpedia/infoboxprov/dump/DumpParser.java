@@ -159,7 +159,7 @@ public class DumpParser {
 	      return false;
 	    }
     
-	 
+	
 	 
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
