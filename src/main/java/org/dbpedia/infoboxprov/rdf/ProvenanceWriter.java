@@ -79,11 +79,9 @@ public class ProvenanceWriter {
    *
    * saves differences in ArrayList
    *
-   * @param newTripleOldTriple array list of statement arrays the first element
-   * of the statement array is the new triple, the second element of the array
-   * is the old triple
    * @param revisionOfChange revision object with revision number, author,
    * timestamp
+   * @param stmt statement wich will be written to the revision
    */
   
   public void writeAdding(Statement[] stmt, Revision revisionOfChange) {
@@ -97,7 +95,11 @@ public class ProvenanceWriter {
 		   wholeDifferernces.add(line);
 		   write();
 		  }
-  
+  /**
+  * @param revisionOfChange revision object with revision number, author,
+  * timestamp
+  * @param stmt statement wich will be deleted from the revision
+  */
   public void writeDeleting(Statement[] stmt, Revision revisionOfChange) {
   	
 	   String line = "";

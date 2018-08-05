@@ -69,6 +69,7 @@ public class CLParser extends JCommander {
 	 
 	 /**
 	  * Constructor for the Comandlinetool
+	  * @param args the arguments from the command line
 	  */
 	 public CLParser(String[] args) {
 		this.tempID = UUID.randomUUID();
@@ -102,6 +103,14 @@ public class CLParser extends JCommander {
 	 
 	 /**
 	  * Constructor for the Webinterface
+	  * @param singleArticle path to the singleArticle
+	  * @param language extraction language e.q. en, de, ...
+	  * @param templates specific templates wich will filtered
+	  * @param predicates specific predicates wich will filtered
+	  * @param earlierDate first point of the timeframe
+	  * @param laterDate second point of the timeframe
+	  * @param tracking the tracking mode lastChange or all changes
+	  * @param port the portnumber
 	  */
 	 public CLParser(String singleArticle, 
 			 		 String language, 
@@ -120,14 +129,14 @@ public class CLParser extends JCommander {
 		 
 		 String[] tokens;
 		 
-		 tokens = templates.split("#");
+		 tokens = templates.split("\\|");
 			
 		 for(String s:tokens){
 					
 			this.templates.add(s);
 		 }
 		 
-		 tokens = predicates.split("#");
+		 tokens = predicates.split("\\|");
 		 
 		 for(String s:tokens){
 				
@@ -475,13 +484,13 @@ public class CLParser extends JCommander {
 				
 			}
 			
-			for(int  i = 0; i < templates.size(); i++) {
+			/*for(int  i = 0; i < templates.size(); i++) {
 				System.out.println(templates.get(i));
 			}
 			
 			for(int  i = 0; i < predicates.size(); i++) {
 				System.out.println(predicates.get(i));
-			}
+			}*/
 			
 			
 			br.close();

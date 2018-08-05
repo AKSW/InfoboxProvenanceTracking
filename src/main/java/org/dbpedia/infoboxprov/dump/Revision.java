@@ -68,6 +68,7 @@ public class Revision implements Comparable<Revision> {
    * @param id the id of this new revision
    * @param author the author of this new revision
    * @param timestamp the timestamp of this new revision
+   * @param text text of the wikipedia page
    */
   public Revision(int id, String author, Date timestamp, String text) {
     this.id = id;
@@ -81,6 +82,7 @@ public class Revision implements Comparable<Revision> {
    * @param author the author of this new revision
    * @param timestamp the timestamp of this new revision as string
    * @throws ParseException Standard ParseException
+   * @param text text of the wikipedia page
    */
   public Revision(int id, String author, String timestamp, String text)
     throws ParseException {

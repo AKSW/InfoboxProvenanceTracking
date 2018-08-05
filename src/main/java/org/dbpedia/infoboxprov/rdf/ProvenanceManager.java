@@ -37,9 +37,10 @@ public class ProvenanceManager implements Runnable {
   /**
    * @param threadName       Name of the thread
    * @param path             Path to the Dumpfile
+   * @param parser 			 the dumpparser seted up in consumer.java
    * @param equivalenceClass used to separate between the different equivalence classes
-   * @param language         language of the article
-   * @param variant          if whole provenance or just the last change of a triple
+   * @param clParser 		 the command line parser 
+   * @param isNewFile 		 control flag
    */
 
   public ProvenanceManager(String threadName,

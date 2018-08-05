@@ -19,24 +19,24 @@ import java.util.Collections;
 import java.util.Date;
 
 
-/**
- * Class for parsing the DumpFiles using the JacksonFramework
- * 
- * The fileiterators are oriented on the <page> </page> tags and set up at the
- * setParser() methode
- * 
- * The setParser() methode also set up how many pages will be skipped at every equivalenceclass.
- * It means the calls  setParser(path , 0, 3), setParser(path , 1, 3) , setParser(path , 2, 3)
- * will lead to the following result.
- * 
- * The first  iterator reads the pages 0, 3, 6, 9, ...
- * The second iterator reads the pages 1, 4, 7, 10, ...
- * The third  iterator reads the pages 2, 5, 8, 11, ...
- * 
- * This equivalenceclasses are determined through the number of used threads
- * 
- * @author daniel
- */
+//
+// Class for parsing the DumpFiles using the JacksonFramework
+//  
+// The fileiterators are oriented on the <page> </page> tags and set up at the
+// setParser() methode
+//  
+// The setParser() methode also set up how many pages will be skipped at every equivalenceclass.
+// It means the calls  setParser(path , 0, 3), setParser(path , 1, 3) , setParser(path , 2, 3)
+// will lead to the following result.
+//  
+// The first  iterator reads the pages 0, 3, 6, 9, ...
+// The second iterator reads the pages 1, 4, 7, 10, ...
+// The third  iterator reads the pages 2, 5, 8, 11, ...
+//  
+// This equivalenceclasses are determined through the number of used threads
+//  
+// @author daniel
+// 
 
 public class DumpParser {
 	
@@ -52,8 +52,7 @@ public class DumpParser {
   
   /**
    *
-   * @param extractionTimeFrame timeframe with from and until
-   * @param finishedArticles ArrayList with integers as page id
+   * @param clParser the commandline parser with settings
    */
   public DumpParser(CLParser clParser) {
     this.mapper = new XmlMapper();
@@ -89,7 +88,6 @@ public class DumpParser {
    * or compressed bz2 archive
    *
    * @param path filepath
-   * @return Bufferedreader
    * @throws IOException IOException
    * @throws CompressorException CompressorException
    */
@@ -115,7 +113,10 @@ public class DumpParser {
         break;
       case "bz2":
         // calls Bz2Reader
+    	
         reader = new Bz2Reader(path);
+        
+        
         break;
       default:
         // print error message
@@ -132,8 +133,6 @@ public class DumpParser {
    * filters revisions so there are just pages which have infoboxes left and
    * deletes revisions where the infobox is equal
    * @return boolean if new Page (true) or not (false)
-   * @throws IOException IOException
-   * @throws XMLStreamException XMLStreamException
    */
   public boolean readPageDefault() {
 	
@@ -160,6 +159,8 @@ public class DumpParser {
 	      return false;
 	    }
     
+	 
+	 
     // reverse order of revisions, so the oldest one ist in index 0
     Collections.sort(page.getRevision(), Collections.reverseOrder());
 
@@ -184,19 +185,15 @@ public class DumpParser {
     // filter revisions default
     for (int i = page.getRevision().size()-1; i >= 1; i-- ) {
     	
-    	
-    	
-    	 
     	 standardFilter(i);  
     	 
     }
-   
+    
    // eventually remove the first revision
    // (which doesn't get filtered by standardFilter())
    if(page.getRevision().get(0).getTemplates().isEmpty()) {
 	   page.getRevision().remove(0);
    }
-
    
     // if no revisions are left, page is irrelevant
    if(!page.getRevision().isEmpty() && page.getRevision().get(0).getTemplates().isEmpty()) {
@@ -204,6 +201,11 @@ public class DumpParser {
  	   page.getRevision().remove(0);
     }
     
+    // if no revisions are left, page is irrelevant
+	if (page.getRevision().isEmpty()) {
+		  page = null;
+	 }
+   
     
     try {
     	
@@ -222,8 +224,6 @@ public class DumpParser {
    * deletes revisions where the infobox is equal, and deletes revisions which
    * are not in the timeframe
    * @return boolean if new Page (true) or not (false)
-   * @throws IOException IOException
-   * @throws XMLStreamException XMLStreamException
    */
   public boolean readPageTimeFiltered()  {
 
@@ -336,6 +336,8 @@ public class DumpParser {
   /**
    * set the parser and therefore the path to the current input file
    * @param path contains the path to the next dumpfile
+   * @param tmp set the equivalence class
+   * @param tmp2 set the equivalence class
    */
   public void setParser(String path, int tmp, int tmp2) {
 	    try {

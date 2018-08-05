@@ -19,6 +19,7 @@ public class Main {
 	 * Main method for the project
 	 *
 	 * @param args parameter
+	 * @throws Exception maybe something goes wrong
 	 */
 	public static void main(String[] args) throws Exception {
 		
@@ -32,6 +33,9 @@ public class Main {
 		/**
 		 * To process multiple files a BlockingQueue is used. The number is controlled through the
 		 * threadF parameter and the files are collected from the directory ArticleDumps.
+		 * 
+		 * 
+		 * To parse dumps and not single Article set the portnumber at the config file to -1
 		 */
 			
 		

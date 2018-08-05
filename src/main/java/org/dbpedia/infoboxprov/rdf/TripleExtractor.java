@@ -25,8 +25,9 @@ public class TripleExtractor {
    * function for reading turtle-triples only from an URI with given language
    * @param revisionsNumber revisionnumber
    * @param language langage
-   * @return Model
- * @throws FileNotFoundException 
+   * @param mapping extraction mode from the dbpedia tripleextracktor
+   * @param variant track just the last changing or all changings
+   * @return Models
    */
   public Model generateModel(int revisionsNumber, String language, String mapping, boolean variant )  {
 	
