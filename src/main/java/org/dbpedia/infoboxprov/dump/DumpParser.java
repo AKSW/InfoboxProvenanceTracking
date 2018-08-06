@@ -72,7 +72,27 @@ public class DumpParser {
    
   }
   
+  /**
+  *
+  * @param extractionTimeFrame the time between the revisions will filtered
+  * @param templates the templates wich will picked out
+  */
   
+ public DumpParser(Date[] extractionTimeFrame, ArrayList<String> templates) {
+	  
+	  this.mapper = new XmlMapper();
+	    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+	    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
+	    this.extractionTimeFrame = extractionTimeFrame;
+	   
+	    if(templates.size() == 0) {
+	 	   this.templates = null;
+	 	   
+	    }else {
+	 	   
+	 	   this.templates = templates;
+	    }
+  }
 
   /**
    * @return Page the current Page
