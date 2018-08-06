@@ -122,7 +122,6 @@ public class InfoboxParser {
 	  
 	if(templates == null) {
 		
-		
 		findTemplates(input);
 		  
 		return;
@@ -132,7 +131,7 @@ public class InfoboxParser {
 	
 	for(int i = 0; i < templates.size(); i++) {
 		 String patt = templates.get(i);
-		 
+		
 		  int index1 =0;
  		 
 		  

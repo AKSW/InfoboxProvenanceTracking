@@ -60,20 +60,19 @@ public class DumpParser {
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
     this.extractionTimeFrame = clParser.getTimeFrame()
 			 .getDateArray();
+   if(clParser.getTamplates().size() == 0) {
+	   this.templates = null;
+	   
+   }else {
+	   
+	   this.templates = clParser.getTamplates();
+   }
+    
+    
    
-    this.templates = clParser.getTamplates();
   }
   
-  public DumpParser(Date[] extractionTimeFrame, ArrayList<String> templates) {
-	  
-	  this.mapper = new XmlMapper();
-	    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
-	    this.extractionTimeFrame = extractionTimeFrame;
-	   
-	    this.templates = templates;
-  }
-
+  
 
   /**
    * @return Page the current Page
@@ -168,8 +167,8 @@ public class DumpParser {
     
     for(int i = 0; i < page.getRevision().size(); i++) {
     	
-    	 //InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
-    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), null);
+    	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
+   
     	 
     	 if(!infoboxParser.getTemplates().isEmpty()) {
  			
@@ -258,8 +257,8 @@ public class DumpParser {
     
     	
     	
-     //InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
-   	 InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), null);
+     InfoboxParser infoboxParser = new InfoboxParser(page.getRevision().get(i).getContent(), templates);
+   	
     	
     
      
