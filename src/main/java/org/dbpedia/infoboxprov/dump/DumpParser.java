@@ -60,13 +60,20 @@ public class DumpParser {
     mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
     this.extractionTimeFrame = clParser.getTimeFrame()
 			 .getDateArray();
-   if(clParser.getTamplates().size() == 0) {
-	   this.templates = null;
+    
+    
+    if(clParser.getTamplates() == null) {
+    
+    	this.templates = null;
+    	
+    } else if(clParser.getTamplates().size() == 0) {
+    	
+	    this.templates = null;
 	   
-   }else {
+    }else {
 	   
 	   this.templates = clParser.getTamplates();
-   }
+    }
     
     
    
@@ -85,8 +92,13 @@ public class DumpParser {
 	    mapper.disable(DeserializationFeature.WRAP_EXCEPTIONS);
 	    this.extractionTimeFrame = extractionTimeFrame;
 	   
-	    if(templates.size() == 0) {
-	 	   this.templates = null;
+	    if(templates == null) {
+	    	
+	    	 this.templates = null;
+	    	
+	    }else  if(templates.size() == 0) {
+	    	
+	 	   	 this.templates = null;
 	 	   
 	    }else {
 	 	   
