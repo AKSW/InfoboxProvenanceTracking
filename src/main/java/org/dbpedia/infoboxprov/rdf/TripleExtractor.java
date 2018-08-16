@@ -1,5 +1,8 @@
 package org.dbpedia.infoboxprov.rdf;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -31,6 +34,24 @@ public class TripleExtractor {
    */
   public Model generateModel(int revisionsNumber, String language, String mapping, boolean variant )  {
 	
+	  try {
+		  
+			 HttpURLConnection openConnection =(HttpURLConnection)new URL(extractionUrl +
+				            language + "/extract" + "?title=&revid=" + revisionsNumber +
+				  	      "&format=turtle-triples&" + "extractors=" + mapping).openConnection();
+				 
+			 openConnection.getResponseCode();
+				 
+		
+			 if(openConnection.getResponseCode() == 500 ) {
+				 
+					 return null;
+			 }
+				
+		}catch (IOException e) {
+				 
+		}
+	  
 	Model tmp = ModelFactory.createDefaultModel();
 	Model newModel = ModelFactory.createDefaultModel();
 	 
