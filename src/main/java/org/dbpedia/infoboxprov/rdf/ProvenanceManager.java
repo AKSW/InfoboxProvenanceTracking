@@ -188,7 +188,7 @@ public class ProvenanceManager implements Runnable {
 	  
 	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	          this.language,"custom", true );
+	          this.language,"custom");
 	  	
 
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
@@ -196,7 +196,7 @@ public class ProvenanceManager implements Runnable {
 		
 		
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language,"custom", true );
+              getRevision().get(i).getId(), this.language,"custom");
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 	    
@@ -247,14 +247,14 @@ public class ProvenanceManager implements Runnable {
 	  
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
-	      this.language,"custom", true);
+	      this.language,"custom");
 	  
 	
 	  
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 		//System.out.println(parser.getPage().getRevision().get(i).getId() +"---" +i);
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language, "custom", true);
+              getRevision().get(i).getId(), this.language, "custom");
 		  
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
 		rdfDiffer.determineLeftDifferences();

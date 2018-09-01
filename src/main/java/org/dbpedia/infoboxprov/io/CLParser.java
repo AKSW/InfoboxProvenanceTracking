@@ -431,15 +431,11 @@ public class CLParser extends JCommander {
 	 
 	
 	private void parseConfig(String path) {
+		
 		templates = new ArrayList<String>();
 		predicates = new ArrayList<String>();
-		/* if(new File("src/main/resources/templates.txt").exists()) {
-			 
-			 new File("src/main/resources/templates.txt").delete();
-		 }*/
 		
-		
-		  try {
+		 try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 		
 			String tmp = null;
@@ -476,21 +472,9 @@ public class CLParser extends JCommander {
 							extractionUrl = tmp;
 						
 						}
-					
 				}
-				
-			
 					
-				
 			}
-			
-			/*for(int  i = 0; i < templates.size(); i++) {
-				System.out.println(templates.get(i));
-			}
-			
-			for(int  i = 0; i < predicates.size(); i++) {
-				System.out.println(predicates.get(i));
-			}*/
 			
 			
 			br.close();

@@ -56,11 +56,10 @@ public class Servlet extends HttpServlet {
 		   	  BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/" + clParser.getTempID() + "0.tsv"));
 		   	  String tmp = "";
 		   
-		   // Set the response message's MIME type
-		   	response.setContentType("text/tab-separated-values; charset=utf-8");
-		   	//response.setContentType("text/plain; charset=utf-8");
-		    //  response.setContentType("text/html;charset=UTF-8");
-		   // Allocate a output writer to write the response message into the network socket
+		   	  // Set the response message's MIME type
+		   	  response.setContentType("text/tab-separated-values; charset=utf-8");
+		   	
+		   	  // Allocate a output writer to write the response message into the network socket
 		      PrintWriter out = response.getWriter();
 		 
 		      // Write the response message, in an HTML page
@@ -70,16 +69,15 @@ public class Servlet extends HttpServlet {
 		    		out.println(tmp ); 
 		    	
 		    	  }
-		    	 
-		    	  
+		    	   
 		      } finally {
-		         out.close();  // Always close the output writer
+		         out.close(); 
 		         br.close();
 		         new File("threadfile/Web/" + clParser.getTempID() + "0.tsv").delete();
 		      
 		         new File("ArticleDumps/"+ clParser.getSingleArticle() + clParser.getTempID() +".xml").delete();
 		         new File("ArticleDumps/" + clParser.getTempID() +".xml").delete();
-		        // new File("title").delete();
+		    
 		      }
 		        
 	   }

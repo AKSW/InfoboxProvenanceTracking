@@ -1,4 +1,3 @@
 PredicateFilter =http://en.dbpedia.org/property
 Url =/provenance
-Port =-1
 ExtractionUrl =http://mappings.dbpedia.org/server/extraction/
