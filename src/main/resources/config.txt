@@ -1,3 +1,3 @@
-PredicateFilter =http://en.dbpedia.org/property
+PredicateFilter =http://en.dbpedia.org/property|http://de.dbpedia.org/property
 Url =/provenance
 ExtractionUrl =http://mappings.dbpedia.org/server/extraction/

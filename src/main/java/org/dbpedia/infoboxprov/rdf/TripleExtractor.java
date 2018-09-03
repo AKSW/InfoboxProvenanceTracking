@@ -83,6 +83,7 @@ public class TripleExtractor {
 			for(int i = 0; i < predicates.size(); i++) {
   	  
 				if(tripleStr.contains(predicates.get(i))){
+					
 					newModel.add(triple); 
 				}
 			}
