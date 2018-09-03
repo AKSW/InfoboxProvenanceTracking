@@ -16,9 +16,7 @@ import org.dbpedia.infoboxprov.io.CLParser;
 import org.dbpedia.infoboxprov.parallel.Consumer;
 import org.dbpedia.infoboxprov.parallel.Producer;
 
-/**
- * Servlet implementation class EchoServlet
- */
+
 public class Servlet extends HttpServlet {
 	 
 	   @Override
@@ -43,42 +41,53 @@ public class Servlet extends HttpServlet {
 		   Consumer consumer = new Consumer(queue, clParser , "Web");
 		   consumer.start();
 		
+		   /**
+		    * wait until the singleArticle is full downloaded from Wikipedia
+		    */
 		   while(!consumer.getFinished()) {
 			   
 			   try {
+				   
 				Thread.sleep(2000);
+				
 			   } catch (InterruptedException e) {
+				   
 				   Thread.currentThread().interrupt();
 			   }
 			   
 		   }
 		   
-		   	  BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/" + clParser.getTempID() + "0.tsv"));
-		   	  String tmp = "";
+		   BufferedReader br = new BufferedReader(new FileReader("threadfile/Web/" + clParser.getTempID() + "0.tsv"));
+		   String tmp = "";
 		   
-		   	  // Set the response message's MIME type
-		   	  response.setContentType("text/tab-separated-values; charset=utf-8");
+		   // Set the response message's MIME type
+		   response.setContentType("text/tab-separated-values; charset=utf-8");
 		   	
-		   	  // Allocate a output writer to write the response message into the network socket
-		      PrintWriter out = response.getWriter();
+		   // Allocate a output writer to write the response message into the network socket
+		   PrintWriter out = response.getWriter();
 		 
-		      // Write the response message, in an HTML page
-		      try {
+		   // Write the response message, in an HTML page
+		    try {
 		    	  
-		    	  while((tmp = br.readLine()) != null){
+		    	while((tmp = br.readLine()) != null){
 		    		out.println(tmp ); 
 		    	
 		    	  }
 		    	   
-		      } finally {
+		     } finally {
 		         out.close(); 
 		         br.close();
+		         
+		         /**
+		          * delete the temporarily created files. 
+		          * Important: The files will saved at harddisk. Maybe the disk runs 
+		          * full in case there are to many parallel processed files. 
+		          */
 		         new File("threadfile/Web/" + clParser.getTempID() + "0.tsv").delete();
-		      
 		         new File("ArticleDumps/"+ clParser.getSingleArticle() + clParser.getTempID() +".xml").delete();
 		         new File("ArticleDumps/" + clParser.getTempID() +".xml").delete();
 		    
-		      }
+		     }
 		        
 	   }
 	   

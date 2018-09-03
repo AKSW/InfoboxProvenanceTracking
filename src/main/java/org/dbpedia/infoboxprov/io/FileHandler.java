@@ -24,10 +24,6 @@ public class FileHandler {
    */
   public FileHandler(String pathToFolder){
 	  
-	 
-	 
-	
-	 
 	  try{
 		  
 	   if(pathToFolder == null)
@@ -36,25 +32,28 @@ public class FileHandler {
 	   dumpDirectory = new File(pathToFolder);
 	   
 	   
-	   
 	   if(!dumpDirectory.exists())
 			throw new IOException("Unreadable path \"" + pathToFolder + "\"");
 	   
 	  } catch (IOException | NullPointerException e){
 		  
 		System.out.println(e.getMessage());	
-	
 		System.exit(1);
 			
 	  } 
 	 
 	 
-    dumpDirectoryContents = new Stack<File>();
+	  dumpDirectoryContents = new Stack<File>();
 
-    for (File singleDumpFile : dumpDirectory.listFiles()) {
+	  /**
+	   * Create a stack with all Files inside the ArticleDump folder or the folder specified with
+	   * the pathToFolder parameter
+	   */
+	  
+	  for (File singleDumpFile : dumpDirectory.listFiles()) {
     	
-      dumpDirectoryContents.push(singleDumpFile);
-    }
+		  dumpDirectoryContents.push(singleDumpFile);
+	  }
   }
 
   
@@ -72,8 +71,8 @@ public class FileHandler {
 		  fileEntry = dumpDirectoryContents.pop().getPath();
 		  
 		  return true;
-	  }
-	  else {
+		  
+	  }else {
 		  
 		  return false;
 	  } 

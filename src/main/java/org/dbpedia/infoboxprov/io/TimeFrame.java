@@ -15,58 +15,64 @@ public class TimeFrame {
 
 	private Date[] timeFrame = null;
 	
+	/**
+	 *constructor
+	 *
+	 * @param earlier first timestamp
+	 * @param later second timestamp
+	 */
 	public TimeFrame(String earlier, String later) {
 		
-	try {	
+		try {	
 		
-    String newDate =new SimpleDateFormat("yyyy-MM-dd").format(new Date());	
+			String newDate =new SimpleDateFormat("yyyy-MM-dd").format(new Date());	
 		 
-	Date extractLater = new SimpleDateFormat("yyyy-MM-dd")
+			Date extractLater = new SimpleDateFormat("yyyy-MM-dd")
 				.parse(later);
-	Date extractEarlier = new SimpleDateFormat("yyyy-MM-dd")
+			Date extractEarlier = new SimpleDateFormat("yyyy-MM-dd")
 				.parse(earlier);
-	Date currentDate = new  SimpleDateFormat("yyyy-MM-dd")
+			Date currentDate = new  SimpleDateFormat("yyyy-MM-dd")
 				.parse(newDate);
-	Date foundation = new SimpleDateFormat("yyyy-MM-dd").
+			Date foundation = new SimpleDateFormat("yyyy-MM-dd").
 				parse("2001-01-02");
 		
-		if(extractEarlier.after(extractLater )){
-			throw new DateTimeException ("Earlier timestamp has to be earlier when later timestamp");
-		}
+			if(extractEarlier.after(extractLater )){
+				throw new DateTimeException ("Earlier timestamp has to be earlier when later timestamp");
+			}
 		
-		if(extractEarlier.before(foundation) ){
-			extractEarlier = foundation;
-			System.out.println("Set earlier timestamp to Wikipedia foundation date 2001-01-02");
-		}
-		
-		if(extractLater.after(new  SimpleDateFormat("yyyy-MM-dd").parse(newDate)) ){
-			extractLater = currentDate;
-			System.out.println("Set later timestamp to current date");
-		}
-		
-		
-		if(extractLater.before(foundation)){
-			throw new DateTimeException ("Later timestamp has to be later when Wikipedia foundation date 2001-01-02");
-		}
+			if(extractEarlier.before(foundation) ){
+				extractEarlier = foundation;
+				System.out.println("Set earlier timestamp to Wikipedia foundation date 2001-01-02");
+			}
+			
+			if(extractLater.after(new  SimpleDateFormat("yyyy-MM-dd").parse(newDate)) ){
+				extractLater = currentDate;
+				System.out.println("Set later timestamp to current date");
+			}
 		
 		
-		if(extractEarlier.after(currentDate)){
-			throw new DateTimeException ("Earlier timestamp has to be earlier when current Date");
-		}
+			if(extractLater.before(foundation)){
+				throw new DateTimeException ("Later timestamp has to be later when Wikipedia foundation date 2001-01-02");
+			}
 		
 		
-		if( !(extractEarlier.equals(foundation)&&
-			extractLater.equals(currentDate) )	){
+			if(extractEarlier.after(currentDate)){
+				throw new DateTimeException ("Earlier timestamp has to be earlier when current Date");
+			}
+		
+		
+			if( !(extractEarlier.equals(foundation)&&
+					extractLater.equals(currentDate) )	){
 		
 			timeFrame = new Date[] { extractEarlier,extractLater };
 		}
 		
-	} catch (java.text.ParseException | DateTimeException  e) {
-		System.out.println(e.getMessage());
+		} catch (java.text.ParseException | DateTimeException  e) {
+		System.out.println("Unable to read the time parameters!");
 		System.exit(1);
-	}
+		}
 	
-	}
+	}// end constructor
 	
 	public Date[] getDateArray() {
 		return timeFrame;

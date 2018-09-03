@@ -24,10 +24,6 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		
 		
-		
-		
-		
-		
 		CLParser clParser = new CLParser(args);
 		
 		/**
@@ -38,8 +34,6 @@ public class Main {
 		 * To parse dumps and not single Article set the portnumber at the config file to -1
 		 */
 			
-		
-		  
 		  if(clParser.getPort()>=0) {
 			  
 			/** empty the folder ArticleDumps
@@ -52,43 +46,37 @@ public class Main {
            
               }*/
 			  
-			  
 			  Server server = new Server(clParser.getPort());
-			     // Handler for multiple web apps
-			     HandlerCollection handlers = new HandlerCollection();
+			  // Handler for multiple web apps
+			  HandlerCollection handlers = new HandlerCollection();
 
 			     
-			     // Creating the first web application context
-			     WebAppContext webapp = new WebAppContext();
-			     webapp.setResourceBase("src/main/webapp");
-			     webapp.setContextPath(clParser.getURL());
-			     handlers.addHandler(webapp);
+			  // Creating the first web application context
+			  WebAppContext webapp = new WebAppContext();
+			  webapp.setResourceBase("src/main/webapp");
+			  webapp.setContextPath(clParser.getURL());
+			  handlers.addHandler(webapp);
 
-			     // Adding the handlers to the server
-			     server.setHandler(handlers);
+			   // Adding the handlers to the server
+			   server.setHandler(handlers);
 			     
-			     // Starting the Server
-			    
-			     server.start();
-			     System.out.println("Server started at URL: localhost:" + clParser.getPort() + clParser.getURL());
+			   // Starting the Server
+			   server.start();
+			   System.out.println("Server started at URL: localhost:" + clParser.getPort() + clParser.getURL());
 			     
-			  
-			     server.join();
+			   server.join();
 			   
 		  }else {
 			  	ArrayBlockingQueue<String> queue = new  ArrayBlockingQueue<String> (clParser.getThreadsF());
 			    clParser.validate();
 			    new Producer(queue, clParser ).start();
 			  
-			  	for(int i= 0; i < clParser.getThreadsF(); i++)
-			  	{
+			  	for(int i= 0; i < clParser.getThreadsF(); i++){
   			
 			  		new Consumer(queue, clParser , "File" + i).start();
 			  	}
-  		
   	  }
-		  
-		
+		  	
 	}// end main
 
 }// end class

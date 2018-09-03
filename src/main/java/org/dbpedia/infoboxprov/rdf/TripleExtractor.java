@@ -34,66 +34,63 @@ public class TripleExtractor {
    */
   public Model generateModel(int revisionsNumber, String language, String mapping )  {
 	
-	  try {
+	 try {
 		  
-			 HttpURLConnection openConnection =(HttpURLConnection)new URL(extractionUrl +
+			HttpURLConnection openConnection =(HttpURLConnection)new URL(extractionUrl +
 				            language + "/extract" + "?title=&revid=" + revisionsNumber +
 				  	      "&format=turtle-triples&" + "extractors=" + mapping).openConnection();
 				 
-			 openConnection.getResponseCode();
+			openConnection.getResponseCode();
 				 
-		
-			 if(openConnection.getResponseCode() == 500 ) {
+			if(openConnection.getResponseCode() == 500 ) {
 				 
-					 return null;
-			 }
+				return null;
+			}
 				
-		}catch (IOException e) {
+	}catch (IOException e) {
 				 
-		}
+	}
 	  
 	Model tmp = ModelFactory.createDefaultModel();
 	Model newModel = ModelFactory.createDefaultModel();
 	 
 	try {
 	
-	tmp.read(extractionUrl +
+		tmp.read(extractionUrl +
 	            language + "/extract" + "?title=&revid=" + revisionsNumber +
 	      "&format=turtle-triples&" + "extractors=" + mapping, null, "TURTLE");
 	
 	}catch(Exception e) {
 		
 		System.out.println("Couldn't read the RDF statements from DBpedia Extractionframework");
-		
 		return newModel;
 		
 	}
    
-		StmtIterator stmts = tmp.listStatements();
-		while ( stmts.hasNext() ) {
-			Statement triple = stmts.nextStatement();
+	StmtIterator stmts = tmp.listStatements();
+	while ( stmts.hasNext() ) {
+		
+		Statement triple = stmts.nextStatement();
   	  
-			if(predicates.size() == 0 || predicates == null) {
+		if(predicates.size() == 0 || predicates == null) {
 				
-				newModel.add(triple); 
+			newModel.add(triple); 
 				
-			}else {
+		}else {
   	  
-				String tripleStr = triple .getPredicate().toString();
+			String tripleStr = triple .getPredicate().toString();
 	
-				for(int i = 0; i < predicates.size(); i++) {
+			for(int i = 0; i < predicates.size(); i++) {
   	  
-					if(tripleStr.contains(predicates.get(i))){
-						newModel.add(triple); 
-					}
+				if(tripleStr.contains(predicates.get(i))){
+					newModel.add(triple); 
 				}
-  
 			}
-  	  
+  
 		}
+  	  
+	}
    
-	
-	
 	return newModel;
 
   }

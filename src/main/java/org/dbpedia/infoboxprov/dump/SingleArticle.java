@@ -164,21 +164,23 @@ public class SingleArticle {
 	}
   
   	if(daemon) {
+  		
   		dump = new File("ArticleDumps/"+ name + tempID +".xml");
+  		
   	}else {
   	
-  		
-  		
   		dump = new File("ArticleDumps/" + name + "_" + language +  ".xml");
 	}
 	    
 	try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
 	      fos = new FileOutputStream(dump);
-	       fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-	        fos.close();
-	        rbc.close();
+	      fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+	      fos.close();
+	      rbc.close();
+	      
 	 }catch (IOException e) {
-	        System.out.println(e);
+		 
+	        System.out.println("Colud not write to SingleArticle" + name + "_" + language +  ".xml");
 	 }
 
 	return false;
@@ -279,12 +281,19 @@ public class SingleArticle {
 	        	 
 	          }
 	          br.close();
+	          
+	          /**
+	           * determinate the loop. Don't recognize the first sixty lines
+	           * to search for the miss of the ending tag. Cuz this tag is never 
+	           * placed inside the Wikipedia header.
+	           * 
+	           * In case the header will be larger as sixty lines this loop will
+	           * never end. But to check more lines will slow down the whole process
+	           * significant
+	           */
 	          if(lines.size()<60 && !lines.toString().contains("<revision>")) {
 	          
-	          a_end = true;
-	          
-	          
-	          
+	        	  a_end = true;
 	          }
 	        
 	          if(a_begin) {
@@ -302,16 +311,11 @@ public class SingleArticle {
 	        
 	        	  while(true ){
 	        		
-	        		 
-	        		  
 	        		  	if(!lines.get(0).contains("<revision>")) {
 	        		  		lines.remove(0);
 	        		  	}else {
 	        		  		break;
-	        		  	}
-	        		  
-	        	  
-	        		  	
+	        		  	}	
 	        	  }
 	        	 
 	        	  lines.remove(lines.size()-1);
@@ -336,7 +340,10 @@ public class SingleArticle {
 		
   }
   
-  
+  /**
+   * a first parsing is necessary to determine the date of the last revision inside
+   * the singleArticle dump
+   */
   public void readPageDefault(){
 
 		XmlMapper mapper = new XmlMapper();

@@ -30,8 +30,7 @@ import com.beust.jcommander.ParameterException;
 public class CLParser extends JCommander {
 	
 	 private String newDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-	 private String errorCode = "";
-	 
+	
 	 @Parameter(names={"-help", "-h"} , description = "Print help information and exit", required = false)
 	 private boolean showHelp = false;
 	 @Parameter(names={"-name", "-a"} , description = "Name of the Article", required = false)
@@ -163,7 +162,6 @@ public class CLParser extends JCommander {
 		 System.out.println("Started Article: " + singleArticle);
 		 System.out.println("TimeFrame earlier: " + earlier);
 		 System.out.println("TimeFrame later: " + later);
-	
 		 System.out.println("Last Change: " + lastChange);
 	
 	 }
@@ -210,10 +208,6 @@ public class CLParser extends JCommander {
 	 
 	 public int getPort() {
 		 return daemon;
-	 }
-	 
-	 public String getErrorCode() {
-		 return errorCode;
 	 }
 	 
 	 public UUID getTempID() {
@@ -265,17 +259,21 @@ public class CLParser extends JCommander {
 				 }	 
 			 
 				 if(singleArticle != null && threads != 1) {
+					 
 					 threads = 1;
 					 threadsF = 1;
 					 System.out.println("Set maxthread to 1 in case of single Article");
 					 System.out.println("Set maxthreadF to 1 in case of single Article");
+					 
 				 }
 			 
 		    }else {
 				 
-		    	if(singleArticle == null) { 
-		    		errorCode = "Article name needed"; 	
-		    	}
+		    	 if(singleArticle == null) { 
+		    		 
+		    		throw new ParameterException("Article name needed"); 
+		    		
+		    	 }
 		    	
 		    	threads = 1;
 		    	threadsF = 1;
@@ -287,8 +285,9 @@ public class CLParser extends JCommander {
 				 SingleArticle article;
 				 String timestamp;
 				 
-				
-				 
+				 /**
+				  *  Replace an old Version of the singleArticle dump
+				  */
 				 if(new File("ArticleDumps/"+singleArticle+".xml").exists() && daemon < 0) {
 					 
 					 new File("ArticleDumps/"+singleArticle+".xml").delete();
@@ -298,7 +297,6 @@ public class CLParser extends JCommander {
 			
 					 timestamp = later + "T00:00:00Z";
 					
-					 
 				 }else {
 					 
 					 timestamp = "";
@@ -306,7 +304,7 @@ public class CLParser extends JCommander {
 				 
 				 /**
 				  * Need for checking: postRequest success and update the chuncksize,
-				  *	postRequest first chunck don't add the haeder every time, postRequest
+				  *	postRequest first chunck don't add the haeder every time
 				  * postRequest last chunck add </page> and </mediawiki> at the end
 				  * firstrun, check to load the article in one chunck
 				  * postlimt, limit the chuncksize
@@ -316,10 +314,12 @@ public class CLParser extends JCommander {
 				  boolean postEnd = false;
 				  boolean firstrun = true;
 				  int 	  postLimit = 1000;
-				  
+				 
+				  /**
+				   * load the singleArticle dump
+				   */
 				  while(true) {
 				 
-		
 					  article = new SingleArticle(this);
 					  if(!article.setPathForArticle(timestamp, postSucess, postBegin, postEnd, firstrun, postLimit) ) {
 						 
@@ -335,26 +335,26 @@ public class CLParser extends JCommander {
 					
 					  timestamp = article.getTimestampt();
 				
-					  if(timestamp ==null) {
+					  if(timestamp == null) {
 						
 						PrintWriter wr;
 						try {
 							
 							if(daemon >= 0) {
 								
-								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
+								wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
 							
 							}else {
 							
-								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+								wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
 							}
 						  
-						  wr.println("</page>");
-			        	  wr.println("</mediawiki>");
-			        	  wr.close();
+							wr.println("</page>");
+							wr.println("</mediawiki>");
+							wr.close();
 			        	  
 						 } catch (IOException e) {
-							// TODO Auto-generated catch block
+		
 							System.out.println("CLParser: Writer");
 						 }
 						
@@ -362,46 +362,45 @@ public class CLParser extends JCommander {
 						 break;
 					   }
 					  
-					   try {
+					   try{
 						  
-					   Date timestampToDate = new SimpleDateFormat("yyyy-MM-dd")
-										.parse(timestamp);
+						   Date timestampToDate = new SimpleDateFormat("yyyy-MM-dd")
+											.parse(timestamp);
 						
-					   Date earlierToDate = new SimpleDateFormat("yyyy-MM-dd")
-									.parse(earlier);
+						   Date earlierToDate = new SimpleDateFormat("yyyy-MM-dd")
+									.	parse(earlier);
 							
-					   if(timestampToDate.before(earlierToDate)) {
+						   if(timestampToDate.before(earlierToDate)) {
 						  
-						 PrintWriter wr;
-						 try {
+							   PrintWriter wr;
+							   try {
 								
-							 if(daemon >= 0) {
+								   if(daemon >= 0) {
 									
-								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
+									   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle + tempID +".xml"),true));
 							
-							}else {
+								   }else {
 							
-								 wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
-							}
+									   wr = new PrintWriter(new FileWriter(new File("ArticleDumps/"+singleArticle+".xml"),true));
+								   }
 							 
-				           wr.println("</page>");
-				           wr.println("</mediawiki>");
-				           wr.close();
+								wr.println("</page>");
+								wr.println("</mediawiki>");
+								wr.close();
 				        	  
-						 } catch (IOException e) {
-							// TODO Auto-generated catch block
-							System.out.println("CLParser: Writer");
-						 }
+							   }catch (IOException e) {
+			
+								   System.out.println("CLParser: Writer");
+							   }
 						
-						 new File("ArticleDumps/" + tempID + ".xml").delete();
-						
-						 
-						 break;
-					  }
+							   new File("ArticleDumps/" + tempID + ".xml").delete();
+					
+							   break;
+						   	}
 					  
 					  } catch (ParseException e1) {
 							System.out.println("CLParser: Date parse Exception");
-						}
+					  }
 					  
 					  
 				  }// end while
@@ -412,6 +411,7 @@ public class CLParser extends JCommander {
 					  path = "ArticleDumps/"+singleArticle + tempID + ".xml";
 				  
 				  }else {
+					  
 					  new File("ArticleDumps/tmp.xml").delete();
 					  path = "ArticleDumps/"+singleArticle + ".xml";
 				  }
@@ -427,15 +427,14 @@ public class CLParser extends JCommander {
 		
 	    
 		 
-	 }
+	}// end validate
 	 
-	
 	private void parseConfig(String path) {
 		
 		templates = new ArrayList<String>();
 		predicates = new ArrayList<String>();
 		
-		 try {
+		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 		
 			String tmp = null;
@@ -488,8 +487,6 @@ public class CLParser extends JCommander {
 			System.out.println(e);
 			
 		  }
-		   
-	
 	}
 	 
 	 

@@ -16,7 +16,7 @@ import org.apache.jena.rdf.model.StmtIterator;
  */
 public class RDFDiffer {
 	
-  /*
+  /**
    * contains the old and the new Triple in a Statment Array
    * 
    */
@@ -52,14 +52,14 @@ public class RDFDiffer {
    */
   public void determineLeftDifferences(  ) {
 	 
-    /*
+    /**
      * creating the Iterators to iterate through the Models
      */
     StmtIterator iterLeftDifference;
     StmtIterator iterOldModel;
     
     
-    /*
+    /**
      * Creates the models, which only contain differences
      */
     if ( !oldModel.isIsomorphicWith( newModel ) ) {
@@ -77,8 +77,6 @@ public class RDFDiffer {
     while ( iterLeftDifference.hasNext() ) {
   		 
   	 Statement  stmt = iterLeftDifference.nextStatement();
-  	
-  	
   	 
   	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
   	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
@@ -94,12 +92,13 @@ public class RDFDiffer {
   		 newTripleOldTriple.add(entry);
   		 
   	 }
+  	 
 	 if(countMatches == 0) {
 		
-	 Statement[] entry = new Statement[2];
-	 entry[0] = stmt;
-	 entry[1] = null;
-	 newTripleOldTriple.add(entry); 
+		 Statement[] entry = new Statement[2];
+		 entry[0] = stmt;
+		 entry[1] = null;
+		 newTripleOldTriple.add(entry); 
 	 }
   	 
   	newModel.remove(stmt);
@@ -114,12 +113,10 @@ public class RDFDiffer {
    */
   public void determineLeftRightDifferences(  ) {
 		 
-	 
-	  
 	    StmtIterator iterLeftDifference;
 	    StmtIterator iterRightDifference;
 	    
-	    /*
+	    /**
 	     * Creates the models, which only contain differences
 	     */
 	    if ( !oldModel.isIsomorphicWith( newModel ) ) {
@@ -138,8 +135,6 @@ public class RDFDiffer {
 	  		 
 	  	 Statement  stmt = iterLeftDifference.nextStatement();
 	  	
-	  	
-	  	 
 	  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
 	  	 StmtIterator iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
 	  	 int countMatches = 0;
@@ -158,6 +153,7 @@ public class RDFDiffer {
 	  		 newTripleOldTriple.add(entry);
 	  		 
 	  	 }
+	  	 
 		 if(countMatches == 0) {
 		
 			 newModel.remove(stmt);
@@ -186,6 +182,7 @@ public class RDFDiffer {
 		  	iterNewModel.nextStatement();
 		  		 
 		 }
+		 
 		 if(countMatches == 0) {
 			 newModel.add(stmt);
 			 Statement[] entry = new Statement[2];
@@ -195,7 +192,7 @@ public class RDFDiffer {
 			 newTripleOldTriple.add(entry); 
 		 }
 			 
-		 }
+		}
 	    
 	    return;
 	  }

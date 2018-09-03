@@ -51,10 +51,16 @@ public boolean getFinished() {
 	return finished;
 }
 
+/**
+ * First level of parallelization:
+ * To process more then one file out of the inputde folder.
+ * Using a simple blockingqueue.
+ */
+
 @Override
 public void run() {
-	try
-	{
+	try{
+		
 	 while(true) {
 			String path = queue.take();
 			 
@@ -64,7 +70,12 @@ public void run() {
 				 
 			}
 			
-			
+			/**
+			 * Second level of parallelization:
+			 * To process one Dump with more then one XMLstreamreader.
+			 * See the description inside the DumpParser class.
+			 * Using a threadpoolexecutor
+			 */
 		
 			ExecutorService executor = Executors.newFixedThreadPool(clParser.getThreads());
 	 
@@ -80,22 +91,32 @@ public void run() {
 
 			executor.shutdown();
 			
-
+			/**
+			 * Wait one second until the check if a thread is working 
+			 * and process the next one in case the pipe is free
+			 */
 			try {
+				
 				while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {		 
-				}
-				finished = true;
+			}
+				
+			/**	
+			 * Used for the webinterface. It's necessary to wait until the thread is finished
+			 */
+				
+			finished = true;
+			
 			} catch (InterruptedException e) {
 				Log.info(e, "AWAITING_COMPLETION_OF_THREADS");
 			}
-	}// end while
+			
+	 }// end while
+	
 	}catch (InterruptedException e) {
 		Thread.currentThread().interrupt();
 	}
 	
-		
 }// end run
-
 
 }//end class
 

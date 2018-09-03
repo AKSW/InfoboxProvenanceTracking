@@ -38,7 +38,7 @@ public class ProvenanceManager implements Runnable {
    * @param threadName       Name of the thread
    * @param path             Path to the Dumpfile
    * @param parser 			 the dumpparser seted up in consumer.java
-   * @param equivalenceClass used to separate between the different equivalence classes
+   * @param equivalenceClass used to separate between the different equivalence classes. See description inside DumpParser
    * @param clParser 		 the command line parser 
    * @param isNewFile 		 control flag
    */
@@ -53,18 +53,11 @@ public class ProvenanceManager implements Runnable {
 	this.language = clParser.getLanguage();
     this.variant = clParser.getVariant();
     this.readVariant = clParser.getReadvarian();
-    
     this.parser = parser;
     this.parser.setParser(path, equivalenceClass, clParser.getThreads());
-  
-    
-   
     this.filteredDifferences = new ArrayList<Statement[]>();
     this.alreadyFoundDifferences = new ArrayList<Statement>();
-
     this.tripleExtractor = new TripleExtractor(clParser.getExtractionUrl(), clParser.getPredicates());
-    
-   // this.logWriter = new LogWriter(threadName);
     this.writer = new ProvenanceWriter(threadName, isNewFile);
    
   }
@@ -83,15 +76,13 @@ public class ProvenanceManager implements Runnable {
             lastChangeProvenanceDefault();
             break;
           case ReadTimeFiltered:
-        	 
             lastChangeProvenanceTimeFiltered();
             break;
           default:
 
         }
       
-    }
-    else {
+    }else {
     	
     	// switch between the different READVARIANT
         switch (readVariant) {
@@ -113,9 +104,7 @@ public class ProvenanceManager implements Runnable {
   }
   
   
-  
   public void wholeProvenanceDefault() {
-
 
       while (parser.readPageDefault()) {
     	
@@ -132,7 +121,6 @@ public class ProvenanceManager implements Runnable {
 
   public void wholeProvenanceTimeFiltered() {
 
-	 
       while (parser.readPageTimeFiltered()) {
 
         if (parser.getPage() != null) {
@@ -143,9 +131,6 @@ public class ProvenanceManager implements Runnable {
       }// end while
     
   }//end wholeProvenanceTimeFiltered
-  
-  
-
   
   public void lastChangeProvenanceDefault() {
   
@@ -162,8 +147,6 @@ public class ProvenanceManager implements Runnable {
  
   public void lastChangeProvenanceTimeFiltered() {
 	  
-	  
-  
       while (parser.readPageTimeFiltered()) {
 
         if (parser.getPage() != null) {
@@ -176,9 +159,6 @@ public class ProvenanceManager implements Runnable {
   }//end lastChangeProvenanceTimeFiltered
 
   
-  
-
-
   /**
    * (variant == true) : goes through the ArrayList of revisions, creates a
    * Model for each Revision with the TripleExtractor, gets the differences of
@@ -189,12 +169,9 @@ public class ProvenanceManager implements Runnable {
 	  	Model  newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
 	          this.language,"custom");
-	  	
-
+	  
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 
-		
-		
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
               getRevision().get(i).getId(), this.language,"custom");
 		  
@@ -205,8 +182,6 @@ public class ProvenanceManager implements Runnable {
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
-			
-			
 			if (stmt[1] == null) {	
 			
 				writer.writeAdding(stmt, parser.getPage().getRevision().get(i+1));
@@ -214,7 +189,6 @@ public class ProvenanceManager implements Runnable {
 			}else if (stmt[0] == null){
 			
 				writer.writeDeleting(stmt, parser.getPage().getRevision().get(i+1));
-			
 			
 			}else {
 			
@@ -248,11 +222,9 @@ public class ProvenanceManager implements Runnable {
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
 	      this.language,"custom");
-	  
-	
-	  
+	   
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
-		//System.out.println(parser.getPage().getRevision().get(i).getId() +"---" +i);
+	
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
               getRevision().get(i).getId(), this.language, "custom");
 		  
@@ -281,7 +253,4 @@ public class ProvenanceManager implements Runnable {
 	 System.out.println("Finished article: " + parser.getPage().getTitle());
 	 
    }//end astChangeProvenance
-
-
- 
 }

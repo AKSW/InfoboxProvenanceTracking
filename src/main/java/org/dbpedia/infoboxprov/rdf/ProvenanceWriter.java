@@ -8,19 +8,16 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
-
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import org.apache.jena.rdf.model.Model;
-//import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.Statement;
-//import org.slf4j.event.Level;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.dbpedia.infoboxprov.dump.Revision;
 
-//import static com.jayway.buildnumber.PropertiesFileReader.getGitSha1;
+
 
 /**
  * class for writing the output in a file it gets the actual differences between
@@ -34,10 +31,10 @@ import org.dbpedia.infoboxprov.dump.Revision;
  * @author daniel
  */
 public class ProvenanceWriter {
+	
   private static Logger logger = Logger.getLogger(ProvenanceManager.class.getName());
   private File outputFile = null;
  
-
   ArrayList<String> wholeDifferernces = new ArrayList<>();
 
   /**
@@ -55,14 +52,12 @@ public class ProvenanceWriter {
         this.outputFile.delete();
       }
       
-      
       outputFile.createNewFile();
     }
     catch (Exception e) {
-     // Log.error(e, "File could not be created!");
-      logger.log(Level.SEVERE,"Exception occur" , e);
+    	
+      System.out.println("Could not create the TSV-File");
     }
-
   }
   
   
@@ -116,19 +111,16 @@ public class ProvenanceWriter {
     Revision revisionOfChange) {
 	 
       String line = "";
+      line += "<" + stmt[0].getSubject() 		+ "> ";
+      line += "<" + stmt[0].getPredicate() 	+ "> ";
+      line += getObjectAsNTriples(stmt[0]) 	+ "\t";
+      line += "<" + stmt[1].getSubject() 		+ "> ";
+      line += "<" + stmt[1].getPredicate() 	+ "> ";
+      line += getObjectAsNTriples(stmt[1]) 	+ "\t";
+      line += revisionOfChange.toString() 	+ "\n";
       
-     
-        line += "<" + stmt[0].getSubject() 		+ "> ";
-        line += "<" + stmt[0].getPredicate() 	+ "> ";
-        line += getObjectAsNTriples(stmt[0]) 	+ "\t";
-        line += "<" + stmt[1].getSubject() 		+ "> ";
-        line += "<" + stmt[1].getPredicate() 	+ "> ";
-        line += getObjectAsNTriples(stmt[1]) 	+ "\t";
-        line += revisionOfChange.toString() 	+ "\n";
-      
- 
       wholeDifferernces.add(line);
-    write();
+      write();
   }
   
   public void writeModel (Model model, Revision revisionOfChange){
@@ -145,7 +137,6 @@ public class ProvenanceWriter {
 	      line += "# triple added"			  + "\t";
 	      line += revisionOfChange.toString() + "\n";
 	      wholeDifferernces.add(line);
-
 	  }
 	  write();
   }
@@ -162,10 +153,7 @@ public class ProvenanceWriter {
 	      line += "<" + triple.getPredicate() + "> ";
 	      line += getObjectAsNTriples(triple) + "\t";
 	      line += "# triple does not exist\t";
-	      wholeDifferernces.add(line);
-	      
-	     
-	     
+	      wholeDifferernces.add(line);    
 	  }
 	  write();
   }
@@ -214,9 +202,10 @@ public class ProvenanceWriter {
    * writes the ArrayList in a file
    */
   public void write() {
+	  
     try (Writer fw = new OutputStreamWriter(new FileOutputStream(outputFile,
       true), StandardCharsets.UTF_8)) {
-    	//System.out.println(wholeDifferernces.size());
+    
       for (String line : wholeDifferernces) {
     	  //System.out.println(line);
         fw.write(line);
@@ -225,15 +214,16 @@ public class ProvenanceWriter {
       
       wholeDifferernces.clear();
      
-    }
-    catch (FileNotFoundException e) {
-      //Log.error(e, "File not found!");
+    } catch (FileNotFoundException e) {
+    	
+      System.out.println("TSV-File not found!");
       logger.log(Level.SEVERE,"File not found!" , e);
-    }
-    catch (IOException e) {
-      //Log.error(e, "Could not read or write file!");
+      
+    } catch (IOException e) {
+    	
+      System.out.println("Could not write TSV-File!");
       logger.log(Level.SEVERE,"Could not read or write file!" , e);
     }
   }
 
-}
+}// end class
