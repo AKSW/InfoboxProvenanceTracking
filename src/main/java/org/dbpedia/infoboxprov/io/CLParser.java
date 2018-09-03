@@ -443,6 +443,10 @@ public class CLParser extends JCommander {
 			
 			while ((tmp = br.readLine()) != null)  {
 			 
+				if(tmp.charAt(0) == '#') {
+					continue;
+				}
+				
 				tokens = tmp.split("=");
 				configLine = tokens[0];
 				tmp = tokens[1];
@@ -482,10 +486,10 @@ public class CLParser extends JCommander {
 			
 			  System.out.println("Configfile not found!");
 
-		  }catch (IOException e) {
+		  }catch (ArrayIndexOutOfBoundsException | IOException e) {
 			  
-			System.out.println(e);
-			
+			System.out.println("Couldn't read the config file");
+			System.exit(0);
 		  }
 	}
 	 

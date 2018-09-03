@@ -1,3 +1,6 @@
+# The language of the PredicateFilter has to match witch the chosen parsing language
+# otherwise the framework will find nothing!
+
 PredicateFilter =http://en.dbpedia.org/property|http://de.dbpedia.org/property
 Url =/provenance
 ExtractionUrl =http://mappings.dbpedia.org/server/extraction/

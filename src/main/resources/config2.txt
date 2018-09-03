@@ -1,3 +1,6 @@
+# The language of the PredicateFilter has to match witch the chosen parsing language
+# otherwise the framework will find nothing!
+
 TemplateFilter =Infobox|Chembox|Drugbox|Geobox|Football box|GNF Protein box|Coordinate|Normdaten
 PredicateFilter =http://en.dbpedia.org/property|http://de.dbpedia.org/property
 Url =/provenance
