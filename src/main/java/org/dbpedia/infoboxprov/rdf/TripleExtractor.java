@@ -29,7 +29,6 @@ public class TripleExtractor {
    * @param revisionsNumber revisionnumber
    * @param language langage
    * @param mapping extraction mode from the dbpedia tripleextracktor
-   * @param variant track just the last changing or all changings
    * @return Models
    */
   public Model generateModel(int revisionsNumber, String language, String mapping )  {

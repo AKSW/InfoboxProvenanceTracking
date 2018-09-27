@@ -123,8 +123,7 @@ public class DumpParser {
    * @throws CompressorException CompressorException
    */
   public void setReader(String path) throws IOException, CompressorException {
-   
-
+ 
     // the filename extension
     String extension = "";
 
