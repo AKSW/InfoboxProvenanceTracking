@@ -72,7 +72,7 @@ public class CLParser extends JCommander {
 	  */
 	 public CLParser(String[] args) {
 		this.tempID = UUID.randomUUID();
-		parseConfig(config);
+		
 		
 		jCommander = new JCommander(this);
 		try {
@@ -98,6 +98,8 @@ public class CLParser extends JCommander {
 			help();
 			System.exit(1);
 		}
+		parseConfig(config);
+		
 	 }
 	 
 	 /**
@@ -442,39 +444,57 @@ public class CLParser extends JCommander {
 			String[] tokens;
 			
 			while ((tmp = br.readLine()) != null)  {
-			 
-				if(tmp.charAt(0) == '#') {
+				
+				if(tmp.length() != 0 &&  tmp.charAt(0) == '#') {
 					continue;
 				}
 				
-				tokens = tmp.split("=");
-				configLine = tokens[0];
-				tmp = tokens[1];
-				tokens = tmp.split("\\|");
-				
-				for(String s:tokens){
-						
-						if(configLine.contains("TemplateFilter")) {
-						
-							templates.add(s);
+				if(tmp.contains("=")){
 					
-						}else if(configLine.contains("PredicateFilter")) {
+					
+					tokens = tmp.split("=");
+				
+					configLine = tokens[0];
+					tmp = tokens[1];
+					
+					if(tmp.contains("\\|")) {
+					
+					
+						tokens = tmp.split("\\|");
+					
+						for(String s:tokens){
 							
-							predicates.add(s);
+							if(configLine.contains("TemplateFilter")) {
 							
-						}else if (configLine.equalsIgnoreCase("Url")) {
-							
-							url = tmp;
-							
-						}else if(configLine.contains("Port")) {
-							
-							daemon = Integer.parseInt(tmp);
-							
-						}else if(configLine.contains("ExtractionUrl")) {
-							
-							extractionUrl = tmp;
+								templates.add(s);
 						
+							}else if(configLine.contains("PredicateFilter")) {
+								
+								predicates.add(s);
+								
+							}else if (configLine.equalsIgnoreCase("Url")) {
+								
+								url = tmp;
+								
+							}else if(configLine.contains("Port")) {
+								
+								daemon = Integer.parseInt(tmp);
+								
+							}else if(configLine.contains("ExtractionUrl")) {
+								
+								extractionUrl = tmp;
+							
+							}
 						}
+					
+					}else {
+						
+						continue;
+					}
+					
+				}else {
+					
+					continue;
 				}
 					
 			}
@@ -485,12 +505,14 @@ public class CLParser extends JCommander {
 		  }catch (FileNotFoundException e) {
 			
 			  System.out.println("Configfile not found!");
-
-		  }catch (ArrayIndexOutOfBoundsException | IOException e) {
+			  return;
+		  }catch (IndexOutOfBoundsException | IOException e) {
 			  
-			System.out.println("Couldn't read the config file");
+			System.out.println("Couldn't read the config file!");
 			System.exit(0);
 		  }
+		
+		System.out.println("Read config!");
 	}
 	 
 	 
