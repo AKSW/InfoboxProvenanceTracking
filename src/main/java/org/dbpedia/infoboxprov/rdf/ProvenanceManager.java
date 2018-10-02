@@ -4,6 +4,7 @@ package org.dbpedia.infoboxprov.rdf;
 import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.dbpedia.infoboxprov.dump.DumpParser;
 import org.dbpedia.infoboxprov.io.CLParser;
@@ -218,6 +219,7 @@ public class ProvenanceManager implements Runnable {
    */
   public  void lastChangeProvenance() {
 
+	Model tmp = ModelFactory.createDefaultModel();
 	  
 	Model newestModel = tripleExtractor.generateModel(parser.getPage().
 	          getRevision().get(parser.getPage().getRevision().size()-1).getId(),
@@ -225,11 +227,15 @@ public class ProvenanceManager implements Runnable {
 	   
 	for (int i = parser.getPage().getRevision().size()-2; i >= 0; i-- ) {
 	
+		
+		
 		Model compareModel = tripleExtractor.generateModel(parser.getPage().
-              getRevision().get(i).getId(), this.language, "custom");
-		  
+              getRevision().get(i).getId(), this.language, "custom").difference(tmp);
+		
+	
 		RDFDiffer rdfDiffer = new RDFDiffer(newestModel,compareModel);
-		rdfDiffer.determineLeftDifferences();
+		rdfDiffer.determineLeftDifferences( tmp);
+		newestModel = rdfDiffer.getNewModel();
 		
 		for (Statement[] stmt : rdfDiffer.getNewTripleOldTriple()) {
 		
@@ -243,7 +249,7 @@ public class ProvenanceManager implements Runnable {
 			}
 		}
 		
-		newestModel = rdfDiffer.getNewModel();
+		
 		if(newestModel.isEmpty()) {
 			 break;
 		 }
