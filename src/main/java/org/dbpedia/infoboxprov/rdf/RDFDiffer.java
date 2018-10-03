@@ -50,7 +50,7 @@ public class RDFDiffer {
    * Method finds the differences between the  initialized models and maps the triples that
    * have changed
    */
-  public void determineLeftDifferences(  ) {
+  public void determineLeftDifferences( Model tmp ) {
 	 
     /**
      * creating the Iterators to iterate through the Models
@@ -71,13 +71,11 @@ public class RDFDiffer {
     	return;
     }
 
-        
-        
-
+    
     while ( iterLeftDifference.hasNext() ) {
-  		 
+  		
   	 Statement  stmt = iterLeftDifference.nextStatement();
-  	 
+  	
   	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
   	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
   	 int countMatches = 0;
@@ -85,15 +83,21 @@ public class RDFDiffer {
   		
   		 countMatches++;
   		 Statement stmt2 = iterOldModel.nextStatement();
-  		
   		 Statement[] entry = new Statement[2];
   		 entry[0] = stmt;
   		 entry[1] = stmt2; 
-  		 newTripleOldTriple.add(entry);
   		 
+  		 
+  		 if(!newModel.contains(stmt2) ) {
+  			
+  			newTripleOldTriple.add(entry);
+  			
+  			tmp.add(stmt);
+  			tmp.add(stmt2);
+  		 } 
   	 }
   	 
-	 if(countMatches == 0) {
+	 if(countMatches < newModel.size()) {
 		
 		 Statement[] entry = new Statement[2];
 		 entry[0] = stmt;
@@ -102,6 +106,7 @@ public class RDFDiffer {
 	 }
   	 
   	newModel.remove(stmt);
+  	
   	}
     
     return;

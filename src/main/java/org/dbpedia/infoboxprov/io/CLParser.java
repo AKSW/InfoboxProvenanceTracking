@@ -99,7 +99,6 @@ public class CLParser extends JCommander {
 			System.exit(1);
 		}
 		parseConfig(config);
-		
 	 }
 	 
 	 /**
@@ -160,6 +159,15 @@ public class CLParser extends JCommander {
 			
 			lastChange = true;
 		}
+		
+		this.timeFrame = new TimeFrame(earlier, later);
+		 
+		 
+		if(timeFrame.getDateArray() != null){
+			 
+			 readvariant = READVARIANT.ReadTimeFiltered;
+			
+		 } 
 		
 		 System.out.println("Started Article: " + singleArticle);
 		 System.out.println("TimeFrame earlier: " + earlier);
@@ -475,10 +483,6 @@ public class CLParser extends JCommander {
 							}else if (configLine.equalsIgnoreCase("Url")) {
 								
 								url = tmp;
-								
-							}else if(configLine.contains("Port")) {
-								
-								daemon = Integer.parseInt(tmp);
 								
 							}else if(configLine.contains("ExtractionUrl")) {
 								
