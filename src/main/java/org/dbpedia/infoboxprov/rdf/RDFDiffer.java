@@ -70,10 +70,9 @@ public class RDFDiffer {
     	
     	return;
     }
-
-    
+  
     while ( iterLeftDifference.hasNext() ) {
-  		
+    	
   	 Statement  stmt = iterLeftDifference.nextStatement();
   	
   	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
@@ -88,14 +87,18 @@ public class RDFDiffer {
   		 entry[1] = stmt2; 
   		 
   		 
+  		 
   		 if(!newModel.contains(stmt2) ) {
   			
   			newTripleOldTriple.add(entry);
   			
   			tmp.add(stmt);
-  			tmp.add(stmt2);
+  			
+  			//don't track the new triple wich arise after changing two triples 
+  			tmp.add(stmt2);	
   		 } 
   	 }
+  	
   	 
 	 if(countMatches < newModel.size()) {
 		
@@ -148,18 +151,24 @@ public class RDFDiffer {
 	  		 countMatches++;
 	  		 Statement stmt2 = iterOldModel.nextStatement();
 	  		
-	  		 newModel.remove(stmt);
-	  		 newModel.add(stmt2);
+	  		 
 	  		 
 	  		 Statement[] entry = new Statement[2];
 	  		 entry[0] = stmt;
 	  		 entry[1] = stmt2; 
 	  		 
-	  		 newTripleOldTriple.add(entry);
+	  		 if(!newModel.contains(stmt2) ) {
+	  		 
+	  			 newTripleOldTriple.add(entry);
+	  			 newModel.remove(stmt);
+		  		 newModel.add(stmt2);
+	  		 }
+	  		 
+	  		 
 	  		 
 	  	 }
 	  	 
-		 if(countMatches == 0) {
+		 if(countMatches  < newModel.size()) {
 		
 			 newModel.remove(stmt);
 		 
@@ -188,7 +197,7 @@ public class RDFDiffer {
 		  		 
 		 }
 		 
-		 if(countMatches == 0) {
+		 if(countMatches < oldModel.size()) {
 			 newModel.add(stmt);
 			 Statement[] entry = new Statement[2];
 			 entry[0] = null;
