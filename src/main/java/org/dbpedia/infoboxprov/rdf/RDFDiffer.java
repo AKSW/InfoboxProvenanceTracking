@@ -59,7 +59,6 @@ public class RDFDiffer {
     StmtIterator iterLeftDifference;
     StmtIterator iterOldModel;
     
-    
     /**
      * Creates the models, which only contain differences
      */
@@ -101,13 +100,11 @@ public class RDFDiffer {
   		 
   		 if(!newModel.contains(stmt2) ) {
   			
-  			newTripleOldTriple.add(entry);
-  			
   			tmp.add(stmt);
   			//don't track the new triple wich arise after changing two triples 
   			tmp.add(stmt2);	
   			
-  			
+  			newModel.remove(stmt);
   		 } 
   	 }
   
@@ -116,10 +113,18 @@ public class RDFDiffer {
 		 Statement[] entry = new Statement[2];
 		 entry[0] = stmt;
 		 entry[1] = null;
+		 
+		 if (tmp.contains(stmt)) {
+			 newTripleOldTriple.remove(newTripleOldTriple.size() - 1);
+		 }
+		 
 		 newTripleOldTriple.add(entry); 
+			newModel.remove(stmt);
+			
+			
 	 }
   	 
-  	newModel.remove(stmt);
+  
   	
   	}
     
