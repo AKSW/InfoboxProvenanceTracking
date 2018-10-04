@@ -3,6 +3,7 @@ package org.dbpedia.infoboxprov.rdf;
 import java.util.ArrayList;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
@@ -77,6 +78,16 @@ public class RDFDiffer {
   	
   	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
   	 iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
+  	 
+
+  	 StmtIterator reduced = newModel.listStatements(null, match, (RDFNode)null );
+  	 
+  	 int numberOfStatements = 0;
+  	 while ( reduced.hasNext() ) {
+  		reduced.nextStatement();
+  		numberOfStatements++;
+  	 }
+  	
   	 int countMatches = 0;
   	 while ( iterOldModel.hasNext() ) {
   		
@@ -93,14 +104,14 @@ public class RDFDiffer {
   			newTripleOldTriple.add(entry);
   			
   			tmp.add(stmt);
-  			
   			//don't track the new triple wich arise after changing two triples 
   			tmp.add(stmt2);	
+  			
+  			
   		 } 
   	 }
-  	
-  	 
-	 if(countMatches < newModel.size()) {
+  
+	 if(countMatches < numberOfStatements ) {
 		
 		 Statement[] entry = new Statement[2];
 		 entry[0] = stmt;
@@ -123,7 +134,7 @@ public class RDFDiffer {
 		 
 	    StmtIterator iterLeftDifference;
 	    StmtIterator iterRightDifference;
-	    
+	  
 	    /**
 	     * Creates the models, which only contain differences
 	     */
@@ -145,6 +156,19 @@ public class RDFDiffer {
 	  	
 	  	 Property match = oldModel.createProperty( stmt.getPredicate().toString() );
 	  	 StmtIterator iterOldModel = oldModel.listStatements(null, match, (RDFNode)null );
+	  	 
+	  	 
+	  	 StmtIterator reduced = newModel.listStatements(null, match, (RDFNode)null );
+	  	 
+	  	 int numberOfStatements = 0;
+	  	 while ( reduced.hasNext() ) {
+	  		reduced.nextStatement();
+	  		numberOfStatements++;
+	  	 }
+	  	 
+	  	 
+	  
+	  	 
 	  	 int countMatches = 0;
 	  	 while ( iterOldModel.hasNext() ) {
 	  		
@@ -162,13 +186,16 @@ public class RDFDiffer {
 	  			 newTripleOldTriple.add(entry);
 	  			 newModel.remove(stmt);
 		  		 newModel.add(stmt2);
+		  		 
 	  		 }
 	  		 
 	  		 
 	  		 
 	  	 }
 	  	 
-		 if(countMatches  < newModel.size()) {
+	  	
+	  	 
+		 if(countMatches  < numberOfStatements ) {
 		
 			 newModel.remove(stmt);
 		 
@@ -189,6 +216,17 @@ public class RDFDiffer {
 		 Property match = newModel.createProperty( stmt.getPredicate().toString() );
 		 StmtIterator iterNewModel = newModel.listStatements(null, match, (RDFNode)null );
 		 
+		 
+		 StmtIterator reduced = oldModel.listStatements(null, match, (RDFNode)null );
+		  	 
+		 int numberOfStatements = 0;
+		 while ( reduced.hasNext() ) {
+		  	reduced.nextStatement();
+		  	numberOfStatements++;
+		 }
+		  	 
+		 
+		 
 		 int countMatches = 0;
 		 while ( iterNewModel.hasNext() ) {
 		  		 
@@ -197,7 +235,7 @@ public class RDFDiffer {
 		  		 
 		 }
 		 
-		 if(countMatches < oldModel.size()) {
+		 if(countMatches < numberOfStatements ) {
 			 newModel.add(stmt);
 			 Statement[] entry = new Statement[2];
 			 entry[0] = null;
