@@ -97,9 +97,11 @@ public class RDFDiffer {
   		 entry[1] = stmt2; 
   		 
   		 
-  		 
   		 if(!newModel.contains(stmt2) ) {
   			
+  			 
+  			
+  			newTripleOldTriple.add(entry);
   			tmp.add(stmt);
   			//don't track the new triple wich arise after changing two triples 
   			tmp.add(stmt2);	
@@ -114,7 +116,7 @@ public class RDFDiffer {
 		 entry[0] = stmt;
 		 entry[1] = null;
 		 
-		 if (tmp.contains(stmt)) {
+		 if (tmp.contains(stmt) && !newTripleOldTriple.isEmpty()) {
 			 newTripleOldTriple.remove(newTripleOldTriple.size() - 1);
 		 }
 		 
